@@ -1,0 +1,16 @@
+bind --mode=ex <c-g> ex.hide_and_clear
+bind --mode=ex <c-c> ex.hide_and_clear
+bind , fillcmdline_notrail
+bind k scrollline -3
+bind j scrollline 3
+bind <c-l> tabnext
+bind <c-h> tabprev
+bind <c-[> back
+bind <c-]> forward
+bind x tabclose
+bind t tabopen
+bind u scrollpage -0.5
+bind d scrollpage 0.5
+
+set hintfiltermode vimperator-reflow
+set hintnames short

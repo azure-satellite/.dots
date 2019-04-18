@@ -1,0 +1,4 @@
+[submodule "mutable/.local/share/pass"]
+	path = mutable/.local/share/pass
+	url = https://github.com/stellarhoof/pass
+	branch = master
