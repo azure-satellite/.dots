@@ -14,7 +14,7 @@
   # TODO: Figure out why links are being created inside ./mutable/*
   home.activation.linkMyFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
-    ln -sf ${toString ./mutable/.config/nvim} ~/.config/nvim
-    ln -sf ${toString ./mutable/.local/share/pass} ~/.local/share/pass
+    ln -sf ${toString ./mutable/.config/nvim} ~/.config/
+    ln -sf ${toString ./mutable/.local/share/pass} ~/.local/share/
   '';
 }
