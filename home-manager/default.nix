@@ -8,12 +8,13 @@ with pkgs;
     ./lib.nix
     ./mime.nix
     ./email.nix
+    ./programs/fish
     ./programs/git.nix
     ./programs/node.nix
     ./programs/i3.nix
     ./programs/fzf.nix
     ./programs/direnv.nix
-    ./programs/fish
+    ./programs/nvim.nix
   ];
 
   manual.html.enable = true;
@@ -21,6 +22,7 @@ with pkgs;
   home = {
     packages = [
       # Terminal
+      ffmpeg
       iosevka
       inotify-tools # required by i3blocks mail script
       iw # required by i3blocks networking script
@@ -166,31 +168,31 @@ with pkgs;
 
   xresources.properties =
     with config.lib.colors.theme;
-    with config.lib.colors.palette; {
-      # TODO: Add another entry in terminfo with a name of "st"
-      # This is the only entry in terminfo that works.
-      "st.termname" = "st-256color";
-      "st.borderpx" = 0;
-      "st.font" = "monospace:pixelsize=36";
-      "st.color0" = black.color;
-      "st.color1" = red.color;
-      "st.color2" = green.color;
-      "st.color3" = yellow.color;
-      "st.color4" = blue.color;
-      "st.color5" = magenta.color;
-      "st.color6" = cyan.color;
-      "st.color7" = white.color;
-      "st.color8" = base0.color;
-      "st.color9" = base1.color;
-      "st.color10" = base2.color;
-      "st.color11" = base3.color;
-      "st.color12" = base4.color;
-      "st.color13" = base5.color;
-      "st.color14" = base6.color;
-      "st.color15" = base7.color;
-      "st.cursorColor" = brGreen.color;
-      "st.foreground" = fg.color;
-      "st.background" = bg.color;
-    };
+    with config.lib.colors.palette;
+    with config.lib.colors.others;
+      {
+        "st.termname" = "st-256color";
+        "st.borderpx" = 0;
+        "st.font" = "monospace:pixelsize=36";
+        "st.color0" = black;
+        "st.color1" = red;
+        "st.color2" = green;
+        "st.color3" = yellow;
+        "st.color4" = blue;
+        "st.color5" = magenta;
+        "st.color6" = cyan;
+        "st.color7" = white;
+        "st.color8" = base0;
+        "st.color9" = base1;
+        "st.color10" = base2;
+        "st.color11" = base3;
+        "st.color12" = base4;
+        "st.color13" = base5;
+        "st.color14" = base6;
+        "st.color15" = base7;
+        "st.cursorColor" = cursor.bg;
+        "st.foreground" = default.fg;
+        "st.background" = default.bg;
+      };
 }
 

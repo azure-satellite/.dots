@@ -75,49 +75,19 @@ function! core#vsetsearch(cmdtype)
     let @" = l:reg
 endfunction
 
-function! core#colors()
-    hi! Normal guibg=NONE
-    " hi! Normal guibg=NONE guifg=NONE
-    " hi TabLine guibg=black
-    " hi TabLineSel guibg=black
-    " hi TabLineFill guibg=black
-    " hi! link StatusLine TabLineSel
-    " hi! link StatusLineNC TabLineFill
-    " hi DiffAdd guibg=NONE gui=bold
-    " hi DiffDelete guibg=NONE gui=bold
-    " hi DiffText gui=bold
-    " hi! clear DiffChange
-    " hi! NonText guifg=#657B83 guibg=NONE
-    " hi! link EndOfBuffer NonText
-    " hi! LineNr guibg=#011c24
-    " hi! link Folded LineNr
-    " hi! link SignColumn LineNr
-    " hi! Search guibg=#124356 guifg=#8CDCB7 gui=underline,bold
-    " hi! link IncSearch Search
-    " hi Pmenu gui=bold
-    " hi PmenuSel gui=bold,reverse
-    " hi! link PmenuSBar Pmenu
-    " " If I link User1 to StatusLineNC I will get empty colors on inactive windows
-    " hi! link User1 TablineSel
-    " hi! User2 guifg=black guibg=#586e75
-    " hi! User3 guifg=black guibg=#839496
-    " hi! Comment gui=NONE
+function! core#is_file_like()
+    return empty(&buftype) || &buftype ==# 'acwrite' || &buftype ==# 'nowrite'
 endfunction
 
 function! core#statusline_branch()
-    let s = ''
     " Uncomment to not show branch info on buffers that aren't tracked, but it
     " will also not show branch info on buffers outside vim's pwd
     " if get(b:, 'tracked') && get(g:, 'loaded_fugitive') && empty(&buftype)
-    if get(g:, 'loaded_fugitive') && empty(&buftype)
-        let s = fugitive#head()
-        let s = !empty(s) ? '('.s.') ' : ''
+    if get(g:, 'loaded_fugitive') && core#is_file_like() && !empty(bufname(''))
+        let branch = fugitive#head()
+        return empty(branch) ? '' : '▏'.branch.' '
     endif
-    return s
-endfunction
-
-function! core#is_file_like()
-    return empty(&buftype) || &buftype ==# 'acwrite' || &buftype ==# 'nowrite'
+    return ''
 endfunction
 
 function! core#statusline_filesize()
@@ -125,13 +95,14 @@ function! core#statusline_filesize()
 endfunction
 
 function! core#statusline_flags()
-    let r = ''
-    if core#is_file_like()
+    if core#is_file_like() && !empty(bufname(''))
+        let r = ''
         let r .= &modified ? '[+]' : ''
         let r .= &readonly ? '[RO]' : ''
         let r .= &paste ? '[P]' : ''
+        return r
     endif
-    return r
+    return ''
 endfunction
 
 function! core#statusline_linter()

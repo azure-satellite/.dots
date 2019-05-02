@@ -5,33 +5,33 @@ with pkgs.lib;
 let
 
   colors =
-    with config.lib.colors.theme;
+    with config.lib.colors;
     with config.lib.colors.palette;
     with config.lib.colors.attrs;
     rec {
       # Command line
-      fish_color_normal = fg;
-      fish_color_command = fg;
-      fish_color_quote = string;
-      fish_color_redirection = fg;
-      fish_color_end = fg;
-      fish_color_error = error;
-      fish_color_param = base5;
-      fish_color_comment = comment;
-      fish_color_match = green;
-      fish_color_selection = fg; # Selected text in Vi mode
-      fish_color_operator = base5;
-      fish_color_escape = orange;
+      fish_color_normal = theme.default;
+      fish_color_command = theme.default;
+      fish_color_quote = theme.string;
+      fish_color_redirection = theme.default;
+      fish_color_end = theme.default;
+      fish_color_error = theme.error;
+      fish_color_param = { fg = base5; };
+      fish_color_comment = theme.comment;
+      fish_color_match = { fg = green; };
+      fish_color_selection = theme.default; # Selected text in Vi mode
+      fish_color_operator = { fg = base5; };
+      fish_color_escape = { fg = orange; };
 
       # Prompt
-      fish_color_cwd = green // bold;
-      fish_color_user = base5 // bold;
-      fish_color_host = base5 // bold;
-      fish_color_prompt = base5 // bold; # Non-standard. Only for my custom prompt function
+      fish_color_cwd = { fg = green; } // bold;
+      fish_color_user = { fg = base5; } // bold;
+      fish_color_host = { fg = base5; } // bold;
+      fish_color_prompt = { fg = base5; } // bold; # Non-standard. Only for my custom prompt function
 
       # Others
-      fish_color_autosuggestion = comment; # History suggestion when typing a command
-      fish_color_cancel = red; # ^C character when canceling a command
+      fish_color_autosuggestion = theme.comment; # History suggestion when typing a command
+      fish_color_cancel = theme.error; # ^C character when canceling a command
 
       # Autocompletion/pager
       # *_prefix: Highlighted substring
@@ -39,19 +39,19 @@ let
       # *_background: Suggested string background
       # *_description: Short description next to suggested string
 
-      fish_pager_color_progress = highlight; # Progress bar at the bottom left corner
+      fish_pager_color_progress = theme.highlight; # Progress bar at the bottom left corner
 
       # Unselected suggestions
-      fish_pager_color_prefix = highlight;
-      fish_pager_color_completion = suggestionFg;
-      fish_pager_color_background = { background = suggestionBg.color; };
-      fish_pager_color_description = suggestionFg // italic;
+      fish_pager_color_prefix = theme.highlight;
+      fish_pager_color_completion = theme.suggestion;
+      fish_pager_color_background = theme.suggestion;
+      fish_pager_color_description = fish_pager_color_completion // italic;
 
       # Selected suggestions
       fish_pager_color_selected_prefix = fish_pager_color_prefix;
-      fish_pager_color_selected_completion = suggestionSelectedFg;
-      fish_pager_color_selected_background = { background = suggestionSelectedBg.color; };
-      fish_pager_color_selected_description = suggestionSelectedFg // italic;
+      fish_pager_color_selected_completion = theme.selectedSuggestion;
+      fish_pager_color_selected_background = theme.selectedSuggestion;
+      fish_pager_color_selected_description = fish_pager_color_selected_completion // italic;
 
       # For compatibility until new versions of fish support the variables
       # above (a PR has already been merged)
@@ -64,16 +64,18 @@ let
       fish_pager_color_secondary_description = fish_pager_color_description;
     };
 
-  # TODO: Use optionalAttrs
-  buildColorString = with builtins; color: concatStringsSep "" [
-    (if hasAttr "color" color then "'${color.color}'" else "")
-    (if hasAttr "background" color then "--background='${color.background}'" else "")
-    (if hasAttr "italic" color then " --italics" else "")
-    (if hasAttr "bold" color then " --bold" else "")
-    (if hasAttr "underline" color then " --underline" else "")
-  ];
-
-  colorString = color: if isString color then "'${color}'" else buildColorString color;
+  colorDefToString =
+    with builtins;
+    with config.lib.colors.theme;
+    with config.lib.colors.palette;
+    name: def:
+      ''set -U ${name} ${concatStringsSep " " [
+        (if hasAttr "fg" def then "'${def.fg}'" else "")
+        (if hasAttr "bg" def then "--background='${def.bg}'" else "")
+        (if hasAttr "italic" def then "--italics" else "")
+        (if hasAttr "bold" def then "--bold" else "")
+        (if hasAttr "underline" def then "--underline" else "")
+      ]}'';
 
 in
 
@@ -82,23 +84,14 @@ in
     fish = {
       enable = true;
 
-      loginShellInit =
-        with builtins;
-        with config.lib.colors.theme;
-        with config.lib.colors.palette;
-        ''
-          set -U fish_prompt_pwd_dir_length 5
-          ${concatStringsSep "\n" (
-            attrValues (mapAttrs (k: v: "set -U ${k} ${buildColorString v}") colors)
-          )}
-        '';
+      loginShellInit = with config.lib.functions; ''
+        set -U fish_prompt_pwd_dir_length 5
+        ${reduceAttrsToString "\n" colorDefToString colors}
+      '';
 
-      interactiveShellInit = ''
+      interactiveShellInit = with config.lib.functions; ''
         set fish_greeting
-        ${concatStringsSep "\n" (
-          mapAttrsToList (k: v: ''alias --save ${k}="${v}"'') 
-          config.lib.aliases
-        )}
+        ${reduceAttrsToString "\n" (k: v: ''alias --save ${k}="${v}"'') config.lib.aliases}
       '';
     };
   };

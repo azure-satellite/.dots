@@ -12,22 +12,22 @@ let
     with config.lib.colors;
     concatStringsSep "," (attrValues (mapAttrs (k: v: "${k}:${v}") rec {
       # Unselected lines (including input line)
-      fg = theme.suggestionFg.color;
-      bg = theme.suggestionBg.color;
-      hl = theme.highlight.color;
+      fg = theme.suggestion.fg;
+      bg = theme.suggestion.bg;
+      hl = theme.highlight.fg;
 
       # Selected line
-      "fg+" = theme.suggestionSelectedFg.color;
-      "bg+" = theme.suggestionSelectedBg.color;
-      "hl+" = theme.highlight.color;
+      "fg+" = theme.selectedSuggestion.fg;
+      "bg+" = theme.selectedSuggestion.bg; # Setting a background makes a fringe on the left :(
+      "hl+" = theme.highlight.fg;
 
       marker = hl; # Multi-select marker
-      info = palette.base5.color; # Results count
+      info = palette.base5; # Results count
       spinner = info; # Streaming input indicator
       header = info; # Header
       border = info; # Border of the preview window and horizontal separators (--border)
-      prompt = theme.bg.color; # Prompt. The symbols in "> {query} < 10/10"
-      pointer = theme.bg.color; # Pointer to the current line ("> this is the currently selected line")
+      prompt = theme.selectedSuggestion.bg; # Prompt. The symbols in "> {query} < 10/10"
+      pointer = theme.selectedSuggestion.bg; # Pointer to the current line ("> this is the currently selected line")
     }));
 
   FZF_DEFAULT_OPTS = toString [

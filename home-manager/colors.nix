@@ -1,6 +1,6 @@
 let
 
-  palettes = builtins.mapAttrs (k: v: builtins.mapAttrs (k: color: { inherit color; }) v) {
+  palettes = builtins.mapAttrs (k: v: v // { white = v.base7; black = v.base0; }) {
     solarized = rec {
       red      = "#dc322f"; # ansi:1    vendor:red
       green    = "#859900"; # ansi:2    vendor:green
@@ -18,8 +18,6 @@ let
       base5    = "#93a1a1"; # ansi:13   vendor:base1
       base6    = "#eee8d5"; # ansi:14   vendor:base2
       base7    = "#fdf6e3"; # ansi:7,15 vendor:base3
-      black    = base0;
-      white    = base7;
     };
 
     gotham = rec {
@@ -39,9 +37,11 @@ let
       base5	   = "#599cab"; # ansi:13    vendor:base5
       base6	   = "#99d1ce"; # ansi:14    vendor:base6
       base7	   = "#d3ebe9"; # ansi:7,15  vendor:base7
-      black    = base0;
-      white    = base7;
     };
+  };
+
+  others = {
+    brGreen = "#00ff00";
   };
 
   palette = palettes.gotham;
@@ -50,27 +50,29 @@ let
     bold = { bold = true; };
     italic = { italic = true; };
     underline = { underline = true; };
+    reverse = { reverse = true; };
+    undercurl = { undercurl = true; };
+    standout = { standout = true; };
+  };
+
+  theme = with palette; with attrs; rec {
+    default = { fg = base6; bg = base0; };
+
+    cursor = { bg = others.brGreen; };
+
+    comment = { fg = base4; };
+    error = { fg = red; } // bold;
+    string = { fg = cyan; } // italic;
+
+    # Autocompletion, list selection, etc...
+    highlight = { fg = yellow; } // bold;
+    suggestion = { fg = base5; };
+    selectedSuggestion = { fg = base6; bg = base2; } // bold;
   };
 
 in
 
 {
-  inherit palettes palette attrs;
-
-  theme = with palette; with attrs; rec {
-    fg = base6;
-    bg = black;
-    comment = base4;
-    error = red // bold;
-    string = cyan // italic;
-
-    # Autocompletion, list selection, etc...
-    highlight = yellow;
-    suggestionFg = base5;
-    suggestionBg = bg;
-    suggestionSelectedFg = fg;
-    suggestionSelectedBg = bg;
-
-    brGreen = { color = "#39d364"; };
-  };
+  inherit palettes palette attrs others;
+  theme = builtins.mapAttrs (k: v: theme.default // v) theme;
 }

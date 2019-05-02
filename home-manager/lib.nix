@@ -11,6 +11,9 @@ let
       let deriv = pkgs.writeShellScriptBin name text;
       in deriv // { bin = "${deriv}/bin/${deriv.name}"; }
     );
+
+    reduceAttrsToString = sep: fn: attrs:
+      builtins.concatStringsSep sep (pkgs.lib.mapAttrsToList fn attrs);
   };
 
   aliases = {

@@ -4,6 +4,8 @@ let
 
   dmenuWindowClass = "dmenu-window";
 
+  dmenuFzf = ''${pkgs.fzf}/bin/fzf --margin=4,8,4,10 --ansi --exact --delimiter="(" --nth=1'';
+
   windowTitleToClass = v: with builtins;
     concatStringsSep "-" (map pkgs.lib.toLower (filter isString (split "[[:space:]]+" v)));
 
@@ -18,7 +20,7 @@ let
     '';
 
     homeManagerSwitch = ''
-      home-manager switch || read -p "Continue..."
+      home-manager switch || read -n 1 -p "Continue..."
     '';
 
     dmenu = ''
@@ -39,7 +41,6 @@ let
         reduceDesktops = fn: concatStringsSep "\n" (map fn (attrValues config.lib.mime.desktops));
         dmenuLine = v: "${v.name} (${v.generic})";
         caseLine = v: ''"${v.name}"*) (${coreutils}/bin/nohup ${v.exec} & disown);;'';
-        fzfOpts = ''--margin=4,8,0,10 --ansi --exact --delimiter="(" --nth=1'';
       in
       ''
         openit() {
@@ -49,11 +50,32 @@ let
             *) exit 0
           esac
         }
-        echo "${reduceDesktops dmenuLine}" | ${fzf}/bin/fzf ${fzfOpts} | openit
+        echo "${reduceDesktops dmenuLine}" | ${dmenuFzf} | openit
       '';
 
     copyPassword = ''
-      ${findutils}/bin/find -type f -name '*.gpg' -printf '%P\n' | ${fzf}/bin/fzf ${fzfOpts} | copyit
+      shopt -s nullglob globstar
+
+      typeit=0
+      if [[ $1 == "--type" ]]; then
+        typeit=1
+        shift
+      fi
+
+      prefix=${config.lib.sessionVariables.PASSWORD_STORE_DIR}
+      password_files=( "$prefix"/**/*.gpg )
+      password_files=( "''${password_files[@]#"$prefix"/}" )
+      password_files=( "''${password_files[@]%.gpg}" )
+      password=$(printf '%s\n' "''${password_files[@]}" | ${dmenuFzf} "$@")
+
+      [[ -n $password ]] || exit
+
+      if [[ $typeit -eq 0 ]]; then
+        ${pass}/bin/pass show -c "$password" 2>/dev/null
+      else
+        ${pass}/bin/pass show "$password" | { IFS= read -r pass; printf %s "$pass"; } |
+          ${xdotool}/bin/xdotool type --clearmodifiers --file -
+      fi
     '';
   });
 
@@ -148,29 +170,32 @@ in
     config = rec {
       fonts = [ "UbuntuCondensed Nerd Font 10" ];
 
-      colors = with config.lib.colors.palette; rec {
-        focused = rec {
-          background = base6.color;
-          border = background;
-          childBorder = background;
-          indicator = childBorder;
-          text = black.color;
-        };
+      colors =
+        with config.lib.colors.palette;
+        with config.lib.colors.theme;
+        rec {
+          focused = rec {
+            background = default.fg;
+            text = default.bg;
+            border = background;
+            childBorder = background;
+            indicator = childBorder;
+          };
 
-        unfocused = rec {
-          background = base3.color;
-          border = base4.color;
-          childBorder = background;
-          indicator = childBorder;
-          text = base6.color;
-        };
+          unfocused = rec {
+            background = base3;
+            text = base6;
+            border = base4;
+            childBorder = background;
+            indicator = childBorder;
+          };
 
-        # For example: Tab color when it has splits
-        focusedInactive = focused // {
-          childBorder = unfocused.childBorder;
-          indicator = unfocused.indicator;
+          # For example: Tab color when it has splits
+          focusedInactive = focused // {
+            childBorder = unfocused.childBorder;
+            indicator = unfocused.indicator;
+          };
         };
-      };
 
       bars = [
         {
@@ -182,9 +207,9 @@ in
             with config.lib.colors.palette;
             with config.lib.colors.theme;
             {
-              background = bg.color;
-              statusline = white.color;
-              separator = base4.color;
+              background = default.bg;
+              statusline = default.fg;
+              separator = comment.fg;
             };
         }
       ];
@@ -192,6 +217,7 @@ in
       modes = builtins.mapAttrs mkModeBindings {
         dmenu = {
           o = dmenuBinding { title = "Desktop Files"; script = scripts.runDesktopFile; };
+          p = dmenuBinding { title = "Passwords"; script = scripts.copyPassword; };
         };
       };
 
@@ -208,6 +234,14 @@ in
       for_window [class=${dmenuWindowClass}*] floating enable
 
       for_window [class=home-manager-switch] floating enable
+
+      for_window [window_role=GtkFileChooserDialog] floating enable
+      for_window [window_role=GtkFileChooserDialog] resize set 2048 1536
+      for_window [window_role=GtkFileChooserDialog] move position center
+
+      for_window [window_role=pop-up] floating enable
+      for_window [window_role=pop-up] resize set 2048 1536 
+      for_window [window_role=pop-up] move position center
     '';
   };
 

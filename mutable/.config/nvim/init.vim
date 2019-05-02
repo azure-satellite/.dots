@@ -11,7 +11,7 @@ endfun
 " Options {{{1
 
 " Has to come before any <leader> mappings
-let mapleader=' '
+let mapleader='\'
 " Defaults for all the files
 set tabstop=2
 set shiftwidth=2
@@ -102,7 +102,7 @@ set suffixes+=.info,.aux,.ind
 set suffixes+=.blg,.brf,.cb
 set suffixes+=.idx,.ilg,.inx
 set suffixes+=.out,.toc,.dvi
-set showtabline=2
+set showtabline=0
 set laststatus=2
 " No awful vertical lines in splits
 exec 'set fillchars+=vert:\ '
@@ -144,15 +144,12 @@ let &tabline='%!core#tabline()'
 " too hacky to customize the colors of the statusline. It's possible, but beware
 " that it comes with despair and performance problems. I don't know about you,
 " future self, but I like performance, and dislike despair.
-let &statusline = '▏'
-let &statusline .= '%{core#statusline_branch()}%f '
-let &statusline .= '%{core#statusline_filesize()}'
-let &statusline .= '%2*▏%{core#statusline_flags()}'
+let &statusline = ' %f '
+let &statusline .= '%{core#statusline_flags()}'
 let &statusline .= '%='
 let &statusline .= '%{&ft} '
 let &statusline .= '▏%{&ff} '
-let &statusline .= '%3*%{core#statusline_linter()}'
-let &statusline .= '%0*▏☰ %l/%c '
+let &statusline .= '%{core#statusline_linter()}'
 let &statusline .= '▏%p%% '
 
 " Commands {{{1
@@ -205,13 +202,15 @@ nnoremap Y y$
 " Expand %% to directory of current file in command-line mode
 cnoremap %% <C-R>=fnameescape(expand("%:~:h"))<CR>
 " Toggle syntax
-nnoremap <expr> <silent> yoy ':set syntax=' . (&syntax == 'ON' ? 'OFF' : 'ON') . '<CR>'
+nnoremap <expr> <silent> yoy '<cmd>set syntax=' . (&syntax == 'ON' ? 'OFF' : 'ON') . '<cr>'
+" Toggle tabline
+nnoremap <expr> <silent> yot '<cmd>set showtabline=' . (&showtabline != 2 ? 2 : 0) . '<cr>'
 " Toggle Quickfix/LocList
-nnoremap <expr> <leader>q (get(getqflist({'winid': 1}), 'winid') != 0? ':cclose' : ':botright copen') . '<CR>:wincmd p<CR>'
-nnoremap <expr> <leader>w (get(getloclist(0, {'winid': 1}), 'winid') != 0? ':lclose' : ':lopen') . '<CR>:wincmd p<CR>'
+nnoremap <expr> <silent> <leader>q (get(getqflist({'winid': 1}), 'winid') != 0? ':cclose' : ':botright copen') . '<cr>:wincmd p<cr>'
+nnoremap <expr> <silent> <leader>w (get(getloclist(0, {'winid': 1}), 'winid') != 0? ':lclose' : ':lopen') . '<CR>:wincmd p<cr>'
 " Make * and # work on visual mode too
-xnoremap * :<C-u>call core#vsetsearch('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-u>call core#vsetsearch('?')<CR>?<C-R>=@/<CR><CR>
+xnoremap * <cmd>call core#vsetsearch('/')<cr>/<c-r>=@/<cr><cr>
+xnoremap # <cmd>call core#vsetsearch('?')<cr>?<c-r>=@/<cr><cr>
 
 " Autocommands {{{1
 
@@ -219,15 +218,14 @@ augroup init.vim " {{{2
     au!
     " https://github.com/neovim/neovim/issues/1936
     au FocusGained * :checktime
-    au ColorScheme * call core#colors()
     au FileType * set syntax=ON
     " au FilterWritePre * if &diff | set syntax=OFF | endif
     au VimLeavePre * call core#tabdo('cclose')
     au VimLeavePre * call core#tabdo('lclose')
-    au CmdwinEnter * map <silent> <buffer> <C-G> <C-C><C-C>
-    au BufRead * let b:tracked = 0 | call jobstart(
-    \ 'git ls-files --error-unmatch '.shellescape(expand('%:p')),
-    \ {'on_exit': function({ bnum, jobid, code, type -> setbufvar(bnum, 'tracked', !code) }, [bufnr('%')])})
+    au CmdwinEnter * map <silent> <buffer> <c-g> <c-c><c-c>
+    " au BufRead * let b:tracked = 0 | call jobstart(
+    " \ 'git ls-files --error-unmatch '.shellescape(expand('%:p')),
+    " \ {'on_exit': function({ bnum, jobid, code, type -> setbufvar(bnum, 'tracked', !code) }, [bufnr('%')])})
 augroup END
 
 " Plugins {{{1
@@ -355,7 +353,7 @@ Plug 'https://github.com/tpope/vim-rhubarb' " {{{3
 
 Plug 'https://github.com/whiteinge/diffconflicts' " {{{3
 
-Plug 'https://github.com/rbgrouleff/bclose.vim' | Plug 'https://github.com/iberianpig/tig-explorer.vim' " {{{3
+" Plug 'https://github.com/rbgrouleff/bclose.vim' | Plug 'https://github.com/iberianpig/tig-explorer.vim' " {{{3
 
 Plug '~/Code/src/mine/treecare'
 nnoremap <silent> - :Treecare<CR>
@@ -367,7 +365,7 @@ au FileType treecare call s:treecare()
 " Integrations {{{2
 
 Plug 'https://github.com/w0rp/ale' " {{{3
-hi! link ALEError ErrorMsg
+hi! link ALEError Error
 hi! link ALEWarning WarningMsg
 hi! link ALEVirtualTextError Error
 
@@ -451,19 +449,19 @@ function! s:fugitive_gfiles()
 endfunction
 
 let g:fzf_layout = {'down': '~30%'}
-nnoremap <silent> <leader>, <cmd>History:<CR>
-nnoremap <silent> <leader>/ <cmd>History/<CR>
-nnoremap <silent> <leader>fc <cmd>Commands!<CR>
-nnoremap <silent> <leader>fh <cmd>Helptags!<CR>
-nnoremap <silent> <leader>fi <cmd>History<CR>
-nnoremap <silent> <leader>fl <cmd>BLines!<CR>
-nnoremap <silent> <leader>fw <cmd>Windows<CR>
-nnoremap <silent> <leader>fb <cmd>Buffers<CR>
-nnoremap <silent> <leader>ff <cmd>exec 'Files ' . fnamemodify(expand('%'), ':~:h')<CR>
-nnoremap <silent> <leader>fmm <cmd>Commits!<CR>
-nnoremap <silent> <leader>fmb <cmd>BCommits!<CR>
-nnoremap <silent> <leader>fs <cmd>Snippets<CR>
-nnoremap <silent> <leader>fg <cmd>call <sid>fugitive_gfiles()<cr>
+nnoremap <silent> <space>, <cmd>History:<CR>
+nnoremap <silent> <space>/ <cmd>History/<CR>
+nnoremap <silent> <space>c <cmd>Commands!<CR>
+nnoremap <silent> <space>h <cmd>Helptags!<CR>
+nnoremap <silent> <space>i <cmd>History<CR>
+nnoremap <silent> <space>l <cmd>BLines!<CR>
+nnoremap <silent> <space>w <cmd>Windows<CR>
+nnoremap <silent> <space>b <cmd>Buffers<CR>
+nnoremap <silent> <space>f <cmd>exec 'Files ' . fnamemodify(expand('%'), ':~:h')<CR>
+nnoremap <silent> <space>mm <cmd>Commits!<CR>
+nnoremap <silent> <space>mb <cmd>BCommits!<CR>
+nnoremap <silent> <space>s <cmd>Snippets<CR>
+nnoremap <silent> <space>g <cmd>call <sid>fugitive_gfiles()<cr>
 hi! link fzf1 StatusLine
 hi! link fzf2 StatusLineNC
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
@@ -517,16 +515,12 @@ Plug 'https://github.com/editorconfig/editorconfig-vim' " {{{3
 
 " Colors {{{2
 
-Plug 'https://github.com/lifepillar/vim-solarized8' " {{{3
-let g:solarized_visibility = "high"
-let g:solarized_term_italics = 0
+Plug 'https://github.com/smallwat3r/vim-mono-sw' " {{{3
+Plug 'https://github.com/zaki/zazen' " {{{3
+Plug 'https://github.com/ryanpcmcquen/true-monochrome_vim' " {{{3
+Plug 'https://github.com/andreasvc/vim-256noir' " {{{3
 
-Plug 'https://github.com/smallwat3r/vim-mono-sw'
-Plug 'https://github.com/zaki/zazen'
-Plug 'https://github.com/ryanpcmcquen/true-monochrome_vim'
-Plug 'https://github.com/andreasvc/vim-256noir'
-Plug 'https://github.com/whatyouhide/vim-gotham'
-Plug 'https://github.com/chrisbra/Colorizer'
+Plug 'https://github.com/chrisbra/Colorizer' " {{{3
 nmap <leader>tc <cmd>ColorToggle<CR>
 let g:colorizer_colornames = 0
 let g:colorizer_disable_bufleave = 1
@@ -610,7 +604,7 @@ autocmd! FileType dirvish call s:filetype_dirvish()
 " Buffer's directory
 nmap <bs> <plug>(dirvish_up)
 " Vim's cwd
-nnoremap <silent> <leader><bs> <cmd>Dirvish<cr>
+nnoremap <silent> <space><bs> <cmd>Dirvish<cr>
 " Buffer's repo
 nnoremap <silent> g<bs> <cmd>exe 'Dirvish ' . fnamemodify(b:git_dir, ':h')<cr>
 let g:dirvish_mode = 2
