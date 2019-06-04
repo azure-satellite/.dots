@@ -22,23 +22,28 @@ with pkgs;
   home = {
     packages = [
       # Terminal
+
+      (neovim.override { viAlias = true; vimAlias = true; })
       ffmpeg
-      iosevka
       inotify-tools # required by i3blocks mail script
       iw # required by i3blocks networking script
       libnotify
       mpv
+      pandoc
       pass
       python
       python37
+      python37Packages.subliminal
       ripgrep
       st
       tig
       tree
       universal-ctags
-      (neovim.override { viAlias = true; vimAlias = true; })
+      xdotool
+      youtube-dl
 
       # GUI
+
       calibre
       imagemagick
       slack
@@ -129,6 +134,8 @@ with pkgs;
       path = "${config.lib.paths.userSrc}/home-manager";
     };
 
+    emacs.enable = true;
+
     feh.enable = true;
 
     zathura = {
@@ -154,6 +161,7 @@ with pkgs;
   };
 
   services = {
+    emacs.enable = true;
     gpg-agent = let ttl = 60480000; in {
       enable = true;
       enableSshSupport = true;
@@ -173,7 +181,7 @@ with pkgs;
       {
         "st.termname" = "st-256color";
         "st.borderpx" = 0;
-        "st.font" = "monospace:pixelsize=36";
+        "st.font" = "monospace:pixelsize=37";
         "st.color0" = black;
         "st.color1" = red;
         "st.color2" = green;

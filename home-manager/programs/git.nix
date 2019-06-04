@@ -12,7 +12,6 @@ let
 
   diffconflicts = {
     cmd = ''${neovim}/bin/nvim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
-    keepBackup = false;
     trustExitCode = true;
   };
 
@@ -101,8 +100,8 @@ in
       push = { default = "simple"; };
       diff = { tool = "vimdiff"; };
       merge = { tool = "vimdiff"; };
-      difftool = { prompt = false; };
-      mergetool = { prompt = true; };
+      difftool = { prompt = false; keepBackup = false; };
+      mergetool = { prompt = true; keepBackup = false; };
       "difftool \"vimdiff\"" = vimdiff;
       "mergetool \"vimdiff\"" = vimdiff;
       "difftool \"diffconflicts\"" = diffconflicts;

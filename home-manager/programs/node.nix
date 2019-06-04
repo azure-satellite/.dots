@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = [ pkgs.nodejs ];
+  home.packages = with pkgs; [ nodejs-11_x yarn ];
 
   lib.sessionVariables = with config.home; rec {
     # Node/npm

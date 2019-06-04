@@ -16,10 +16,10 @@ let
     TabLine = StatusLineNC;
     TabLineFill = TabLine;
 
-    DiffAdd = { fg = green; } // bold;
+    DiffAdd = { fg = "#859900"; } // bold;
     DiffChange = {};
-    DiffDelete = { fg = red; } // bold;
-    DiffText = bold;
+    DiffDelete = { fg = "#dc322f"; } // bold;
+    DiffText = { fg = "#268bd2"; } // bold;
 
     SpellBad = { fg = base7; bg = red; };
     SpellCap = { fg = base7; bg = blue; };
@@ -105,7 +105,7 @@ let
     SpecialChar = Special;
     Tag = Special;
     Delimiter = String;
-    SpecialComment = Special;
+    SpecialComment = Comment;
     Debug = Special;
 
     Underlined = { fg = yellow; } // underline; # text that stands out, HTML links
@@ -159,6 +159,7 @@ let
     jsDestructuringAssignment = jsDestructuringBlock;
     jsDestructuringBraces = jsBraces;
     jsDestructuringNoise = jsDestructuringBraces;
+    jsDestructuringPropertyValue = jsVariableDef;
 
     jsModuleKeyword = jsVariableDef;
     jsModuleBraces = jsDestructuringBraces;
@@ -195,6 +196,12 @@ in
     if exists('syntax_on') | syntax reset | endif
     set background=dark
     let g:colors_name = 'gotham'
+    let g:palette = { ${
+      config.lib.functions.reduceAttrsToString
+      ","
+      (name: color: "'${name}': '${color}'")
+      palette
+    } }
     ${pkgs.lib.concatImapStringsSep "\n"
       (i: v: ''let g:terminal_color_${toString (i - 1)} = "${v}"'') terminalColors}
     ${builtins.concatStringsSep "\n" (pkgs.lib.mapAttrsToList hidef higroups)}

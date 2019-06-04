@@ -154,12 +154,14 @@ let &statusline .= '▏%p%% '
 
 " Commands {{{1
 
+command! Vimrc vs $MYVIMRC
 command! -nargs=+ Cabbrev call core#cabbrev(<f-args>)
 command! -nargs=+ -complete=command Windo call core#windo(<q-args>)
 command! -nargs=+ -complete=command Bufdo call core#bufdo(<q-args>)
 command! -nargs=+ -complete=command Tabdo call core#tabdo(<q-args>)
 command! -nargs=+ -complete=command Argdo call core#argdo(<q-args>)
 
+Cabbrev vimr[c] Vimrc
 Cabbrev man Man
 Cabbrev w up
 Cabbrev bufdo Bufdo
@@ -209,8 +211,8 @@ nnoremap <expr> <silent> yot '<cmd>set showtabline=' . (&showtabline != 2 ? 2 : 
 nnoremap <expr> <silent> <leader>q (get(getqflist({'winid': 1}), 'winid') != 0? ':cclose' : ':botright copen') . '<cr>:wincmd p<cr>'
 nnoremap <expr> <silent> <leader>w (get(getloclist(0, {'winid': 1}), 'winid') != 0? ':lclose' : ':lopen') . '<CR>:wincmd p<cr>'
 " Make * and # work on visual mode too
-xnoremap * <cmd>call core#vsetsearch('/')<cr>/<c-r>=@/<cr><cr>
-xnoremap # <cmd>call core#vsetsearch('?')<cr>?<c-r>=@/<cr><cr>
+xnoremap * :call core#vsetsearch('/')<cr>/<c-r>=@/<cr><cr>
+xnoremap # :call core#vsetsearch('?')<cr>?<c-r>=@/<cr><cr>
 
 " Autocommands {{{1
 
@@ -353,15 +355,6 @@ Plug 'https://github.com/tpope/vim-rhubarb' " {{{3
 
 Plug 'https://github.com/whiteinge/diffconflicts' " {{{3
 
-" Plug 'https://github.com/rbgrouleff/bclose.vim' | Plug 'https://github.com/iberianpig/tig-explorer.vim' " {{{3
-
-Plug '~/Code/src/mine/treecare'
-nnoremap <silent> - :Treecare<CR>
-function! s:treecare()
-    nnoremap <nowait><buffer><expr> co ':Git co ' . getline('.')
-endfunction
-au FileType treecare call s:treecare()
-
 " Integrations {{{2
 
 Plug 'https://github.com/w0rp/ale' " {{{3
@@ -422,6 +415,29 @@ nmap <silent> [R <plug>(ale_first)
 nmap <silent> ]R <plug>(ale_last)
 autocmd User ALELintPre  hi User3 guibg=#cb4b16 | redrawstatus
 autocmd User ALELintPost hi User3 guibg=#839496 | redrawstatus
+
+" Plug 'https://github.com/neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " {{{3
+" " This is actually an operator
+" vmap <silent> = <plug>(coc-format-selected)
+" nmap <silent> = <plug>(coc-format-selected)
+" nmap <silent> == <plug>(coc-format)
+" nmap <leader>d1 <plug>(coc-definition)
+" nmap <leader>d2 <plug>(coc-declaration)
+" nmap <leader>d3 <plug>(coc-implementation)
+" nmap <leader>d4 <plug>(coc-type-definition)
+" nmap <leader>li <plug>(coc-diagnostic-info)
+" nmap <leader>lr <plug>(coc-rename)
+" nmap <leader>la <plug>(coc-references)
+" nnoremap <leader>lh <cmd>call CocAction('doHover')<cr>
+" nnoremap [r <plug>(coc-diagnostic-prev)
+" nnoremap ]r <plug>(coc-diagnostic-next)
+" function! s:coc()
+"     hi! link CocErrorHighlight ErrorMsg
+"     hi! link CocWarningHighlight WarningMsg
+"     exe 'hi CocInfoHighlight guifg=yellow'
+"     exe 'hi CocHintHighlight guifg=blue'
+" endfunction
+" au VimEnter * call s:coc()
 
 Plug 'https://github.com/junegunn/fzf' | Plug 'https://github.com/junegunn/fzf.vim' " {{{3
 function! s:fzf_statusline()
@@ -531,7 +547,7 @@ Plug 'https://github.com/tpope/vim-characterize' " {{{3
 nmap gz <plug>(characterize)
 
 Plug 'https://github.com/tpope/vim-unimpaired' " {{{3
-for m in [ '[l', '[L', ']l', ']L']
+for m in [ '[l', '[L', ']l', ']L', '=p', '=P', '=o', '=O', '=op']
     exec 'silent! unmap '.m
 endfor
 nmap [w <plug>unimpairedLPrevious
