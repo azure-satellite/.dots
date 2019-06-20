@@ -134,8 +134,6 @@ with pkgs;
       path = "${config.lib.paths.userSrc}/home-manager";
     };
 
-    emacs.enable = true;
-
     feh.enable = true;
 
     zathura = {
@@ -161,7 +159,6 @@ with pkgs;
   };
 
   services = {
-    emacs.enable = true;
     gpg-agent = let ttl = 60480000; in {
       enable = true;
       enableSshSupport = true;

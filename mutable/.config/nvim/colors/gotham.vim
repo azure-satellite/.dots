@@ -1,1 +1,0 @@
-/nix/store/gik41rrfqqjf05dqp2zhmshqxhw3p8gk-home-manager-files/.config/nvim/colors/gotham.vim

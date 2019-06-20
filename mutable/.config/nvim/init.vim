@@ -446,38 +446,18 @@ function! s:fzf_statusline()
         setlocal statusline+=\ %{b:fzf.name}▕%#fzf2#
     endif
 endfunction
-" A version of the default :GFiles that uses fugitive's b:git_dir first and then
-" falls back to :GFiles, with no arguments for :GFiles
-function! s:edit_gfile(file)
-    exe 'edit ' . fnamemodify(b:git_dir . '/../' . a:file, ':~:.')
-endfunction
-function! s:fugitive_gfiles()
-  if exists('b:git_dir')
-    call fzf#run(fzf#wrap('gfiles', {
-    \ 'source':  'git ls-files | uniq',
-    \ 'sink': function('s:edit_gfile'),
-    \ 'dir': b:git_dir,
-    \ 'options': '--prompt "GitFiles> "'
-    \}))
-  else
-    GFiles
-  endif
-endfunction
 
 let g:fzf_layout = {'down': '~30%'}
-nnoremap <silent> <space>, <cmd>History:<CR>
-nnoremap <silent> <space>/ <cmd>History/<CR>
-nnoremap <silent> <space>c <cmd>Commands!<CR>
-nnoremap <silent> <space>h <cmd>Helptags!<CR>
-nnoremap <silent> <space>i <cmd>History<CR>
-nnoremap <silent> <space>l <cmd>BLines!<CR>
-nnoremap <silent> <space>w <cmd>Windows<CR>
-nnoremap <silent> <space>b <cmd>Buffers<CR>
-nnoremap <silent> <space>f <cmd>exec 'Files ' . fnamemodify(expand('%'), ':~:h')<CR>
-nnoremap <silent> <space>mm <cmd>Commits!<CR>
-nnoremap <silent> <space>mb <cmd>BCommits!<CR>
-nnoremap <silent> <space>s <cmd>Snippets<CR>
-nnoremap <silent> <space>g <cmd>call <sid>fugitive_gfiles()<cr>
+nnoremap <silent> <space>, <cmd>History:<cr>
+nnoremap <silent> <space>/ <cmd>History/<cr>
+nnoremap <silent> <space>c <cmd>Commands!<cr>
+nnoremap <silent> <space>h <cmd>Helptags!<cr>
+nnoremap <silent> <space>i <cmd>History<cr>
+nnoremap <silent> <space>l <cmd>BLines!<cr>
+nnoremap <silent> <space>w <cmd>Windows<cr>
+nnoremap <silent> <space>b <cmd>Buffers<cr>
+nnoremap <silent> <space>f <cmd>exec 'Files ' . fnamemodify(expand('%'), ':~:h')<cr>
+nnoremap <silent> <space>g <cmd>GLFiles<cr>
 hi! link fzf1 StatusLine
 hi! link fzf2 StatusLineNC
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
@@ -542,6 +522,28 @@ let g:colorizer_colornames = 0
 let g:colorizer_disable_bufleave = 1
 
 " Other {{{2
+
+Plug 'https://github.com/mhinz/vim-startify' " {{{3
+let g:startify_change_to_vcs_root = 1
+let g:startify_fortune_use_unicode = 1
+let g:startify_change_to_dir = 0
+let g:startify_lists = [
+\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+\ ]
+let g:startify_bookmarks = [
+\ '~/Documents/Notes/random.md',
+\ '~/Documents/Notes/todo.md',
+\ '~/Code/share/smartprocure/bid-search',
+\ '~/Code/share/smartprocure/contexture-react',
+\ '~/Code/share/smartprocure/contexture-client',
+\ '~/Code/share/smartprocure/contexture',
+\ '~/Code/share/smartprocure',
+\ '~/Code/src/mine/furnisher/home-manager',
+\ '~/Code/src/mine/furnisher/trello-clone',
+\ '~/.config/nvim/init.vim',
+\ ]
+autocmd User Startified setlocal buftype=nofile
+nnoremap <space>s <cmd>Startify<cr>
 
 Plug 'https://github.com/tpope/vim-characterize' " {{{3
 nmap gz <plug>(characterize)

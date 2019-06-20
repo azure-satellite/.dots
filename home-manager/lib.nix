@@ -116,7 +116,6 @@ let
     SQLITE_HISTORY = "${HOME}/.cache/sqlite_history";
     GTK2_RC_FILES = "${HOME}/.config/gtk-2.0/gtkrc";
     DOCKER_CONFIG = "${HOME}/.config/docker";
-    SPACEMACSDIR = "${HOME}/.config/spacemacs";
   };
 in
 

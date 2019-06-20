@@ -8,7 +8,7 @@ set show-changes = false
 set commit-order = topo
 set ignore-case = smart-case
 set editor-line-number = true
-set refresh-mode = manual
+set refresh-mode = after-command
 
 set main-view-date = display=custom
 set main-view-date-format = "%F %l:%M %p"
@@ -164,6 +164,7 @@ bind main F none
 bind main C none
 
 bind main G move-last-line
+bind main C !git checkout %(commit)
 
 # Diff bindings {{{2
 
