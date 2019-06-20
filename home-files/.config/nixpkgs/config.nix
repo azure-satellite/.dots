@@ -3,7 +3,7 @@
   packageOverrides = pkgs: rec {
     st = pkgs.st.overrideAttrs (old: {
       name = "st-compiled";
-      src = ~/Code/src/suckless/st;
+      src = ~/Code/suckless/st;
       buildInputs = old.buildInputs ++ [ pkgs.xorg.libXcursor ];
       # src = fetchFromGitHub {
       #   owner = "stellarhoof";

@@ -49,7 +49,7 @@ let
   paths = rec {
     userBin = "${HOME}/.nix-profile/bin";
     systemBin = "/run/current-system/sw/bin";
-    userSrc = "${HOME}/Code/src";
+    userSrc = "${HOME}/Code";
   };
 
   # These will also be available to programs who don't get started from a

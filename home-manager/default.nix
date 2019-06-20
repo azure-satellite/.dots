@@ -50,7 +50,6 @@ with pkgs;
       transmission-gtk
       firefox
       chromium
-      vscode
       mcomix
       gtk3
     ];

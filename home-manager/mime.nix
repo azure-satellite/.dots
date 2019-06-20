@@ -29,6 +29,15 @@ let
       # MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
     };
 
+    # emacs = {
+    #   name = "Emacs (Client)";
+    #   generic = "Text Editor";
+    #   comment = "Open source Lisp-based text editor";
+    #   exec = "emacsclient --create-frame --alternate-editor=emacs";
+    #   params = "%F";
+    #   # MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+    # };
+
     chromium = {
       name = "Chromium";
       generic = "Web browser";
@@ -82,14 +91,14 @@ let
       # MimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document;text/html;application/x-cbc;application/ereader;application/oebps-package+xml;image/vnd.djvu;application/x-sony-bbeb;application/vnd.ms-word.document.macroenabled.12;text/rtf;text/x-markdown;application/pdf;application/x-cbz;application/x-mobipocket-ebook;application/x-cbr;application/x-mobi8-ebook;text/fb2+xml;application/vnd.oasis.opendocument.text;application/epub+zip;text/plain;application/xhtml+xml
     };
 
-    vsCode = {
-      name = "VSCode";
-      generic = "Text editor";
-      comment = "Open source text editor from Microsoft";
-      exec = "${vscode}/bin/code";
-      params = "%F";
-      startupNotify = true;
-    };
+    # vsCode = {
+    #   name = "VSCode";
+    #   generic = "Text editor";
+    #   comment = "Open source text editor from Microsoft";
+    #   exec = "${vscode}/bin/code";
+    #   params = "%F";
+    #   startupNotify = true;
+    # };
 
     robo3t = {
       name = "Robo3T";

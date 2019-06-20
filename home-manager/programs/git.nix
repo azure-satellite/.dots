@@ -85,7 +85,7 @@ in
     ];
 
     includes = [{
-      condition = "gitdir:${config.home.homeDirectory}/Code/src/smartprocure/";
+      condition = "gitdir:${config.lib.paths.userSrc}/smartprocure/";
       contents = {
         user = with config.accounts.email.accounts.smartprocure; {
           email = address;

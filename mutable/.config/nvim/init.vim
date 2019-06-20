@@ -531,16 +531,15 @@ let g:startify_lists = [
 \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
 \ ]
 let g:startify_bookmarks = [
-\ '~/Documents/Notes/random.md',
-\ '~/Documents/Notes/todo.md',
-\ '~/Code/share/smartprocure/bid-search',
-\ '~/Code/share/smartprocure/contexture-react',
-\ '~/Code/share/smartprocure/contexture-client',
-\ '~/Code/share/smartprocure/contexture',
-\ '~/Code/share/smartprocure',
-\ '~/Code/src/mine/furnisher/home-manager',
-\ '~/Code/src/mine/furnisher/trello-clone',
-\ '~/.config/nvim/init.vim',
+\ '~/Notes/random.md',
+\ '~/Notes/todo.md',
+\ '~/Resources/smartprocure/bid-search',
+\ '~/Resources/smartprocure/contexture-react',
+\ '~/Resources/smartprocure/contexture-client',
+\ '~/Resources/smartprocure/contexture',
+\ '~/Resources/smartprocure',
+\ '~/Code/mine/furnisher/home-manager',
+\ '~/Code/mine/furnisher/trello-clone',
 \ ]
 autocmd User Startified setlocal buftype=nofile
 nnoremap <space>s <cmd>Startify<cr>
@@ -611,7 +610,7 @@ let g:undotree_SplitWidth = 40
 nnoremap <silent> <leader>tu :UndotreeToggle<CR>
 
 Plug 'https://github.com/AndrewRadev/linediff.vim' " {{{3
-xnoremap <silent> cod :Linediff<CR>
+xnoremap <silent> <leader>d :Linediff<CR>
 
 Plug 'https://github.com/justinmk/vim-dirvish' " {{{3
 function! s:filetype_dirvish()
