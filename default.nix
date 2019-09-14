@@ -3,19 +3,19 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./home-manager ];
+  imports = [ ./user/home-manager ];
 
-  nixpkgs.config = import ./home-files/.config/nixpkgs/config.nix;
+  nixpkgs.config = import ./user/home-files/.config/nixpkgs/config.nix;
 
-  home.file.".local" = { source = ./home-files/.local; recursive = true; };
-  home.file.".config" = { source = ./home-files/.config; recursive = true; };
+  home.file.".local" = { source = ./user/home-files/.local; recursive = true; };
+  home.file.".config" = { source = ./user/home-files/.config; recursive = true; };
 
   # https://github.com/rycee/home-manager/issues/589
-  # TODO: Figure out why links are being created inside ./mutable/*
   home.activation.linkMyFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
-    ln -sf ${toString ./mutable/.config/nvim} ~/.config/
-    ln -sf ${toString ./mutable/.config/Code/User} ~/.config/Code
-    ln -sf ${toString ./mutable/.local/share/pass} ~/.local/share/
+    ln -sf ${toString ./user/mutable/.config/nvim} ~/.config/
+    ln -sf ${toString ./user/mutable/.config/Code/User} ~/.config/Code
+    ln -sf ${toString ./user/mutable/.local/share/pass} ~/.local/share/
+    sudo ln -sf ${toString ./system} /etc/nixos
   '';
 }

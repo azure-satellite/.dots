@@ -13,9 +13,10 @@ home-manager -f $HOME/garage/default.nix switch
 
 ## What's in the box
 
-- Nix furniture lives at `./home-manager`.
-- Furniture at `./home-files` gets copied to the Nix store before being linked from `$HOME`.
-- Furniture at `./mutable` is static. Still linked from `$HOME` though.
+User configuration lives under `user` and system configuration under `system`
+- `./user/home-manager`: files compiled by home-manager
+- `./user/home-files`: files are copied to the Nix store and linked from `$HOME`
+- `./user/mutable` files are linked from `$HOME`
 
 ## TODO
 
@@ -37,7 +38,7 @@ home-manager -f $HOME/garage/default.nix switch
 - See what we can salvage from this guy:
 
 ```
-./mutable/.local/share/pass/install.sh
+./user/mutable/.local/share/pass/install.sh
 
 mkdir -p ~/.ssh
 pass ssh/github.com > ~/.ssh/github.com

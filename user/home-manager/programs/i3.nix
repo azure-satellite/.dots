@@ -164,12 +164,11 @@ in
     package = pkgs.i3-gaps;
 
     config = rec {
-      fonts = [ "UbuntuCondensed Nerd Font 10" ];
+      fonts = [ "serif 9" ];
 
       gaps = {
         inner = 7;
         smartGaps = true;
-        # smartBorders = "on";
       };
 
       colors =

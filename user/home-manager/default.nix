@@ -123,7 +123,7 @@ with pkgs;
     enable = true;
     # NOTE: The icon/theme name are not arbitrary. Check under
     # ~/.nix-profile/share/{icons,themes} for possible names
-    font.name = "UbuntuCondensed Nerd Font 10";
+    font.name = "serif 9";
     theme.name = "Mojave-light-solid";
     iconTheme.name = "Papirus-Light";
     gtk3.extraConfig = {
@@ -206,7 +206,7 @@ with pkgs;
         "*.alpha" = "1.0";
         "st.termname" = "st-256color";
         "st.borderpx" = 0;
-        "st.font" = "monospace:pixelsize=37";
+        "st.font" = "monospace:pixelsize=35";
         "st.color0" = black;
         "st.color1" = red;
         "st.color2" = green;
