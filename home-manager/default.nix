@@ -15,6 +15,8 @@ with pkgs;
     ./programs/fzf.nix
     ./programs/direnv.nix
     ./programs/nvim.nix
+    ./programs/firefox.nix
+    ./programs/polybar.nix
   ];
 
   manual.html.enable = true;
@@ -22,13 +24,11 @@ with pkgs;
   home = {
     packages = [
       # Terminal
-
       (neovim.override { viAlias = true; vimAlias = true; })
       ffmpeg
       inotify-tools # required by i3blocks mail script
       iw # required by i3blocks networking script
       libnotify
-      mpv
       pandoc
       pass
       python
@@ -41,17 +41,43 @@ with pkgs;
       universal-ctags
       xdotool
       youtube-dl
+      unrar
 
       # GUI
-
       calibre
+      chromium
       imagemagick
+      mcomix
       slack
       transmission-gtk
-      firefox
-      chromium
-      mcomix
-      gtk3
+      # torbrowser
+      vscode
+
+      # GNOME
+      gnome3.gnome-disk-utility
+      gnome3.nautilus
+      peek
+      gucharmap
+      gnome-recipes
+      dfeet
+
+      # Others
+      gnome-themes-extra # To stop GNOME complaining of missing themes
+      # arc-icon-theme
+      # numix-icon-theme
+      # numix-icon-theme-square
+      # numix-icon-theme-circle
+      # pantheon.elementary-icon-theme
+      # elementary-xfce-icon-theme
+      papirus-icon-theme
+      # tango-icon-theme
+      # adapta-gtk-theme
+      mojave-gtk-theme
+      # sierra-gtk-theme
+      # numix-gtk-theme
+      # paper-gtk-theme
+      # pantheon.elementary-gtk-theme
+      qgnomeplatform
     ];
 
     sessionVariables = config.lib.sessionVariables;
@@ -61,17 +87,6 @@ with pkgs;
     enable = true;
 
     configFile = {
-      "mpv/mpv.conf".text = ''
-        # Enable hardware acceleration. See
-        # https://nixos.wiki/wiki/Accelerated_Video_Playback
-        vo=gpu
-        hwdec=vaapi
-        hwdec-codecs=all
-        # https://github.com/mpv-player/mpv/issues/4241
-        ytdl-format=bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best
-        # Prevent harmless warnings/errors when using hardware decoding
-        msg-level=vo=fatal
-      '';
     };
   };
 
@@ -83,6 +98,10 @@ with pkgs;
       name = "Vanilla-DMZ";
       size = 64;
     };
+
+    initExtra = ''
+      [ -f ${config.home.homeDirectory}/.fehbg ] && ${config.home.homeDirectory}/.fehbg &
+      '';
 
     # Written to ~/.xprofile
     # We need to export variables here as opposed to lib.sessionVariables
@@ -104,17 +123,9 @@ with pkgs;
     enable = true;
     # NOTE: The icon/theme name are not arbitrary. Check under
     # ~/.nix-profile/share/{icons,themes} for possible names
-    iconTheme = {
-      name = "deepin";
-      package = deepin.deepin-icon-theme;
-    };
-    theme = {
-      name = "deepin";
-      package = deepin.deepin-gtk-theme;
-    };
-    font = {
-      name = "UbuntuCondensed Nerd Font";
-    };
+    font.name = "UbuntuCondensed Nerd Font 10";
+    theme.name = "Mojave-light-solid";
+    iconTheme.name = "Papirus-Light";
     gtk3.extraConfig = {
       "gtk-enable-animations" = false;
       "gtk-enable-event-sounds" = false;
@@ -124,7 +135,7 @@ with pkgs;
 
   qt = {
     enable = true;
-    platformTheme = "gtk";
+    platformTheme = "gnome";
   };
 
   programs = {
@@ -143,6 +154,20 @@ with pkgs;
       '';
     };
 
+    mpv = {
+      enable = true;
+      config = {
+        # Enable hardware acceleration. See
+        # https://nixos.wiki/wiki/Accelerated_Video_Playback
+        vo = "gpu";
+        hwdec = "vaapi";
+        hwdec-codecs = "all";
+        # https://github.com/mpv-player/mpv/issues/4241
+        ytdl-format = "bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best";
+        # Prevent harmless warnings/errors when using hardware decoding
+        msg-level = "vo=fatal";
+      };
+    };
 
     bash = {
       enable = true;
@@ -158,6 +183,9 @@ with pkgs;
   };
 
   services = {
+    # compton = {
+    #   enable = true;
+    # };
     gpg-agent = let ttl = 60480000; in {
       enable = true;
       enableSshSupport = true;
@@ -175,6 +203,7 @@ with pkgs;
     with config.lib.colors.palette;
     with config.lib.colors.others;
       {
+        "*.alpha" = "1.0";
         "st.termname" = "st-256color";
         "st.borderpx" = 0;
         "st.font" = "monospace:pixelsize=37";
@@ -195,8 +224,8 @@ with pkgs;
         "st.color14" = base6;
         "st.color15" = base7;
         "st.cursorColor" = cursor.bg;
-        "st.foreground" = default.fg;
         "st.background" = default.bg;
+        "st.foreground" = default.fg;
       };
 }
 

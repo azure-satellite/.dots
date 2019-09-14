@@ -54,7 +54,7 @@ let
     Whitespace = NonText;
 
     # Others
-    Normal = theme.default;
+    Normal = { fg = theme.default.fg; };
     SpecialKey = { fg = base3; };
     MatchParen = Normal // { bg = orange; };
     Title = { fg = orange; };
@@ -79,7 +79,7 @@ let
     Boolean = Constant;
     Float = Number;
 
-    Identifier = { fg = cyan; };
+    Identifier = { fg = green; } // bold;
     Function = Identifier;
 
     Statement = Normal;
@@ -96,16 +96,16 @@ let
     Macro = {};
     PreCondit = PreProc;
 
-    Type = Normal; # int, long, char, etc.
-    StorageClass = Type; # static, register, volatile, let, etc.
-    Structure = Type; # struct, union, enum, etc.
-    Typedef = Type; # A typedef
+    Type = { fg = green; }; # int, long, char, etc.
+    StorageClass = Normal; # static, register, volatile, let, etc.
+    Structure = Normal; # struct, union, enum, etc.
+    Typedef = Normal; # A typedef
 
     Special = Normal;
     SpecialChar = Special;
     Tag = Special;
     Delimiter = String;
-    SpecialComment = Comment;
+    SpecialComment = { fg = violet; };
     Debug = Special;
 
     Underlined = { fg = yellow; } // underline; # text that stands out, HTML links
@@ -168,6 +168,18 @@ let
     # Markdown
     
     mkdHeading = Title; 
+
+    # Haskell
+
+    haskellType = Normal;
+    # haskellOperators = { fg = green; } // bold;
+    haskellLet = { fg = green; } // bold;
+    haskellDecl = { fg = magenta; };
+    HaskellDerive = haskellDecl;
+    haskellDeclKeyword = haskellDecl;
+    haskellSeparator = Normal;
+    haskellWhere = haskellDecl;
+    haskellKeyword = haskellDecl;
   };
 
   terminalColors = [

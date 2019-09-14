@@ -4,9 +4,11 @@
   programs = {
     direnv = {
       enable = true;
+      stdlib = ''
+        source ${./use_nix.sh}
+      '';
       config.whitelist.prefix = [
-        "${config.lib.paths.userSrc}/mine"
-        "${config.lib.paths.userSrc}/smartprocure"
+        config.lib.paths.userSrc
       ];
     };
     fish = {

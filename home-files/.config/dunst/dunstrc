@@ -182,7 +182,7 @@
     dmenu = /nix/store/y7s2lggywabg9ipclscib27fg3aqnc9g-dmenu-4.8/bin/dmenu -p dunst:
 
     # Browser for opening urls in context menu.
-    browser = /run/current-system/sw/bin/firefox -new-tab
+    browser = ~/.nix-profile/bin/firefox -new-tab
 
     # Always run rule-defined scripts, even if the notification is suppressed
     always_run_script = true

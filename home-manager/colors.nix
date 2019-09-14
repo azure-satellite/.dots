@@ -1,7 +1,7 @@
 let
 
   palettes = builtins.mapAttrs (k: v: v // { white = v.base7; black = v.base0; }) {
-    solarized = rec {
+    solarized = {
       red      = "#dc322f"; # ansi:1    vendor:red
       green    = "#859900"; # ansi:2    vendor:green
       yellow   = "#b58900"; # ansi:3    vendor:yellow
@@ -20,7 +20,7 @@ let
       base7    = "#fdf6e3"; # ansi:7,15 vendor:base3
     };
 
-    gotham = rec {
+    gotham = {
       red	     = "#c23127"; # ansi:1     vendor:red
       green    = "#2aa889"; # ansi:2     vendor:green
       yellow	 = "#edb443"; # ansi:3     vendor:yellow
@@ -37,6 +37,26 @@ let
       base5	   = "#599cab"; # ansi:13    vendor:base5
       base6	   = "#99d1ce"; # ansi:14    vendor:base6
       base7	   = "#d3ebe9"; # ansi:7,15  vendor:base7
+    };
+
+    nordLight = {
+      red     = "#BF616A";
+      green   = "#A3BE8C";
+      yellow  = "#EBCB8B";
+      blue    = "#8FBCBB";
+      magenta = "#B48EAD";
+      cyan    = "#88C0D0";
+      orange  = "#D08770";
+      violet  = "#5E81AC";
+      base0   = "#ECEFF4";
+      base1   = "#E5E9F0";
+      base2   = "#D8DEE9";
+      base3   = "#616E88";
+      base4   = "#4C566A";
+      base5   = "#434C5E";
+      base6   = "#3B4252";
+      base7   = "#2E3440";
+      # base8 = "#81A1C1";
     };
   };
 
@@ -67,12 +87,11 @@ let
     # Autocompletion, list selection, etc...
     highlight = { fg = yellow; } // bold;
     suggestion = { fg = base5; };
-    selectedSuggestion = { fg = base6; bg = base2; } // bold;
+    selectedSuggestion = { fg = base6; } // bold;
   };
 
 in
 
 {
-  inherit palettes palette attrs others;
-  theme = builtins.mapAttrs (k: v: theme.default // v) theme;
+  inherit palettes palette attrs others theme;
 }

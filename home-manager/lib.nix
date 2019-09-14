@@ -18,7 +18,7 @@ let
 
   aliases = {
     node-shell = "set -lx PATH $PWD/node_modules/.bin $PATH; nix-shell -p nodejs yarn";
-    rg = "rg --glob '!{.git}/*' --smart-case --hidden";
+    rg = ''rg --glob \"!package-lock.json\" --glob \"!package.json\" --glob \"!.git/*\" --smart-case --hidden'';
     config = "git --git-dir=${HOME}/.dotfiles --work-tree=${HOME}";
     cp = "cp -i";
     df = "df -h";
@@ -41,9 +41,10 @@ let
     p3 = "python3";
     open = "xdg-open";
     pkgs = "nix-store --query --requisites /run/current-system | cut -d- -f2- | sort | uniq";
-    tree = "tree -shaC --dirsfirst -I .git";
+    tree = "tree -sha --dirsfirst -I .git";
     dmesg = "dmesg -H";
     cp-png = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
+    code = "${pkgs.vscode}/bin/code --extensions-dir ${HOME}/.config/Code/extensions";
   };
 
   paths = rec {
@@ -66,7 +67,7 @@ let
     # Default applications
     # The whole userBin thing is so these variables point to the correct one
     # if we build a different version
-    BROWSER = "${paths.userBin}/chromium";
+    BROWSER = "${paths.userBin}/firefox";
     TERMINAL = "${paths.userBin}/st";
     EDITOR = "${paths.userBin}/nvim";
     VISUAL = "${EDITOR}";

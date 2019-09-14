@@ -10,16 +10,16 @@ let
     with config.lib.colors.attrs;
     rec {
       # Command line
-      fish_color_normal = theme.default;
-      fish_color_command = theme.default;
+      fish_color_normal = { fg = theme.default.fg; };
+      fish_color_command = { fg = theme.default.fg; };
       fish_color_quote = theme.string;
-      fish_color_redirection = theme.default;
-      fish_color_end = theme.default;
+      fish_color_redirection = { fg = theme.default.fg; };
+      fish_color_end = { fg = theme.default.fg; };
       fish_color_error = theme.error;
       fish_color_param = { fg = base5; };
       fish_color_comment = theme.comment;
       fish_color_match = { fg = green; };
-      fish_color_selection = theme.default; # Selected text in Vi mode
+      fish_color_selection = { fg = theme.default.fg; }; # Selected text in Vi mode
       fish_color_operator = { fg = base5; };
       fish_color_escape = { fg = orange; };
 
@@ -84,14 +84,11 @@ in
     fish = {
       enable = true;
 
-      loginShellInit = with config.lib.functions; ''
-        set -U fish_prompt_pwd_dir_length 5
-        ${reduceAttrsToString "\n" colorDefToString colors}
-      '';
-
       interactiveShellInit = with config.lib.functions; ''
         set fish_greeting
         ${reduceAttrsToString "\n" (k: v: ''alias --save ${k}="${v}"'') config.lib.aliases}
+        set -U fish_prompt_pwd_dir_length 5
+        ${reduceAttrsToString "\n" colorDefToString colors}
       '';
     };
   };
@@ -101,14 +98,6 @@ in
       recursive = true;
       source = ./functions;
     };
-
-    "fish/functions/fish_colors.fish".text = with builtins; ''
-      function fish_colors --description 'Output all fish color variables'
-        ${concatStringsSep "\n" (
-          map (k: ''set_color ''$${k}; echo "${k}"; set_color normal'') (attrNames colors)
-        )}
-      end
-    '';
 
     "fish/functions/fisher.fish".source = builtins.fetchurl "https://raw.githubusercontent.com/jorgebucaran/fisher/master/fisher.fish?nocache";
 

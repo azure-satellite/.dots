@@ -4,8 +4,6 @@ let
 
   dmenuWindowClass = "dmenu-window";
 
-  dmenuFzf = ''${pkgs.fzf}/bin/fzf --margin=4,8,4,10 --ansi --exact --delimiter="(" --nth=1'';
-
   windowTitleToClass = v: with builtins;
     concatStringsSep "-" (map pkgs.lib.toLower (filter isString (split "[[:space:]]+" v)));
 
@@ -17,10 +15,6 @@ let
       ${maim}/bin/maim $1 -b 4 "$PATH"
       ${config.lib.aliases.cp-png} "$PATH"
       ${libnotify}/bin/notify-send "Maim" "Screenshot saved to '$PATH'"
-    '';
-
-    homeManagerSwitch = ''
-      home-manager switch || read -n 1 -p "Continue..."
     '';
 
     dmenu = ''
@@ -50,7 +44,7 @@ let
             *) exit 0
           esac
         }
-        echo "${reduceDesktops dmenuLine}" | ${dmenuFzf} | openit
+        echo "${reduceDesktops dmenuLine}" | ${pkgs.fzf}/bin/fzf --margin=16,40,16,40 --ansi --exact --delimiter="(" --nth=1 | openit
       '';
 
     copyPassword = ''
@@ -66,7 +60,7 @@ let
       password_files=( "$prefix"/**/*.gpg )
       password_files=( "''${password_files[@]#"$prefix"/}" )
       password_files=( "''${password_files[@]%.gpg}" )
-      password=$(printf '%s\n' "''${password_files[@]}" | ${dmenuFzf} "$@")
+      password=$(printf '%s\n' "''${password_files[@]}" | ${pkgs.fzf}/bin/fzf --margin=4,10,4,10 "$@")
 
       [[ -n $password ]] || exit
 
@@ -138,7 +132,7 @@ let
     "Mod1+Shift+c"         = "reload";
     "Mod1+Shift+r"         = "restart";
     "Mod1+Shift+q"         = "exit";
-    "Mod1+BackSpace" = "exec --no-startup-id sudo systemctl restart display-manager.service";
+    "Mod1+Shift+BackSpace" = "exec --no-startup-id sudo systemctl restart display-manager.service";
 
     # External commands
     "XF86AudioRaiseVolume" = "exec amixer set Master 5%+";
@@ -148,7 +142,7 @@ let
     "Shift+Print"          = ''--release exec ${scripts.takeScreenshot.bin} -s'';
     "Mod1+Return"          = "exec i3-sensible-terminal";
     "Mod1+space"           = "mode dmenu";
-    "Mod1+Shift+m"         = ''exec st -c 'home-manager-switch' fish -c 'home-manager switch || read -P "Continue..."' '';
+    "Mod1+Shift+m"         = ''exec st -c 'home-manager-switch' fish -c 'home-manager switch -b bak || read -P "Continue..."' '';
   };
 
 in
@@ -167,8 +161,16 @@ in
   xsession.windowManager.i3 = {
     enable = true;
 
+    package = pkgs.i3-gaps;
+
     config = rec {
       fonts = [ "UbuntuCondensed Nerd Font 10" ];
+
+      gaps = {
+        inner = 7;
+        smartGaps = true;
+        # smartBorders = "on";
+      };
 
       colors =
         with config.lib.colors.palette;
@@ -200,6 +202,7 @@ in
       bars = [
         {
           inherit fonts;
+          command = "${pkgs.i3-gaps}/bin/i3bar -t";
           position = "top";
           trayOutput = "none";
           statusCommand = "SCRIPTS=${config.home.homeDirectory}/.config/i3blocks ${pkgs.i3blocks}/bin/i3blocks";
@@ -230,8 +233,7 @@ in
       default_border pixel 1
       title_align center
 
-      for_window [class=${dmenuWindowClass}*] border normal 1
-      for_window [class=${dmenuWindowClass}*] floating enable
+      for_window [class=${dmenuWindowClass}*] floating enable, resize set 3848 2164, move position -4 0, border none
 
       for_window [class=home-manager-switch] floating enable
 

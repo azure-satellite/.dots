@@ -29,14 +29,14 @@ let
       # MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
     };
 
-    # emacs = {
-    #   name = "Emacs (Client)";
-    #   generic = "Text Editor";
-    #   comment = "Open source Lisp-based text editor";
-    #   exec = "emacsclient --create-frame --alternate-editor=emacs";
-    #   params = "%F";
-    #   # MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
-    # };
+    vscode = {
+      name = "VSCode";
+      generic = "Text Editor";
+      comment = "Open source text editor from Microsoft";
+      exec = "${config.lib.aliases.code}";
+      params = "%F";
+      startupNotify = true;
+    };
 
     chromium = {
       name = "Chromium";
@@ -54,6 +54,15 @@ let
       exec = "${firefox}/bin/firefox";
       params = "%U";
     };
+    
+    brave = {
+      name = "Brave";
+      generic = "Web browser";
+      comment = "Privacy-focused web browser";
+      exec = "${brave}/bin/brave";
+      params = "%U";
+      startupNotify = true;
+    };
 
     zathura = {
       name = "Zathura";
@@ -61,6 +70,14 @@ let
       comment = "Minimalistic document viewer";
       exec = "${zathura}/bin/zathura";
       params = "%U";
+    };
+
+    alacritty = {
+      name = "Alacritty";
+      generic = "Terminal Emulator";
+      comment = "GPU accelerated terminal emulator";
+      exec = "${alacritty}/bin/alacritty";
+      params = "";
     };
 
     transmission = {
@@ -91,15 +108,6 @@ let
       # MimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document;text/html;application/x-cbc;application/ereader;application/oebps-package+xml;image/vnd.djvu;application/x-sony-bbeb;application/vnd.ms-word.document.macroenabled.12;text/rtf;text/x-markdown;application/pdf;application/x-cbz;application/x-mobipocket-ebook;application/x-cbr;application/x-mobi8-ebook;text/fb2+xml;application/vnd.oasis.opendocument.text;application/epub+zip;text/plain;application/xhtml+xml
     };
 
-    # vsCode = {
-    #   name = "VSCode";
-    #   generic = "Text editor";
-    #   comment = "Open source text editor from Microsoft";
-    #   exec = "${vscode}/bin/code";
-    #   params = "%F";
-    #   startupNotify = true;
-    # };
-
     robo3t = {
       name = "Robo3T";
       generic = "Database GUI client";
@@ -123,6 +131,68 @@ let
       comment = "Free and open source cross-platform media player";
       exec = "${mpv}/bin/mpv --player-operation-mode=pseudo-gui --";
       params = "%U";
+    };
+
+    nautilus = {
+      name = "Nautilus";
+      generic = "File Browser";
+      comment = "Access and Organize Files";
+      exec = "${gnome3.nautilus}/bin/nautilus --new-window";
+      params = "%U";
+      startupNotify = true;
+    };
+
+    disk = {
+      name = "Discs";
+      generic = "Drives and Volumes Manager";
+      comment = "Manage Drives and Media";
+      exec = "gnome-disks";
+      params = "";
+      startupNotify = true;
+    };
+
+    peek = {
+      name = "Peek";
+      generic = "GIF recorder";
+      comment = "Record GIFs";
+      exec = "peek";
+      params = "";
+      startupNotify = true;
+    };
+
+    gucharmap = {
+      name = "Character Map";
+      generic = "Unicode Character Viewer";
+      comment = "View and manage unicode character sets";
+      exec = "gucharmap";
+      params = "";
+      startupNotify = true;
+    };
+
+    recipes = {
+      name = "Recipes";
+      generic = "Recipe browser";
+      comment = "GNOME cooks unite!";
+      exec = "gnome-recipes";
+      params = "%f";
+      startupNotify = true;
+    };
+
+    dfeet = {
+      name = "D-Feet";
+      generic = "D-Bus Debugger";
+      comment = "Debug D-Bus applications and browser their interfaces";
+      exec = "d-feet";
+      params = "";
+      startupNotify = true;
+    };
+
+    feh = {
+      name = "Feh";
+      generic = "Image viewer";
+      comment = "View images";
+      exec = "feh";
+      params = "%F";
     };
   };
 
@@ -197,13 +267,32 @@ in
       application/x-cbt=${mcomix.name}
       application/x-cb7=${mcomix.name}
 
-      text/html=${chromium.name}
+      text/html=${firefox.name}
       application/epub+zip=${zathura.name}
       application/pdf=${zathura.name}
       x-scheme-handler/mailto=${neomutt.name}
       x-scheme-handler/magnet=${transmission.name}
+      x-scheme-handler/http=${firefox.name}
+      x-scheme-handler/https=${firefox.name}
+      x-scheme-handler/ftp=${firefox.name}
 
-      image/gif=${mpv.name}
+      image/svg+xml=${feh.name}
+      image/bmp=${feh.name}
+      image/gif=${feh.name}
+      image/jpeg=${feh.name}
+      image/jpg=${feh.name}
+      image/pjpeg=${feh.name}
+      image/png=${feh.name}
+      image/tiff=${feh.name}
+      image/x-bmp=${feh.name}
+      image/x-pcx=${feh.name}
+      image/x-png=${feh.name}
+      image/x-portable-anymap=${feh.name}
+      image/x-portable-bitmap=${feh.name}
+      image/x-portable-graymap=${feh.name}
+      image/x-portable-pixmap=${feh.name}
+      image/x-tga=${feh.name}
+      image/x-xbitmap=${feh.name}
 
       audio/3gpp=${mpv.name}
       audio/3gpp2=${mpv.name}

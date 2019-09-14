@@ -38,7 +38,7 @@ set nojoinspaces
 set dictionary=/usr/share/dict/words
 " Default value is '.,/usr/include,,'
 set path=.,,
-let &grepprg='rg -S -g "!{.git,node_modules}/*" --hidden --vimgrep $* $PWD'
+let &grepprg='rg --glob "!package-lock.json" --glob "!package.json" --smart-case --hidden --vimgrep $* $PWD'
 set grepformat=%f:%l:%c:%m,%f:%l:%m
 " Fold by indentation
 au FileType * if &foldmethod ==# 'manual' | setlocal foldmethod=indent | endif
@@ -71,7 +71,7 @@ set hidden
 " Extend matching
 set matchpairs+=<:>
 " Always open vertical diffsplits. Ignore whitespace
-set diffopt=filler,foldcolumn:0,iwhite,vertical,internal,algorithm:minimal
+set diffopt=filler,foldcolumn:0,iwhiteall,vertical,internal,algorithm:minimal
 " When off the 'CTRL-D', 'CTRL-U', 'CTRL-B', 'CTRL-F', 'G', 'H', 'M', 'L',
 " 'gg', 'd', '<<', '>>', <count>'%' the cursor is kept in the same column
 " instead of moving it to the first non-blank of the line.
@@ -126,6 +126,11 @@ set background=dark
 set synmaxcol=500
 " Do not auto-wrap long lines
 set formatoptions-=t
+" Keep cursor on the bottom window when splitting horizontally. Easier for
+" grepping, since the quicklist is right below
+set splitbelow
+" Position cursor to the right when splitting windows vertically.
+set splitright
 let &tabline='%!core#tabline()'
 " Values obtained from evaluating %{} blocks don't get evaluated themselves.
 " They are taken verbatim (including other %{} blocks). Ex:
@@ -327,7 +332,6 @@ Plug 'https://github.com/Konfekt/FastFold' " {{{3
 
 Plug 'https://github.com/sheerun/vim-polyglot' " {{{3
 
-Plug 'https://github.com/moll/vim-node' " {{{3
 
 " VCS {{{2
 
@@ -439,7 +443,7 @@ autocmd User ALELintPost hi User3 guibg=#839496 | redrawstatus
 " endfunction
 " au VimEnter * call s:coc()
 
-Plug 'https://github.com/junegunn/fzf' | Plug 'https://github.com/junegunn/fzf.vim' " {{{3
+Plug 'https://github.com/junegunn/fzf' | Plug '~/Code/mine/fzf.vim', { 'branch': 'local-gfiles' } " {{{3
 function! s:fzf_statusline()
     setlocal statusline=%#fzf1#\ FZF▕
     if !empty(get(b:fzf, 'name'))
@@ -539,7 +543,8 @@ let g:startify_bookmarks = [
 \ '~/Resources/smartprocure/contexture',
 \ '~/Resources/smartprocure',
 \ '~/Code/mine/furnisher/home-manager',
-\ '~/Code/mine/furnisher/trello-clone',
+\ '~/Code/home-manager/modules',
+\ '~/Code/mine/trello-clone',
 \ ]
 autocmd User Startified setlocal buftype=nofile
 nnoremap <space>s <cmd>Startify<cr>
@@ -616,6 +621,7 @@ Plug 'https://github.com/justinmk/vim-dirvish' " {{{3
 function! s:filetype_dirvish()
     " Directories first
     sort ,^.*[\/],
+    nmap <buffer> q gq
 endfunction
 autocmd! FileType dirvish call s:filetype_dirvish()
 " Buffer's directory

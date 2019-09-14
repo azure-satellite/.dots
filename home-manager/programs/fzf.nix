@@ -13,12 +13,12 @@ let
     concatStringsSep "," (attrValues (mapAttrs (k: v: "${k}:${v}") rec {
       # Unselected lines (including input line)
       fg = theme.suggestion.fg;
-      bg = theme.suggestion.bg;
+      bg = "-1";
       hl = theme.highlight.fg;
 
       # Selected line
       "fg+" = theme.selectedSuggestion.fg;
-      "bg+" = theme.selectedSuggestion.bg; # Setting a background makes a fringe on the left :(
+      "bg+" = "-1"; # Setting a background makes a fringe on the left :(
       "hl+" = theme.highlight.fg;
 
       marker = hl; # Multi-select marker
@@ -26,8 +26,8 @@ let
       spinner = info; # Streaming input indicator
       header = info; # Header
       border = info; # Border of the preview window and horizontal separators (--border)
-      prompt = theme.selectedSuggestion.bg; # Prompt. The symbols in "> {query} < 10/10"
-      pointer = theme.selectedSuggestion.bg; # Pointer to the current line ("> this is the currently selected line")
+      prompt = "-1"; # Prompt. The symbols in "> {query} < 10/10"
+      pointer = "-1"; # Pointer to the current line ("> this is the currently selected line")
     }));
 
   FZF_DEFAULT_OPTS = toString [
