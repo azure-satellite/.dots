@@ -11,11 +11,11 @@
   home.file.".config" = { source = ./home-files/.config; recursive = true; };
 
   # https://github.com/rycee/home-manager/issues/589
-  # TODO: Figure out why links are being created inside ./mutable/*
   home.activation.linkMyFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
     ln -sf ${toString ./mutable/.config/nvim} ~/.config/
     ln -sf ${toString ./mutable/.config/Code/User} ~/.config/Code
     ln -sf ${toString ./mutable/.local/share/pass} ~/.local/share/
+    sudo ln -sf ${toString ./nixos} /etc/
   '';
 }
