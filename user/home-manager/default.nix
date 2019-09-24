@@ -8,15 +8,14 @@ with pkgs;
     ./lib.nix
     ./mime.nix
     ./email.nix
-    ./programs/fish
-    ./programs/git.nix
-    ./programs/node.nix
-    ./programs/i3.nix
-    ./programs/fzf.nix
     ./programs/direnv.nix
-    ./programs/nvim.nix
     ./programs/firefox.nix
-    ./programs/polybar.nix
+    ./programs/fish
+    ./programs/fzf.nix
+    ./programs/git.nix
+    ./programs/i3.nix
+    ./programs/node.nix
+    ./programs/nvim.nix
   ];
 
   manual.html.enable = true;
@@ -26,14 +25,11 @@ with pkgs;
       # Terminal
       (neovim.override { viAlias = true; vimAlias = true; })
       ffmpeg
-      inotify-tools # required by i3blocks mail script
-      iw # required by i3blocks networking script
       libnotify
       pandoc
       pass
       python
       python37
-      python37Packages.subliminal
       ripgrep
       st
       tig
@@ -46,31 +42,17 @@ with pkgs;
       # GUI
       calibre
       chromium
+      font-manager
       imagemagick
       mcomix
+      peek
+      robo3t
       slack
-      transmission-gtk
       # torbrowser
+      transmission-gtk
       vscode
 
-      # GNOME
-      gnome3.gnome-disk-utility
-      gnome3.nautilus
-      peek
-      gucharmap
-      gnome-recipes
-      dfeet
-
-      # Others
-      gnome-themes-extra # To stop GNOME complaining of missing themes
-      # arc-icon-theme
-      # numix-icon-theme
-      # numix-icon-theme-square
-      # numix-icon-theme-circle
-      # pantheon.elementary-icon-theme
-      # elementary-xfce-icon-theme
-      papirus-icon-theme
-      # tango-icon-theme
+      # Appearance
       # adapta-gtk-theme
       mojave-gtk-theme
       # sierra-gtk-theme
@@ -78,17 +60,20 @@ with pkgs;
       # paper-gtk-theme
       # pantheon.elementary-gtk-theme
       qgnomeplatform
+      # arc-icon-theme
+      # numix-icon-theme
+      # numix-icon-theme-square
+      # numix-icon-theme-circle
+      # pantheon.elementary-icon-theme
+      # elementary-xfce-icon-theme
+      # tango-icon-theme
+      papirus-icon-theme
     ];
 
     sessionVariables = config.lib.sessionVariables;
   };
 
-  xdg = {
-    enable = true;
-
-    configFile = {
-    };
-  };
+  xdg.enable = true;
 
   xsession = {
     enable = true;
@@ -115,16 +100,16 @@ with pkgs;
       export LESS_TERMCAP_so=$'\e[0;1;30;43m'
       export LESS_TERMCAP_ue=$'\e[0;39m'
       export LESS_TERMCAP_us=$'\e[0;1;32m'
-      '';
+    '';
   };
 
-  gtk = {
+  gtk = with config.lib.fonts; {
     # Cursors are set in xsession
     enable = true;
+    font.name = "${serif.name} ${toString serif.size}";
+    theme.name = "Mojave-light-solid";
     # NOTE: The icon/theme name are not arbitrary. Check under
     # ~/.nix-profile/share/{icons,themes} for possible names
-    font.name = "serif 9";
-    theme.name = "Mojave-light-solid";
     iconTheme.name = "Papirus-Light";
     gtk3.extraConfig = {
       "gtk-enable-animations" = false;
@@ -185,6 +170,7 @@ with pkgs;
   services = {
     # compton = {
     #   enable = true;
+    #   shadow = true;
     # };
     gpg-agent = let ttl = 60480000; in {
       enable = true;
@@ -202,11 +188,12 @@ with pkgs;
     with config.lib.colors.theme;
     with config.lib.colors.palette;
     with config.lib.colors.others;
+    with config.lib.fonts;
       {
         "*.alpha" = "1.0";
         "st.termname" = "st-256color";
         "st.borderpx" = 0;
-        "st.font" = "monospace:pixelsize=35";
+        "st.font" = "${mono.name}:pixelsize=${toString (mono.size * 4)}";
         "st.color0" = black;
         "st.color1" = red;
         "st.color2" = green;

@@ -542,7 +542,7 @@ let g:startify_bookmarks = [
 \ '~/Resources/smartprocure/contexture-client',
 \ '~/Resources/smartprocure/contexture',
 \ '~/Resources/smartprocure',
-\ '~/Code/mine/furnisher/home-manager',
+\ '~/Code/mine/furnisher/user/home-manager',
 \ '~/Code/home-manager/modules',
 \ '~/Code/mine/trello-clone',
 \ ]

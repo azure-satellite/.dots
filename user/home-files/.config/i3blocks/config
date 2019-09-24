@@ -13,7 +13,7 @@
 # min_width
 # name
 # separator
-# separator_block_width
+separator_block_width = 7
 # short_text
 # signal
 # urgent
@@ -24,33 +24,33 @@ markup=pango
 interval=persist
 
 [disk]
-label= /
+label= / 
 command=DIR=/ $SCRIPTS/disk.sh
 interval=30
 
 [volume-pulseaudio]
-command=$SCRIPTS/volume-pulseaudio.sh -S -H 墳 -M 墳 -L 墳 -X 婢
+command=$SCRIPTS/volume-pulseaudio.sh -S -H  -M  -L  -X 
 markup=pango
 interval=persist
 
 [wlan-dbm]
-label=直
+label=  
 command=IFACE=wlp59s0 $SCRIPTS/wlan-dbm.sh
 interval=10
 
 [battery]
-label=
+label=  
 command=FILE=/sys/class/power_supply/BAT0/uevent $SCRIPTS/battery.py
 interval=5
 
 [date]
-label= 
+label=  
 command=date '+%a %b %e'
 signal=2
 interval=once
 
 [time]
-label=
+label=  
 command=date '+%I:%M %p'
 signal=3
 color=#00ff00

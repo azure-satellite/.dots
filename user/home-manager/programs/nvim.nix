@@ -72,7 +72,7 @@ let
     # :h group-name
     Comment = theme.comment;
 
-    Constant = { fg = cyan; };
+    Constant = { fg = blue; };
     String = theme.string;
     Character = Constant;
     Number = Constant;

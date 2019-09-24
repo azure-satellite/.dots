@@ -15,9 +15,9 @@ output_stats() {
         fi
     done
     if [[ -n $out ]]; then
-        echo "<span foreground='#ffff00'> ${out:0:(-3)}</span>"
+        echo "<span foreground='#ffff00'> ${out:0:(-3)}</span>"
     else
-        echo "  —"
+        echo " — "
     fi
 }
 

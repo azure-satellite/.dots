@@ -16,6 +16,6 @@
     ln -sf ${toString ./user/mutable/.config/nvim} ~/.config/
     ln -sf ${toString ./user/mutable/.config/Code/User} ~/.config/Code
     ln -sf ${toString ./user/mutable/.local/share/pass} ~/.local/share/
-    sudo ln -sf ${toString ./system} /etc/nixos
+    sudo ln -sfT ${toString ./system} /etc/nixos
   '';
 }

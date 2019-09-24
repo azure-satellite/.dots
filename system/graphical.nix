@@ -19,7 +19,16 @@
   };
 
   fonts = {
-    fontconfig = { dpi = 282; };
+    # https://github.com/NixOS/nixpkgs/issues/69073
+    fonts = [
+      pkgs.twemoji-color-font
+    ];
+    fontconfig = {
+      dpi = 282;
+      antialias = true;
+      hinting.enable = true;
+      subpixel.lcdfilter = "default";
+    };
   };
 
   environment = {
@@ -30,7 +39,7 @@
   };
 
   services = {
-    dbus.packages = [ pkgs.gnome3.dconf ];
+    dbus.packages = [ pkgs.gnome3.dconf pkgs.gnome2.GConf ];
 
     xserver = {
       enable = true;
@@ -62,24 +71,16 @@
 
       xkbOptions = "ctrl:swapcaps";
 
-      displayManager.lightdm = {
+      displayManager.gdm = {
         enable = true;
-        greeter.enable = false;
+        wayland = false;
         autoLogin = {
           enable = true;
           user = config.users.users.berserk.name;
         };
       };
 
-      windowManager = {
-        default = "i3";
-        i3.enable = true;
-      };
-
-      desktopManager = {
-        default = "none";
-        xterm.enable = false;
-      };
+      desktopManager.gnome3.enable = true;
     };
 
     xbanish.enable = true;

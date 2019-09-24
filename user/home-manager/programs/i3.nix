@@ -2,11 +2,6 @@
 
 let
 
-  dmenuWindowClass = "dmenu-window";
-
-  windowTitleToClass = v: with builtins;
-    concatStringsSep "-" (map pkgs.lib.toLower (filter isString (split "[[:space:]]+" v)));
-
   scripts = config.lib.functions.writeShellScriptsBin (with pkgs; {
     takeScreenshot = ''
       set -e
@@ -16,65 +11,7 @@ let
       ${config.lib.aliases.cp-png} "$PATH"
       ${libnotify}/bin/notify-send "Maim" "Screenshot saved to '$PATH'"
     '';
-
-    dmenu = ''
-      set -e
-      i3-msg -t subscribe -m '["window", "workspace"]' | while read line; do
-        [[ "$line" == '{"change":"focus"'* ]] && i3-msg [class=${dmenuWindowClass}*] kill
-      done &
-      $@ || true
-    '';
-
-    # TODO:
-    # - Order by MRU
-    # - Send stdout/stderr to logger
-    # - Notify on failed command
-    # - ANSI color escape sequences for fzf
-    runDesktopFile = with builtins;
-      let
-        reduceDesktops = fn: concatStringsSep "\n" (map fn (attrValues config.lib.mime.desktops));
-        dmenuLine = v: "${v.name} (${v.generic})";
-        caseLine = v: ''"${v.name}"*) (${coreutils}/bin/nohup ${v.exec} & disown);;'';
-      in
-      ''
-        openit() {
-          read name
-          case $name in
-            ${reduceDesktops caseLine}
-            *) exit 0
-          esac
-        }
-        echo "${reduceDesktops dmenuLine}" | ${pkgs.fzf}/bin/fzf --margin=16,40,16,40 --ansi --exact --delimiter="(" --nth=1 | openit
-      '';
-
-    copyPassword = ''
-      shopt -s nullglob globstar
-
-      typeit=0
-      if [[ $1 == "--type" ]]; then
-        typeit=1
-        shift
-      fi
-
-      prefix=${config.lib.sessionVariables.PASSWORD_STORE_DIR}
-      password_files=( "$prefix"/**/*.gpg )
-      password_files=( "''${password_files[@]#"$prefix"/}" )
-      password_files=( "''${password_files[@]%.gpg}" )
-      password=$(printf '%s\n' "''${password_files[@]}" | ${pkgs.fzf}/bin/fzf --margin=4,10,4,10 "$@")
-
-      [[ -n $password ]] || exit
-
-      if [[ $typeit -eq 0 ]]; then
-        ${pass}/bin/pass show -c "$password" 2>/dev/null
-      else
-        ${pass}/bin/pass show "$password" | { IFS= read -r pass; printf %s "$pass"; } |
-          ${xdotool}/bin/xdotool type --clearmodifiers --file -
-      fi
-    '';
   });
-
-  dmenuBinding = { script, title }:
-    ''exec --no-startup-id st -c "${dmenuWindowClass}-${windowTitleToClass title}" -t "${title}" ${scripts.dmenu.bin} ${script.bin}'';
 
   mkModeBindings = name: mode:
     let bindings = builtins.mapAttrs (k: v: v + "; mode default") mode; in
@@ -92,25 +29,27 @@ let
     "Mod1 + Shift + h"     = "move left";
 
     # Workspace switching/moving
-    "Mod1 + 1"             = "workspace 1";
-    "Mod1 + 2"             = "workspace 2";
-    "Mod1 + 3"             = "workspace 3";
-    "Mod1 + 4"             = "workspace 4";
-    "Mod1 + 5"             = "workspace 5";
-    "Mod1 + 6"             = "workspace 6";
-    "Mod1 + 7"             = "workspace 7";
-    "Mod1 + 8"             = "workspace 8";
-    "Mod1 + 9"             = "workspace 9";
-    "Mod1 + Shift + 1"     = "move container to workspace 1";
-    "Mod1 + Shift + 2"     = "move container to workspace 2";
-    "Mod1 + Shift + 3"     = "move container to workspace 3";
-    "Mod1 + Shift + 4"     = "move container to workspace 4";
-    "Mod1 + Shift + 5"     = "move container to workspace 5";
-    "Mod1 + Shift + 6"     = "move container to workspace 6";
-    "Mod1 + Shift + 7"     = "move container to workspace 7";
-    "Mod1 + Shift + 8"     = "move container to workspace 8";
-    "Mod1 + Shift + 9"     = "move container to workspace 9";
+    "Mod1 + 1"         = "workspace 1";
+    "Mod1 + 2"         = "workspace 2";
+    "Mod1 + 3"         = "workspace 3";
+    "Mod1 + 4"         = "workspace 4";
+    "Mod1 + 5"         = "workspace 5";
+    "Mod1 + 6"         = "workspace 6";
+    "Mod1 + 7"         = "workspace 7";
+    "Mod1 + 8"         = "workspace 8";
+    "Mod1 + 9"         = "workspace 9";
+    "Mod1 + Shift + 1" = "move container to workspace 1";
+    "Mod1 + Shift + 2" = "move container to workspace 2";
+    "Mod1 + Shift + 3" = "move container to workspace 3";
+    "Mod1 + Shift + 4" = "move container to workspace 4";
+    "Mod1 + Shift + 5" = "move container to workspace 5";
+    "Mod1 + Shift + 6" = "move container to workspace 6";
+    "Mod1 + Shift + 7" = "move container to workspace 7";
+    "Mod1 + Shift + 8" = "move container to workspace 8";
+    "Mod1 + Shift + 9" = "move container to workspace 9";
+    "Mod1+Tab"         = "workspace back_and_forth";
 
+    # Window commands
     "Mod1+p"           = "focus parent";
     "Mod1+c"           = "focus child";
     "Mod1+m"           = "split h";
@@ -121,12 +60,11 @@ let
     "Mod1+f"           = "floating toggle";
     "Mod1+o"           = "fullscreen toggle";
     "Mod1+q"           = "kill";
-    "Mod1+apostrophe"  = "focus mode_toggle";
     "Mod1+Down"        = "resize shrink height 10 px or 10 ppt";
     "Mod1+Up"          = "resize grow height 10 px or 10 ppt";
     "Mod1+Left"        = "resize shrink width 10 px or 10 ppt";
     "Mod1+Right"       = "resize grow width 10 px or 10 ppt";
-    "Mod1+Tab"         = "workspace back_and_forth";
+    "Mod1+apostrophe"  = "focus mode_toggle";
 
     # Reloading
     "Mod1+Shift+c"         = "reload";
@@ -141,30 +79,41 @@ let
     "Print"                = ''--release exec ${scripts.takeScreenshot.bin}'';
     "Shift+Print"          = ''--release exec ${scripts.takeScreenshot.bin} -s'';
     "Mod1+Return"          = "exec i3-sensible-terminal";
-    "Mod1+space"           = "mode dmenu";
+    "Mod1+space"           = "exec rofi -show drun";
     "Mod1+Shift+m"         = ''exec st -c 'home-manager-switch' fish -c 'home-manager switch -b bak || read -P "Continue..."' '';
   };
 
 in
 
 {
+  imports = [
+    ./dunst.nix
+    ./polybar.nix
+    ./rofi.nix
+  ];
+
   home = {
     packages = with pkgs; [
-      dunst
-      hicolor-icon-theme
       i3blocks
       maim
       xclip
+      iw # Used by i3blocks networking script
+      inotify-tools # Used by i3blocks mail script
+      font-awesome # Used on the topbar 
     ];
   };
+
+  fonts.fontconfig.enable = true;
 
   xsession.windowManager.i3 = {
     enable = true;
 
     package = pkgs.i3-gaps;
 
-    config = rec {
-      fonts = [ "serif 9" ];
+    config = {
+      fonts = with config.lib.fonts; [
+        "${serif.name} ${toString serif.size}"
+      ];
 
       gaps = {
         inner = 7;
@@ -200,7 +149,10 @@ in
 
       bars = [
         {
-          inherit fonts;
+          fonts = with config.lib.fonts; [
+            "${serif.name} ${toString serif.size}"
+            "Font Awesome 5 Free ${toString serif.size}"
+          ];
           command = "${pkgs.i3-gaps}/bin/i3bar -t";
           position = "top";
           trayOutput = "none";
@@ -216,12 +168,7 @@ in
         }
       ];
 
-      modes = builtins.mapAttrs mkModeBindings {
-        dmenu = {
-          o = dmenuBinding { title = "Desktop Files"; script = scripts.runDesktopFile; };
-          p = dmenuBinding { title = "Passwords"; script = scripts.copyPassword; };
-        };
-      };
+      modes = builtins.mapAttrs mkModeBindings {};
 
       inherit keybindings;
 
@@ -231,8 +178,6 @@ in
     extraConfig = ''
       default_border pixel 1
       title_align center
-
-      for_window [class=${dmenuWindowClass}*] floating enable, resize set 3848 2164, move position -4 0, border none
 
       for_window [class=home-manager-switch] floating enable
 
@@ -245,24 +190,6 @@ in
       for_window [window_role=pop-up] move position center
     '';
   };
-
-  # services.polybar = {
-  #   enable = true;
-  #   package = pkgs.polybar.override {
-  #     i3Support = true;
-  #     alsaSupport = false;
-  #   };
-  #   config = {
-  #     "bar/top" = {
-  #       monitor = "\''${env:MONITOR:eDP1}";
-  #       width = "100%";
-  #       height = "3%";
-  #       radius = 0;
-  #       modules-center = "date";
-  #     };
-  #  };
-  # };
-
 
   systemd.user = {
     services = {
@@ -281,7 +208,6 @@ in
           ExecStart = "${pkgs.procps}/bin/pkill -SIGRTMIN+3 i3blocks";
         };
       };
-
     };
 
     timers = {

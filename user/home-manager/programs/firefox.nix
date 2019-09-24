@@ -16,6 +16,7 @@ with pkgs;
   programs.firefox = {
     enable = true;
     extensions = [];
+    package = pkgs.firefox-wayland;
     profiles = {
       default = {
         settings = {

@@ -118,11 +118,22 @@ let
     GTK2_RC_FILES = "${HOME}/.config/gtk-2.0/gtkrc";
     DOCKER_CONFIG = "${HOME}/.config/docker";
   };
+
+  fonts = {
+    mono = { name = "Iosevka"; size = 9.5; };
+    sans = { name = "SF Pro Text"; size = 9; };
+    serif = { name = "SF Pro Text"; size = 9; };
+  };
+
 in
 
 with config; {
+  home.packages = [
+    pkgs.iosevka
+  ];
+
   lib = {
     colors = import ./colors.nix;
-    inherit functions aliases paths sessionVariables;
+    inherit functions aliases paths sessionVariables fonts;
   };
 }
