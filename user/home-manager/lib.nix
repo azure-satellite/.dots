@@ -14,6 +14,12 @@ let
 
     reduceAttrsToString = sep: fn: attrs:
       builtins.concatStringsSep sep (pkgs.lib.mapAttrsToList fn attrs);
+
+    fontConfigString = { font, step ? 0 }: with pkgs.lib.strings;
+      "${font.name} ${concatStringsSep " " font.attrs} ${toString (font.size + step)}";
+
+    xftString = { font, step ? 0 }: with pkgs.lib.strings;
+      "${font.name}:${concatStringsSep ":" font.attrs}:pixelsize=${toString (font.size + step)}";
   };
 
   aliases = {
@@ -120,9 +126,10 @@ let
   };
 
   fonts = {
-    mono = { name = "Iosevka"; size = 9.5; };
-    sans = { name = "SF Pro Text"; size = 9; };
-    serif = { name = "SF Pro Text"; size = 9; };
+    mono = { name = "SF Mono"; attrs = ["semibold"]; size = 9; };
+    sans = { name = "SF Pro Text"; attrs = ["semibold"]; size = 9; };
+    serif = { name = "SF Pro Text"; attrs = ["semibold"]; size = 9; };
+    ui = { name = "SF Pro Rounded"; attrs = ["semibold"]; size = 9; };
   };
 
 in

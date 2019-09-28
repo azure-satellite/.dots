@@ -6,10 +6,8 @@ with pkgs;
   imports = [
     ./xkb
     ./lib.nix
-    ./mime.nix
     ./email.nix
     ./programs/direnv.nix
-    ./programs/firefox.nix
     ./programs/fish
     ./programs/fzf.nix
     ./programs/git.nix
@@ -40,15 +38,14 @@ with pkgs;
       unrar
 
       # GUI
+      brave
       calibre
-      chromium
       font-manager
       imagemagick
       mcomix
       peek
       robo3t
       slack
-      # torbrowser
       transmission-gtk
       vscode
 
@@ -103,10 +100,10 @@ with pkgs;
     '';
   };
 
-  gtk = with config.lib.fonts; {
+  gtk = with config.lib; {
     # Cursors are set in xsession
     enable = true;
-    font.name = "${serif.name} ${toString serif.size}";
+    font.name = functions.fontConfigString { font = fonts.serif; };
     theme.name = "Mojave-light-solid";
     # NOTE: The icon/theme name are not arbitrary. Check under
     # ~/.nix-profile/share/{icons,themes} for possible names
@@ -187,13 +184,14 @@ with pkgs;
   xresources.properties =
     with config.lib.colors.theme;
     with config.lib.colors.palette;
-    with config.lib.colors.others;
-    with config.lib.fonts;
       {
         "*.alpha" = "1.0";
         "st.termname" = "st-256color";
         "st.borderpx" = 0;
-        "st.font" = "${mono.name}:pixelsize=${toString (mono.size * 4)}";
+        "st.font" = with config.lib; functions.xftString {
+          font = fonts.mono;
+          step = fonts.mono.size * 3;
+        };
         "st.color0" = black;
         "st.color1" = red;
         "st.color2" = green;

@@ -15,6 +15,8 @@
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
     ln -sf ${toString ./user/mutable/.config/nvim} ~/.config/
     ln -sf ${toString ./user/mutable/.config/Code/User} ~/.config/Code
+    ln -sf ${toString ./user/mutable/.config/i3blocks} ~/.config/i3blocks
+    ln -sf ${toString ./user/mutable/.config/sway} ~/.config/sway
     ln -sf ${toString ./user/mutable/.local/share/pass} ~/.local/share/
     sudo ln -sfT ${toString ./system} /etc/nixos
   '';

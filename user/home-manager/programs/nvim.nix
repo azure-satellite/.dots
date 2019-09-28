@@ -203,11 +203,11 @@ let
 in
 
 {
-  xdg.configFile."nvim/colors/gotham.vim".text = ''
+  xdg.configFile."nvim/colors/home-manager.vim".text = ''
     hi clear
     if exists('syntax_on') | syntax reset | endif
     set background=dark
-    let g:colors_name = 'gotham'
+    let g:colors_name = 'home-manager'
     let g:palette = { ${
       config.lib.functions.reduceAttrsToString
       ","

@@ -4,9 +4,6 @@
   programs = {
     direnv = {
       enable = true;
-      stdlib = ''
-        source ${./use_nix.sh}
-      '';
       config.whitelist.prefix = [
         config.lib.paths.userSrc
       ];

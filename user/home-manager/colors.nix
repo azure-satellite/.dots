@@ -20,6 +20,25 @@ let
       base7    = "#fdf6e3";
     };
 
+    solarizedLight = {
+      red      = "#dc322f";
+      orange   = "#cb4b16";
+      yellow   = "#b58900";
+      green    = "#859900";
+      cyan     = "#2aa198";
+      blue     = "#268bd2";
+      violet   = "#6c71c4";
+      magenta  = "#d33682";
+      base0    = "#fdf6e3";
+      base1    = "#eee8d5";
+      base2    = "#93a1a1";
+      base3    = "#839496";
+      base4    = "#657b83";
+      base5    = "#586e75";
+      base6    = "#091f2e";
+      base7    = "#06080a";
+    };
+
     gotham = {
       red	     = "#c23127";
       orange	 = "#d26937";
@@ -78,11 +97,7 @@ let
     };
   };
 
-  others = {
-    brGreen = "#00ff00";
-  };
-
-  palette = palettes.gotham;
+  palette = palettes.solarizedLight;
 
   attrs = {
     bold = { bold = true; };
@@ -96,7 +111,7 @@ let
   theme = with palette; with attrs; rec {
     default = { fg = base6; bg = base0; };
 
-    cursor = { bg = others.brGreen; };
+    cursor = { bg = "#CF000F"; };
 
     comment = { fg = base4; };
     error = { fg = red; } // bold;
@@ -111,5 +126,5 @@ let
 in
 
 {
-  inherit palettes palette attrs others theme;
+  inherit palettes palette attrs theme;
 }

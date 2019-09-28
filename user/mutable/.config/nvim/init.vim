@@ -25,7 +25,7 @@ set spellfile=
 " q: When joining multiple lines, don't move the cursor all the way to the end
 set cpoptions+=q
 " Substitute live preview
-set inccommand=nosplit
+set inccommand=split
 " Better searching defaults
 set smartcase
 set ignorecase
@@ -120,7 +120,6 @@ set exrc
 set secure
 " True color support
 set termguicolors
-set background=dark
 " Due to internal representation, Vim has problems with long lines in general.
 " Highlights lines till column 500.
 set synmaxcol=500
@@ -519,11 +518,18 @@ Plug 'https://github.com/smallwat3r/vim-mono-sw' " {{{3
 Plug 'https://github.com/zaki/zazen' " {{{3
 Plug 'https://github.com/ryanpcmcquen/true-monochrome_vim' " {{{3
 Plug 'https://github.com/andreasvc/vim-256noir' " {{{3
-
 Plug 'https://github.com/chrisbra/Colorizer' " {{{3
 nmap <leader>tc <cmd>ColorToggle<CR>
 let g:colorizer_colornames = 0
 let g:colorizer_disable_bufleave = 1
+Plug 'https://github.com/junegunn/seoul256.vim' " {{{3
+Plug 'https://github.com/rakr/vim-one' " {{{3
+Plug 'https://github.com/reedes/vim-colors-pencil' " {{{3
+Plug 'https://github.com/rafi/awesome-vim-colorschemes' " {{{3
+let ayucolor = 'light'
+Plug 'https://github.com/xolox/vim-misc' " {{{3
+Plug 'https://github.com/xolox/vim-colorscheme-switcher' " {{{3
+let g:colorscheme_switcher_keep_background = 1
 
 " Other {{{2
 
@@ -653,6 +659,7 @@ call plug#end() " {{{2
 syntax manual
 " :h syn-sync-third
 syntax sync minlines=50
-silent! colorscheme gotham
+set background=light
+silent! colorscheme solarized8_high
 
 " vim: fdm=marker

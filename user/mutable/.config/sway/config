@@ -1,0 +1,155 @@
+### Variables
+
+set $mod Mod1
+set $left h
+set $down j
+set $up k
+set $right l
+
+### Output configuration (swaymsg -t get_outputs)
+
+output eDP-1 {
+    scale 3
+    resolution 3840x2160
+    background ~/Pictures/wallpapers/Hamukukka.full.2326187.jpg fill
+}
+
+### Input configuration (swaymsg -t get_inputs)
+
+input "1:1:AT_Translated_Set_2_keyboard" {
+    repeat_delay 250
+    repeat_rate 35
+    xkb_options ctrl:swapcaps
+}
+
+input "SynPS\/2 Synaptics TouchPad" {
+    accel_profile adaptive
+    pointer_accel 0.7
+    dwt enabled
+    tap enabled
+    drag disabled
+    drag_lock disabled
+    click_method clickfinger
+}
+
+font pango:SF Pro Rounded semibold 9.500000
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod
+
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders none
+focus_wrapping no
+focus_follows_mouse no
+focus_on_window_activation smart
+mouse_warping output
+workspace_layout default
+
+client.focused #93a1a1 #eee8d5 #06080a #93a1a1 #93a1a1
+client.focused_inactive #93a1a1 #eee8d5 #06080a #839496 #839496
+client.unfocused #657b83 #839496 #091f2e #839496 #839496
+client.urgent #2f343a #900000 #ffffff #900000 #900000
+client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
+client.background #ffffff
+
+### Keybindings
+
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+Tab workspace back_and_forth
+
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+bindsym $mod+m splith
+bindsym $mod+n splitv
+bindsym $mod+s layout stacking
+bindsym $mod+t layout tabbed
+bindsym $mod+e layout default
+bindsym $mod+c focus child
+bindsym $mod+p focus parent
+bindsym $mod+f floating toggle
+bindsym $mod+apostrophe focus mode_toggle
+bindsym $mod+o fullscreen toggle
+bindsym $mod+q kill
+
+bindsym $mod+Down resize shrink height 10 px or 10 ppt
+bindsym $mod+Left resize shrink width 10 px or 10 ppt
+bindsym $mod+Right resize grow width 10 px or 10 ppt
+bindsym $mod+Up resize grow height 10 px or 10 ppt
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+q exit
+
+bindsym $mod+Shift+BackSpace exec --no-startup-id sudo systemctl restart display-manager.service
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Shift+m exec st -c 'home-manager-switch' fish -c 'home-manager switch -b bak || read -P "Continue..."' 
+bindsym $mod+space exec rofi -show drun
+bindsym Print --release exec /nix/store/lhgl79w7jsgmhpx99zfqn35jbwps8rrz-takeScreenshot/bin/takeScreenshot
+bindsym Shift+Print --release exec /nix/store/lhgl79w7jsgmhpx99zfqn35jbwps8rrz-takeScreenshot/bin/takeScreenshot -s
+bindsym XF86AudioLowerVolume exec amixer set Master 5%-
+bindsym XF86AudioMute exec amixer set Master toggle
+bindsym XF86AudioRaiseVolume exec amixer set Master 5%+
+
+### Status bar
+
+bar {
+  status_command SCRIPTS=/home/berserk/.config/i3blocks i3blocks
+  position top
+  font pango:SF Pro Rounded semibold 9
+  status_padding 0
+  colors {
+    background #eee8d5
+    statusline #06080a
+    separator #657b83
+    focused_workspace #4c7899 #285577 #ffffff
+    active_workspace #333333 #5f676a #ffffff
+    inactive_workspace #333333 #222222 #888888
+    urgent_workspace #2f343a #900000 #ffffff
+    binding_mode #2f343a #900000 #ffffff
+  }
+}
+
+### Other
+
+gaps inner 7
+smart_gaps on
+default_border pixel 1
+title_align center
+for_window [class=home-manager-switch] floating enable
+for_window [window_role=GtkFileChooserDialog] floating enable
+for_window [window_role=GtkFileChooserDialog] resize set 2048 1536
+for_window [window_role=GtkFileChooserDialog] move position center
+for_window [window_role=pop-up] floating enable
+for_window [window_role=pop-up] resize set 2048 1536 
+for_window [window_role=pop-up] move position center

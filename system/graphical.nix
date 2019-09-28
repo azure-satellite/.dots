@@ -71,9 +71,9 @@
 
       xkbOptions = "ctrl:swapcaps";
 
-      displayManager.gdm = {
+      displayManager.lightdm = {
         enable = true;
-        wayland = false;
+        greeter.enable = false;
         autoLogin = {
           enable = true;
           user = config.users.users.berserk.name;
@@ -88,5 +88,8 @@
 
   programs = {
     dconf.enable = true;
+    sway = {
+      enable = true;
+    };
   };
 }

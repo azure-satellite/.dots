@@ -84,6 +84,8 @@
     };
   };
 
+  nix.trustedUsers = [ config.users.users.berserk.name ];
+
   # https://stackoverflow.com/questions/47952567/how-can-i3-config-execute-sudo-commands
   security.sudo.extraConfig = ''
     ${config.users.users.berserk.name} ALL=NOPASSWD: ALL

@@ -422,7 +422,7 @@
     "editor.renderIndentGuides": false,
     "editor.cursorBlinking": "solid",
     "editor.lineNumbers": "off",
-    "editor.fontFamily": "mono",
+    "editor.fontFamily": "SF Mono",
     "editor.minimap.enabled": false,
     "editor.scrollbar.horizontal": "hidden",
     "editor.scrollbar.vertical": "visible",

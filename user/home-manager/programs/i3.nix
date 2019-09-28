@@ -9,7 +9,7 @@ let
       ${coreutils}/bin/mkdir -p $(${coreutils}/bin/dirname "$PATH")
       ${maim}/bin/maim $1 -b 4 "$PATH"
       ${config.lib.aliases.cp-png} "$PATH"
-      ${libnotify}/bin/notify-send "Maim" "Screenshot saved to '$PATH'"
+      ${libnotify}/bin/notify-send -a Maim "Screenshot saved" "<u>$PATH</u>"
     '';
   });
 
@@ -111,8 +111,8 @@ in
     package = pkgs.i3-gaps;
 
     config = {
-      fonts = with config.lib.fonts; [
-        "${serif.name} ${toString serif.size}"
+      fonts = with config.lib; [
+        (functions.fontConfigString { font = fonts.ui; step = 0.5; })
       ];
 
       gaps = {
@@ -124,20 +124,20 @@ in
         with config.lib.colors.palette;
         with config.lib.colors.theme;
         rec {
-          focused = rec {
-            background = default.fg;
-            text = default.bg;
-            border = background;
-            childBorder = background;
-            indicator = childBorder;
+          focused = {
+            background = base1;
+            text = base7;
+            border = base2;
+            childBorder = base2;
+            indicator = base2;
           };
 
-          unfocused = rec {
+          unfocused = {
             background = base3;
             text = base6;
             border = base4;
-            childBorder = background;
-            indicator = childBorder;
+            childBorder = base3;
+            indicator = base3;
           };
 
           # For example: Tab color when it has splits
@@ -149,9 +149,8 @@ in
 
       bars = [
         {
-          fonts = with config.lib.fonts; [
-            "${serif.name} ${toString serif.size}"
-            "Font Awesome 5 Free ${toString serif.size}"
+          fonts = with config.lib; [
+            (functions.fontConfigString { font = fonts.ui; })
           ];
           command = "${pkgs.i3-gaps}/bin/i3bar -t";
           position = "top";
@@ -161,8 +160,8 @@ in
             with config.lib.colors.palette;
             with config.lib.colors.theme;
             {
-              background = default.bg;
-              statusline = default.fg;
+              background = base1;
+              statusline = base7;
               separator = comment.fg;
             };
         }
