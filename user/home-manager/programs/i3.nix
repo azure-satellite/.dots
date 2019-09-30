@@ -94,89 +94,50 @@ in
 
   home = {
     packages = with pkgs; [
-      i3blocks
       maim
       xclip
-      iw # Used by i3blocks networking script
-      inotify-tools # Used by i3blocks mail script
-      font-awesome # Used on the topbar 
     ];
   };
 
-  fonts.fontconfig.enable = true;
-
   xsession.windowManager.i3 = {
     enable = true;
-
     package = pkgs.i3-gaps;
-
     config = {
-      fonts = with config.lib; [
-        (functions.fontConfigString { font = fonts.ui; step = 0.5; })
-      ];
-
-      gaps = {
-        inner = 7;
-        smartGaps = true;
-      };
-
-      colors =
-        with config.lib.colors.palette;
-        with config.lib.colors.theme;
-        rec {
-          focused = {
-            background = base1;
-            text = base7;
-            border = base2;
-            childBorder = base2;
-            indicator = base2;
-          };
-
-          unfocused = {
-            background = base3;
-            text = base6;
-            border = base4;
-            childBorder = base3;
-            indicator = base3;
-          };
-
-          # For example: Tab color when it has splits
-          focusedInactive = focused // {
-            childBorder = unfocused.childBorder;
-            indicator = unfocused.indicator;
-          };
-        };
-
-      bars = [
-        {
-          fonts = with config.lib; [
-            (functions.fontConfigString { font = fonts.ui; })
-          ];
-          command = "${pkgs.i3-gaps}/bin/i3bar -t";
-          position = "top";
-          trayOutput = "none";
-          statusCommand = "SCRIPTS=${config.home.homeDirectory}/.config/i3blocks ${pkgs.i3blocks}/bin/i3blocks";
-          colors =
-            with config.lib.colors.palette;
-            with config.lib.colors.theme;
-            {
-              background = base1;
-              statusline = base7;
-              separator = comment.fg;
-            };
-        }
-      ];
-
-      modes = builtins.mapAttrs mkModeBindings {};
-
       inherit keybindings;
-
+      modes = builtins.mapAttrs mkModeBindings {};
       focus.followMouse = false;
+      fonts = with config.lib; [
+        (functions.fontConfigString (fonts.ui // { size = fonts.ui.size + 0.5; }))
+      ];
+      colors = with config.lib.colors.theme; rec {
+        focused = {
+          text = default.fg;
+          background = default.bg;
+          border = base2;
+          childBorder = base2;
+          indicator = base2;
+        };
+        unfocused = {
+          background = base3;
+          text = base6;
+          border = base4;
+          childBorder = base3;
+          indicator = base3;
+        };
+        # For example: Tab color when it has splits
+        focusedInactive = focused // {
+          childBorder = unfocused.childBorder;
+          indicator = unfocused.indicator;
+        };
+      };
     };
-
     extraConfig = ''
       default_border pixel 1
       title_align center
+
+      gaps inner 5
+      gaps outer -5
+      gaps top 0
 
       for_window [class=home-manager-switch] floating enable
 
@@ -188,39 +149,5 @@ in
       for_window [window_role=pop-up] resize set 2048 1536 
       for_window [window_role=pop-up] move position center
     '';
-  };
-
-  systemd.user = {
-    services = {
-      i3blocks-date = {
-        Unit = { Description = "Update i3blocks date"; };
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.procps}/bin/pkill -SIGRTMIN+2 i3blocks";
-        };
-      };
-
-      i3blocks-time = {
-        Unit = { Description = "Update i3blocks time"; };
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.procps}/bin/pkill -SIGRTMIN+3 i3blocks";
-        };
-      };
-    };
-
-    timers = {
-      i3blocks-date = {
-        Unit = { Description = "Update i3blocks date daily"; };
-        Timer = { OnCalendar = "daily"; Persistent = "true"; };
-        Install = { WantedBy = [ "timers.target" "graphical.target" ]; };
-      };
-
-      i3blocks-time = {
-        Unit = { Description = "Update i3blocks time by the minute"; };
-        Timer = { OnCalendar = "minutely"; };
-        Install = { WantedBy = [ "timers.target" "graphical.target" ]; };
-      };
-    };
   };
 }

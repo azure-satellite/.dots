@@ -5,7 +5,9 @@ with pkgs;
 {
   imports = [
     ./xkb
-    ./lib.nix
+    ./misc.nix
+    ./fonts.nix
+    ./colors.nix
     ./email.nix
     ./programs/direnv.nix
     ./programs/fish
@@ -14,6 +16,7 @@ with pkgs;
     ./programs/i3.nix
     ./programs/node.nix
     ./programs/nvim.nix
+    ./programs/neomutt
   ];
 
   manual.html.enable = true;
@@ -103,7 +106,7 @@ with pkgs;
   gtk = with config.lib; {
     # Cursors are set in xsession
     enable = true;
-    font.name = functions.fontConfigString { font = fonts.serif; };
+    font.name = functions.fontConfigString fonts.serif;
     theme.name = "Mojave-light-solid";
     # NOTE: The icon/theme name are not arbitrary. Check under
     # ~/.nix-profile/share/{icons,themes} for possible names
@@ -181,36 +184,30 @@ with pkgs;
 
   systemd.user.startServices = true;
 
-  xresources.properties =
-    with config.lib.colors.theme;
-    with config.lib.colors.palette;
-      {
-        "*.alpha" = "1.0";
-        "st.termname" = "st-256color";
-        "st.borderpx" = 0;
-        "st.font" = with config.lib; functions.xftString {
-          font = fonts.mono;
-          step = fonts.mono.size * 3;
-        };
-        "st.color0" = black;
-        "st.color1" = red;
-        "st.color2" = green;
-        "st.color3" = yellow;
-        "st.color4" = blue;
-        "st.color5" = magenta;
-        "st.color6" = cyan;
-        "st.color7" = white;
-        "st.color8" = base0;
-        "st.color9" = base1;
-        "st.color10" = base2;
-        "st.color11" = base3;
-        "st.color12" = base4;
-        "st.color13" = base5;
-        "st.color14" = base6;
-        "st.color15" = base7;
-        "st.cursorColor" = cursor.bg;
-        "st.background" = default.bg;
-        "st.foreground" = default.fg;
-      };
+  xresources.properties = with config.lib.colors.theme; {
+    "*.alpha"        = "1.0";
+    "st.termname"    = "st-256color";
+    "st.borderpx"    = 0;
+    "st.font"        = with config.lib; functions.xftString (fonts.mono // { size = fonts.mono.size * 4; });
+    "st.color0"      = black;
+    "st.color1"      = red;
+    "st.color2"      = green;
+    "st.color3"      = yellow;
+    "st.color4"      = blue;
+    "st.color5"      = magenta;
+    "st.color6"      = cyan;
+    "st.color7"      = white;
+    "st.color8"      = base0;
+    "st.color9"      = base1;
+    "st.color10"     = base2;
+    "st.color11"     = base3;
+    "st.color12"     = base4;
+    "st.color13"     = base5;
+    "st.color14"     = base6;
+    "st.color15"     = base7;
+    "st.cursorColor" = cursor.bg;
+    "st.foreground"  = default.fg;
+    "st.background"  = default.bg;
+  };
 }
 

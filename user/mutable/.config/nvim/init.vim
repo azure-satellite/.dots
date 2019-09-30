@@ -25,7 +25,7 @@ set spellfile=
 " q: When joining multiple lines, don't move the cursor all the way to the end
 set cpoptions+=q
 " Substitute live preview
-set inccommand=split
+set inccommand=nosplit
 " Better searching defaults
 set smartcase
 set ignorecase

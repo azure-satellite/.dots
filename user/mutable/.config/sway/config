@@ -124,7 +124,6 @@ bindsym XF86AudioRaiseVolume exec amixer set Master 5%+
 ### Status bar
 
 bar {
-  status_command SCRIPTS=/home/berserk/.config/i3blocks i3blocks
   position top
   font pango:SF Pro Rounded semibold 9
   status_padding 0

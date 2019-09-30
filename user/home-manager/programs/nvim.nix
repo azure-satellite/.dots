@@ -1,12 +1,8 @@
 { config, pkgs, ... }:
 
-with config.lib.colors;
-with config.lib.colors.palette;
-with config.lib.colors.attrs;
-
 let
 
-  higroups = rec {
+  higroups = with config.lib.colors.theme; with config.lib.colors.attrs; rec {
     StatusLine = { fg = base0; bg = base6; } // bold;
     StatusLineNC = { fg = base6; bg = base3; } // bold;
     # StatusLineTerm
@@ -31,14 +27,14 @@ let
     PmenuSbar = { bg = base2; };
     PmenuThumb = { bg = blue; };
 
-    Search = theme.highlight // { bg = base3; };
+    Search = highlight // { bg = base3; };
     IncSearch = Search;
     Substitute = Search;
     QuickFixLine = CursorLine;
 
-    # Cursor = theme.cursor;
-    TermCursor = theme.cursor;
-    TermCursorNC = theme.cursor;
+    # Cursor = cursor;
+    TermCursor = cursor;
+    TermCursorNC = cursor;
     CursorLine = { bg = base2; } // bold // underline;
     CursorColumn = { bg = base1; };
     CursorLineNr = { fg = base5; bg = base1; };
@@ -54,7 +50,7 @@ let
     Whitespace = NonText;
 
     # Others
-    Normal = { fg = theme.default.fg; };
+    Normal = { fg = default.fg; };
     SpecialKey = { fg = base3; };
     MatchParen = Normal // { bg = orange; };
     Title = { fg = orange; };
@@ -70,10 +66,10 @@ let
     FoldColumn = LineNr;
 
     # :h group-name
-    Comment = theme.comment;
+    Comment = comment;
 
     Constant = { fg = blue; };
-    String = theme.string;
+    String = string;
     Character = Constant;
     Number = Constant;
     Boolean = Constant;
@@ -112,7 +108,7 @@ let
 
     Ignore = { fg = cyan; };
 
-    Error = theme.error // reverse;
+    Error = error // reverse;
 
     Todo = { fg = yellow; } // bold;
 
@@ -182,7 +178,7 @@ let
     haskellKeyword = haskellDecl;
   };
 
-  terminalColors = [
+  terminalColors = with config.lib.colors.theme; [
     black red green yellow blue magenta cyan white
     base0 base1 base2 base3 base4 base5 base6 base7
   ];
@@ -212,7 +208,10 @@ in
       config.lib.functions.reduceAttrsToString
       ","
       (name: color: "'${name}': '${color}'")
-      palette
+      (with config.lib.colors.theme; { inherit
+        black red green yellow blue magenta cyan white
+        base0 base1 base2 base3 base4 base5 base6 base7;
+      })
     } }
     ${pkgs.lib.concatImapStringsSep "\n"
       (i: v: ''let g:terminal_color_${toString (i - 1)} = "${v}"'') terminalColors}

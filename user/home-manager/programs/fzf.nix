@@ -9,20 +9,20 @@ let
   # Color options (-1 means use terminal's default)
   fzfColors =
     with builtins;
-    with config.lib.colors;
+    with config.lib.colors.theme;
     concatStringsSep "," (attrValues (mapAttrs (k: v: "${k}:${v}") rec {
       # Unselected lines (including input line)
-      fg = theme.suggestion.fg;
+      fg = suggestion.fg;
       bg = "-1";
-      hl = theme.highlight.fg;
+      hl = highlight.fg;
 
       # Selected line
-      "fg+" = theme.selectedSuggestion.fg;
+      "fg+" = selectedSuggestion.fg;
       "bg+" = "-1"; # Setting a background makes a fringe on the left :(
-      "hl+" = theme.highlight.fg;
+      "hl+" = highlight.fg;
 
       marker = hl; # Multi-select marker
-      info = palette.base5; # Results count
+      info = base5; # Results count
       spinner = info; # Streaming input indicator
       header = info; # Header
       border = info; # Border of the preview window and horizontal separators (--border)

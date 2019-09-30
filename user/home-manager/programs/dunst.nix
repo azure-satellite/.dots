@@ -7,7 +7,7 @@
       name = "Papirus-Light";
       package = pkgs.papirus-icon-theme;
     };
-    settings = with config.lib.colors.palette; with config.lib.colors.theme; {
+    settings = with config.lib.colors.theme; {
       global = {
         # {width}][x{height}][+/-{x}[+/-{y}]]
         geometry = "1000x10-10+80";
@@ -18,10 +18,8 @@
         frame_color = base1;
         separator_color = base1;
         sort = false;
-        font = with config.lib; functions.fontConfigString {
-          font = fonts.ui;
-          step = 0.5;
-        };
+        font = with config.lib;
+          functions.fontConfigString (fonts.ui // { size = fonts.ui.size + 0.5; });
         markup = "full";
         format = "<b>%a</b>\\n<span foreground='#333'>%s\\n%b</span>";
         show_age_threshold = 60;
