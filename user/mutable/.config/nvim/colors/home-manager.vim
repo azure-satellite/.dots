@@ -1,1 +1,1 @@
-/nix/store/i59pqsfjshnkmyfx5v1mpzamrn4r15vc-home-manager-files/.config/nvim/colors/home-manager.vim
+/nix/store/6m5s15li7blyjg3rgh7521i9m90rq8g0-home-manager-files/.config/nvim/colors/home-manager.vim

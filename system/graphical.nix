@@ -6,6 +6,11 @@
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
 
+  # https://github.com/flatpak/xdg-desktop-portal/issues/336
+  # https://github.com/NixOS/nixpkgs/pull/65449
+  # Mainly to shut off endless warnings in journalctl
+  xdg.portal.gtkUsePortal = true;
+
   hardware = {
     nvidiaOptimus.disable = true;
 
@@ -89,7 +94,7 @@
   programs = {
     dconf.enable = true;
     sway = {
-      enable = true;
+      enable = false;
     };
   };
 }

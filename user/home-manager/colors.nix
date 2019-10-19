@@ -91,22 +91,47 @@ attrs = {
 
 themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
   solarizedLight = with palettes.solarized; {
-    default = { fg = base0; bg = base7; };
-    cursor = { bg = "#CF000F"; };
+    # UI
+    primary = { fg = base7; bg = orange; };
+    # Text
+    text = { fg = base0; bg = base7; };
+    cursor = { fg = base7; bg = "#cf000f"; };
+    comment = { fg = base4; };
+    error = { fg = red; } // attrs.bold;
+    string = { fg = green; };
+    highlight = { fg = red; } // attrs.bold;
+    suggestion = { fg = base1; };
+    selectedSuggestion = { fg = base0; } // attrs.bold;
+  } // palettes.solarized;
+
+  gotham = with palettes.gotham; {
+    # UI
+    primary = { fg = base7; bg = base0; };
+    # TODO: replace this with a lighter/darker shade of primary
+    primaryRaised = { fg = base7; bg = base3; };
+    # Text
+    text = { fg = base6; bg = base0; };
+    cursor = { fg = base0; bg = "#72f970"; };
     comment = { fg = base4; };
     error = { fg = red; } // attrs.bold;
     string = { fg = cyan; } // attrs.italic;
     highlight = { fg = yellow; } // attrs.bold;
     suggestion = { fg = base5; };
     selectedSuggestion = { fg = base6; } // attrs.bold;
-  } // palettes.solarized;
+  } // palettes.gotham;
 };
 
 in
 
 {
-  lib.colors = {
-    inherit attrs;
-    theme = themes.solarizedLight;
+  lib = {
+    functions = {
+      lighten = color: {
+      };
+    };
+    colors = {
+      inherit attrs;
+      theme = themes.gotham;
+    };
   };
 }

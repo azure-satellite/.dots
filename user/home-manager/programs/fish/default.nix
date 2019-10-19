@@ -9,24 +9,24 @@ let
     with config.lib.colors.attrs;
     rec {
       # Command line
-      fish_color_normal = { fg = default.fg; };
-      fish_color_command = { fg = default.fg; };
+      fish_color_normal = { fg = text.fg; };
+      fish_color_command = { fg = text.fg; };
       fish_color_quote = string;
-      fish_color_redirection = { fg = default.fg; };
-      fish_color_end = { fg = default.fg; };
+      fish_color_redirection = { fg = text.fg; };
+      fish_color_end = { fg = text.fg; };
       fish_color_error = error;
       fish_color_param = { fg = base5; };
       fish_color_comment = comment;
       fish_color_match = { fg = green; };
-      fish_color_selection = { fg = default.fg; }; # Selected text in Vi mode
+      fish_color_selection = { fg = text.fg; }; # Selected text in Vi mode
       fish_color_operator = { fg = base5; };
       fish_color_escape = { fg = orange; };
 
       # Prompt
-      fish_color_cwd = { fg = green; } // bold;
-      fish_color_user = { fg = base5; } // bold;
-      fish_color_host = { fg = base5; } // bold;
-      fish_color_prompt = { fg = base5; } // bold; # Non-standard. Only for my custom prompt function
+      fish_color_cwd = string // bold;
+      fish_color_user = text // bold;
+      fish_color_host = text // bold;
+      fish_color_prompt = text // bold; # Non-standard. Only for my custom prompt function
 
       # Others
       fish_color_autosuggestion = comment; # History suggestion when typing a command

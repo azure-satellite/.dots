@@ -9,22 +9,19 @@ with pkgs;
     ./fonts.nix
     ./colors.nix
     ./email.nix
+    ./programs/default.nix
     ./programs/direnv.nix
     ./programs/fish
     ./programs/fzf.nix
     ./programs/git.nix
     ./programs/i3.nix
     ./programs/node.nix
-    ./programs/nvim.nix
-    ./programs/neomutt
   ];
 
   manual.html.enable = true;
 
   home = {
     packages = [
-      # Terminal
-      (neovim.override { viAlias = true; vimAlias = true; })
       ffmpeg
       libnotify
       pandoc
@@ -39,19 +36,12 @@ with pkgs;
       xdotool
       youtube-dl
       unrar
-
-      # GUI
-      brave
-      calibre
       font-manager
       imagemagick
-      mcomix
       peek
       robo3t
       slack
-      transmission-gtk
-      vscode
-
+      tokei
       # Appearance
       # adapta-gtk-theme
       mojave-gtk-theme
@@ -83,10 +73,6 @@ with pkgs;
       name = "Vanilla-DMZ";
       size = 64;
     };
-
-    initExtra = ''
-      [ -f ${config.home.homeDirectory}/.fehbg ] && ${config.home.homeDirectory}/.fehbg &
-      '';
 
     # Written to ~/.xprofile
     # We need to export variables here as opposed to lib.sessionVariables
@@ -127,31 +113,6 @@ with pkgs;
     home-manager = {
       enable = true;
       path = "${config.lib.paths.userSrc}/home-manager";
-    };
-
-    feh.enable = true;
-
-    zathura = {
-      enable = true;
-      extraConfig = ''
-        map d scroll half-down
-        map u scroll half-up
-      '';
-    };
-
-    mpv = {
-      enable = true;
-      config = {
-        # Enable hardware acceleration. See
-        # https://nixos.wiki/wiki/Accelerated_Video_Playback
-        vo = "gpu";
-        hwdec = "vaapi";
-        hwdec-codecs = "all";
-        # https://github.com/mpv-player/mpv/issues/4241
-        ytdl-format = "bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best";
-        # Prevent harmless warnings/errors when using hardware decoding
-        msg-level = "vo=fatal";
-      };
     };
 
     bash = {
@@ -206,8 +167,8 @@ with pkgs;
     "st.color14"     = base6;
     "st.color15"     = base7;
     "st.cursorColor" = cursor.bg;
-    "st.foreground"  = default.fg;
-    "st.background"  = default.bg;
+    "st.foreground"  = text.fg;
+    "st.background"  = text.bg;
   };
 }
 

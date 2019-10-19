@@ -22,6 +22,9 @@
   # should.
   system.stateVersion = "18.09";
 
+  # https://github.com/NixOS/nixpkgs/pull/68671
+  systemd.tmpfiles.rules = [ "f /etc/netgroup" ];
+
   boot = {
     loader = {
       systemd-boot.enable = true;

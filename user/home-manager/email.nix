@@ -6,7 +6,7 @@ let
     inherit primary address;
     realName = "Alejandro Hernandez";
     flavor = "gmail.com";
-    passwordCommand = "PASSWORD_STORE_DIR=${config.lib.sessionVariables.PASSWORD_STORE_DIR} ${pkgs.pass}/bin/pass email/${name} | head -n1";
+    passwordCommand = "PASSWORD_STORE_DIR=${config.lib.sessionVariables.PASSWORD_STORE_DIR} ${pkgs.pass}/bin/pass email/${name} | ${pkgs.coreutils}/bin/head -n1";
     maildir.path = name;
     smtp.tls.useStartTls = true;
     imap.tls.useStartTls = false;
@@ -34,7 +34,7 @@ let
 in
 
 {
-  imports = [ ./programs/mbsync.nix ./programs/neomutt ];
+  imports = [ ./programs/mbsync.nix ];
 
   lib.email = { inherit concatAccounts; };
 

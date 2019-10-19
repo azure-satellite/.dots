@@ -31,11 +31,5 @@ in
       buildInputs = old.buildInputs ++ [ pkgs.gtk3 ];
       nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.makeWrapper pkgs.wrapGAppsHook ];
     });
-
-    # # The idea being to use it for firefox addons, contributed by the
-    # # home-manager author, but it's not working right now
-    # nur = import nur {
-    #   inherit pkgs;
-    # };
   };
 }

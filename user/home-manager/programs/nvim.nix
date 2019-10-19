@@ -32,7 +32,7 @@ let
     Substitute = Search;
     QuickFixLine = CursorLine;
 
-    # Cursor = cursor;
+    Cursor = cursor;
     TermCursor = cursor;
     TermCursorNC = cursor;
     CursorLine = { bg = base2; } // bold // underline;
@@ -50,7 +50,7 @@ let
     Whitespace = NonText;
 
     # Others
-    Normal = { fg = default.fg; };
+    Normal = { fg = text.fg; };
     SpecialKey = { fg = base3; };
     MatchParen = Normal // { bg = orange; };
     Title = { fg = orange; };
@@ -199,6 +199,10 @@ let
 in
 
 {
+  home.packages = with pkgs; [
+    (neovim.override { viAlias = true; vimAlias = true; })
+  ];
+
   xdg.configFile."nvim/colors/home-manager.vim".text = ''
     hi clear
     if exists('syntax_on') | syntax reset | endif

@@ -154,7 +154,7 @@ let &statusline .= '%='
 let &statusline .= '%{&ft} '
 let &statusline .= '▏%{&ff} '
 let &statusline .= '%{core#statusline_linter()}'
-let &statusline .= '▏%p%% '
+let &statusline .= '▏%l:%c %p%% '
 
 " Commands {{{1
 
@@ -217,6 +217,9 @@ nnoremap <expr> <silent> <leader>w (get(getloclist(0, {'winid': 1}), 'winid') !=
 " Make * and # work on visual mode too
 xnoremap * :call core#vsetsearch('/')<cr>/<c-r>=@/<cr><cr>
 xnoremap # :call core#vsetsearch('?')<cr>?<c-r>=@/<cr><cr>
+" https://vi.stackexchange.com/questions/2365/how-can-i-get-n-to-go-forward-even-if-i-started-searching-with-or
+nnoremap <expr> n (v:searchforward ? 'n' : 'N')
+nnoremap <expr> N (v:searchforward ? 'N' : 'n')
 
 " Autocommands {{{1
 
@@ -264,6 +267,7 @@ let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#label_esc = "\<Space>"
 map : <Plug>Sneak_,
+hi! link SneakScope TermCursor
 
 " Text objects {{{2
 
@@ -518,8 +522,9 @@ Plug 'https://github.com/smallwat3r/vim-mono-sw' " {{{3
 Plug 'https://github.com/zaki/zazen' " {{{3
 Plug 'https://github.com/ryanpcmcquen/true-monochrome_vim' " {{{3
 Plug 'https://github.com/andreasvc/vim-256noir' " {{{3
-Plug 'https://github.com/chrisbra/Colorizer' " {{{3
-nmap <leader>tc <cmd>ColorToggle<CR>
+Plug 'https://github.com/norcalli/nvim-colorizer.lua' " {{{3
+" Plug 'https://github.com/chrisbra/Colorizer' " {{{3
+" nmap <leader>tc <cmd>ColorToggle<CR>
 let g:colorizer_colornames = 0
 let g:colorizer_disable_bufleave = 1
 Plug 'https://github.com/junegunn/seoul256.vim' " {{{3
@@ -660,6 +665,6 @@ syntax manual
 " :h syn-sync-third
 syntax sync minlines=50
 set background=light
-silent! colorscheme solarized8_high
+silent! colorscheme home-manager
 
 " vim: fdm=marker

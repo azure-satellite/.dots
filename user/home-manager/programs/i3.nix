@@ -107,22 +107,22 @@ in
       modes = builtins.mapAttrs mkModeBindings {};
       focus.followMouse = false;
       fonts = with config.lib; [
-        (functions.fontConfigString (fonts.ui // { size = fonts.ui.size + 0.5; }))
+        (functions.fontConfigString fonts.ui)
       ];
-      colors = with config.lib.colors.theme; rec {
-        focused = {
-          text = default.fg;
-          background = default.bg;
-          border = base2;
-          childBorder = base2;
-          indicator = base2;
+      colors = with config.lib.colors; rec {
+        focused = rec {
+          text = theme.text.bg;
+          background = theme.text.fg;
+          border = theme.base5;
+          childBorder = border;
+          indicator = border;
         };
-        unfocused = {
-          background = base3;
-          text = base6;
-          border = base4;
-          childBorder = base3;
-          indicator = base3;
+        unfocused = rec {
+          text = theme.text.fg;
+          background = theme.text.bg;
+          border = theme.base2;
+          childBorder = border;
+          indicator = border;
         };
         # For example: Tab color when it has splits
         focusedInactive = focused // {
@@ -134,10 +134,11 @@ in
     extraConfig = ''
       default_border pixel 1
       title_align center
+      smart_gaps on
+      smart_borders on
 
-      gaps inner 5
-      gaps outer -5
-      gaps top 0
+      gaps inner 11
+      gaps outer -4
 
       for_window [class=home-manager-switch] floating enable
 

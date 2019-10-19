@@ -21,7 +21,7 @@
         font = with config.lib;
           functions.fontConfigString (fonts.ui // { size = fonts.ui.size + 0.5; });
         markup = "full";
-        format = "<b>%a</b>\\n<span foreground='#333'>%s\\n%b</span>";
+        format = "<b>%a</b>: <span foreground='#333'>%s\\n%b</span>";
         show_age_threshold = 60;
         word_wrap = true;
         max_icon_size = 64;

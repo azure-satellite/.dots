@@ -64,17 +64,6 @@ sessionVariables = rec {
   # Hack to get home-manager to reload session variables on switches
   __HM_SESS_VARS_SOURCED = "";
 
-  # Default applications
-  # The whole userBin thing is so these variables point to the correct one
-  # if we build a different version
-  BROWSER = "${paths.userBin}/firefox";
-  TERMINAL = "${paths.userBin}/st";
-  EDITOR = "${paths.userBin}/nvim";
-  VISUAL = "${EDITOR}";
-  MAILER = "${paths.userBin}/neomutt";
-  PAGER = "${paths.systemBin}/less";
-  MANPAGER = "${paths.systemBin}/less -s -M";
-
   # HiDPI stuff
   GDK_SCALE = "2";
   GDK_DPI_SCALE = "0.5";

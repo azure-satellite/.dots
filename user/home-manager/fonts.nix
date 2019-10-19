@@ -1,6 +1,12 @@
 { config, pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    iosevka
+  ];
+
+  fonts.fontconfig.enable = true;
+
   lib = {
     functions = {
       fontConfigString = font: with pkgs.lib.strings;
@@ -11,7 +17,7 @@
     };
 
     fonts = {
-      mono = { name = "SF Mono"; attrs = ["medium"]; size = 9; };
+      mono = { name = "Iosevka"; attrs = []; size = 9; };
       sans = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
       serif = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
       ui = { name = "SF Pro Rounded"; attrs = ["medium"]; size = 9; };
