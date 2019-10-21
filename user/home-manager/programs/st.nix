@@ -4,11 +4,11 @@ with pkgs;
 
 {
   home.packages = [
-    st.overrideAttrs (old: {
+    (st.overrideAttrs (old: {
       name = "st-compiled";
       src = ./st;
       buildInputs = old.buildInputs ++ [ xorg.libXcursor ];
-    })
+    }))
   ];
 
   xresources.properties = with config.lib.colors.theme; {

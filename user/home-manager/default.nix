@@ -6,8 +6,8 @@
     ./email.nix
     ./programs/default.nix
     ./modules/default.nix
-    ./desktops/gnome-i3.nix 
-    # ./desktops/none.nix
+    # ./desktops/gnome-i3.nix 
+    ./desktops/none.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -84,10 +84,9 @@
 
   lib.vars = rec {
     home = config.home.homeDirectory;
-    isNixos = builtins.pathExists /etc/NIXOS;
     userBin = "${home}/.nix-profile/bin";
     userSrc = "${home}/Code";
-    systemBin = if isNixos then "/run/current-system/sw/bin" else "/usr/bin";
+    systemBin = if config.lib.vars.isNixos then "/run/current-system/sw/bin" else "/usr/bin";
   };
 
   lib.fonts = {

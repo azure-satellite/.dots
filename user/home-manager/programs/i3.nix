@@ -11,6 +11,23 @@ let
       ${config.lib.aliases.cp-png} "$PATH"
       ${libnotify}/bin/notify-send -a Maim "Screenshot saved" "<u>$PATH</u>"
     '';
+
+    # i3 thread: https://faq.i3wm.org/question/150/how-to-launch-a-terminal-from-here/?answer=152#post-id-152
+    openTerminal = ''
+      # Get window ID
+      ID=$(${xorg.xdpyinfo}/bin/xdpyinfo | ${gnugrep}/bin/grep focus | ${coreutils}/bin/cut -f4 -d " ")
+
+      # Get PID of process whose window this is
+      PID=$(${xorg.xprop}/bin/xprop -id $ID | ${gnugrep}/bin/grep -m 1 PID | ${coreutils}/bin/cut -f3 -d " ")
+
+      # Get last child process (shell, vim, etc)
+      if [ -n "$PID" ]; then
+        PID=$(${pstree}/bin/pstree $PID | ${coreutils}/bin/tail -n1 | ${gawk}/bin/awk -v RS=[0-9]+ '{print RT+0;exit}')
+      fi
+
+      echo $PID
+      cd $(${coreutils}/bin/readlink /proc/$PID/cwd || echo ${config.home.homeDirectory}) && ${config.home.sessionVariables.TERMINAL}
+    '';
   });
 
   mkModeBindings = name: mode:
@@ -47,7 +64,7 @@ let
     "Mod1 + Shift + 7" = "move container to workspace 7";
     "Mod1 + Shift + 8" = "move container to workspace 8";
     "Mod1 + Shift + 9" = "move container to workspace 9";
-    "Mod1+Tab"         = "workspace back_and_forth";
+    "Mod1 + Tab"       = "workspace back_and_forth";
 
     # Window commands
     "Mod1+p"           = "focus parent";
@@ -78,7 +95,7 @@ let
     "XF86AudioMute"        = "exec amixer set Master toggle";
     "Print"                = ''--release exec ${scripts.takeScreenshot.bin}'';
     "Shift+Print"          = ''--release exec ${scripts.takeScreenshot.bin} -s'';
-    "Mod1+Return"          = "exec i3-sensible-terminal";
+    "Mod1+Return"          = "exec ${scripts.openTerminal.bin}";
     "Mod1+space"           = "exec rofi -show drun";
     "Mod1+Shift+m"         = ''exec st -c 'home-manager-switch' fish -c 'home-manager switch -b bak || read -P "Continue..."' '';
   };

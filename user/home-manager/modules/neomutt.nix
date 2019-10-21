@@ -79,9 +79,9 @@ in
     '';
 
     xdg.configFile."mutt/muttrc".text = ''
-      set mailcap_path = "${mailcap}"
-      ${concatAccounts "\n" (i: v: mkFolderHook v "<F${toString i}>")}
       ${cfg.config}
+      ${concatAccounts "\n" (i: v: mkFolderHook v "<F${toString i}>")}
+      set mailcap_path = "${mailcap}"
     '';
   };
 }

@@ -134,7 +134,7 @@ with pkgs;
   };
 
   services.compton = {
-    enable = true;
+    enable = false;
     shadow = true;
   };
 
