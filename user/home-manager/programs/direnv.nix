@@ -5,7 +5,7 @@
     direnv = {
       enable = true;
       config.whitelist.prefix = [
-        config.lib.paths.userSrc
+        config.lib.vars.userSrc
       ];
     };
     fish = {

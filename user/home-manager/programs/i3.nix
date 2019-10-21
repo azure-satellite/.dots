@@ -5,7 +5,7 @@ let
   scripts = config.lib.functions.writeShellScriptsBin (with pkgs; {
     takeScreenshot = ''
       set -e
-      PATH="${config.home.homeDirectory}/Pictures/screenshots/$(date +%s).png"
+      PATH="${config.lib.vars.home}/Pictures/screenshots/$(date +%s).png"
       ${coreutils}/bin/mkdir -p $(${coreutils}/bin/dirname "$PATH")
       ${maim}/bin/maim $1 -b 4 "$PATH"
       ${config.lib.aliases.cp-png} "$PATH"
@@ -111,7 +111,7 @@ in
       ];
       colors = with config.lib.colors; rec {
         focused = rec {
-          text = theme.text.bg;
+          text = theme.primary.bg;
           background = theme.text.fg;
           border = theme.base5;
           childBorder = border;
@@ -119,7 +119,7 @@ in
         };
         unfocused = rec {
           text = theme.text.fg;
-          background = theme.text.bg;
+          background = theme.primary.bg;
           border = theme.base2;
           childBorder = border;
           indicator = border;

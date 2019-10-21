@@ -79,7 +79,6 @@ in
   programs = {
     fish = {
       enable = true;
-
       interactiveShellInit = with config.lib.functions; ''
         set fish_greeting
         ${reduceAttrsToString "\n" (k: v: ''alias --save ${k}="${v}"'') config.lib.aliases}
@@ -92,7 +91,7 @@ in
   xdg.configFile = {
     "fish/functions" = {
       recursive = true;
-      source = ./functions;
+      source = ./fish/functions;
     };
 
     "fish/functions/fisher.fish".source = builtins.fetchurl "https://raw.githubusercontent.com/jorgebucaran/fisher/master/fisher.fish?nocache";

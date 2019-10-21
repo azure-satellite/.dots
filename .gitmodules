@@ -2,3 +2,6 @@
 	path = user/mutable/.local/share/pass
 	url = https://github.com/stellarhoof/pass
 	branch = master
+[submodule "user/home-manager/programs/st"]
+	path = user/home-manager/programs/st
+	url = https://github.com/stellarhoof/st

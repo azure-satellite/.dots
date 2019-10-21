@@ -1,174 +1,274 @@
 { config, pkgs, ... }:
 
-with pkgs;
-
 {
   imports = [
-    ./xkb
-    ./misc.nix
-    ./fonts.nix
     ./colors.nix
     ./email.nix
     ./programs/default.nix
-    ./programs/direnv.nix
-    ./programs/fish
-    ./programs/fzf.nix
-    ./programs/git.nix
-    ./programs/i3.nix
-    ./programs/node.nix
+    ./modules/default.nix
+    ./desktops/gnome-i3.nix 
+    # ./desktops/none.nix
   ];
 
+  fonts.fontconfig.enable = true;
+  home.keyboard.options = [ "ctrl:swapcaps" ];
+  home.packages = with pkgs; [ iosevka ];
   manual.html.enable = true;
-
-  home = {
-    packages = [
-      ffmpeg
-      libnotify
-      pandoc
-      pass
-      python
-      python37
-      ripgrep
-      st
-      tig
-      tree
-      universal-ctags
-      xdotool
-      youtube-dl
-      unrar
-      font-manager
-      imagemagick
-      peek
-      robo3t
-      slack
-      tokei
-      # Appearance
-      # adapta-gtk-theme
-      mojave-gtk-theme
-      # sierra-gtk-theme
-      # numix-gtk-theme
-      # paper-gtk-theme
-      # pantheon.elementary-gtk-theme
-      qgnomeplatform
-      # arc-icon-theme
-      # numix-icon-theme
-      # numix-icon-theme-square
-      # numix-icon-theme-circle
-      # pantheon.elementary-icon-theme
-      # elementary-xfce-icon-theme
-      # tango-icon-theme
-      papirus-icon-theme
-    ];
-
-    sessionVariables = config.lib.sessionVariables;
-  };
-
-  xdg.enable = true;
-
-  xsession = {
-    enable = true;
-
-    pointerCursor = {
-      package = vanilla-dmz;
-      name = "Vanilla-DMZ";
-      size = 64;
-    };
-
-    # Written to ~/.xprofile
-    # We need to export variables here as opposed to lib.sessionVariables
-    # because we don't want them quoted
-    profileExtra = ''
-      mkdir -p ${config.home.homeDirectory}/.local/share/tig
-      export LESS_TERMCAP_mb=$'\e[0;1;31m'
-      export LESS_TERMCAP_md=$'\e[0;1;31m'
-      export LESS_TERMCAP_me=$'\e[0;39m'
-      export LESS_TERMCAP_se=$'\e[0;39m'
-      export LESS_TERMCAP_so=$'\e[0;1;30;43m'
-      export LESS_TERMCAP_ue=$'\e[0;39m'
-      export LESS_TERMCAP_us=$'\e[0;1;32m'
-    '';
-  };
-
-  gtk = with config.lib; {
-    # Cursors are set in xsession
-    enable = true;
-    font.name = functions.fontConfigString fonts.serif;
-    theme.name = "Mojave-light-solid";
-    # NOTE: The icon/theme name are not arbitrary. Check under
-    # ~/.nix-profile/share/{icons,themes} for possible names
-    iconTheme.name = "Papirus-Light";
-    gtk3.extraConfig = {
-      "gtk-enable-animations" = false;
-      "gtk-enable-event-sounds" = false;
-      "gtk-enable-input-feedback-sounds" = false;
-    };
-  };
-
-  qt = {
-    enable = true;
-    platformTheme = "gnome";
-  };
-
-  programs = {
-    home-manager = {
-      enable = true;
-      path = "${config.lib.paths.userSrc}/home-manager";
-    };
-
-    bash = {
-      enable = true;
-      historyControl = [ "erasedups" "ignorespace" ];
-      historyFile = "${config.home.homeDirectory}/.cache/bash_history";
-      historyIgnore = [ "\"&" "[ ]*" "exit" "ls" "bg" "fg" "env" "history" "clear\"" ];
-      shellAliases = config.lib.aliases;
-      shellOptions = [
-        "checkwinsize" "globstar" "globasciiranges" "direxpand"
-        "dirspell" "histappend" "cmdhist" "autocd" "cdspell"
-      ];
-    };
-  };
-
-  services = {
-    # compton = {
-    #   enable = true;
-    #   shadow = true;
-    # };
-    gpg-agent = let ttl = 60480000; in {
-      enable = true;
-      enableSshSupport = true;
-      defaultCacheTtl = ttl;
-      defaultCacheTtlSsh = ttl;
-      maxCacheTtl = ttl;
-      maxCacheTtlSsh = ttl;
-    };
-  };
-
+  programs.home-manager.enable = true;
+  programs.home-manager.path = "${config.lib.vars.userSrc}/home-manager";
   systemd.user.startServices = true;
+  xdg.enable = true;
+  xdg.mimeApps.enable = true;
 
-  xresources.properties = with config.lib.colors.theme; {
-    "*.alpha"        = "1.0";
-    "st.termname"    = "st-256color";
-    "st.borderpx"    = 0;
-    "st.font"        = with config.lib; functions.xftString (fonts.mono // { size = fonts.mono.size * 4; });
-    "st.color0"      = black;
-    "st.color1"      = red;
-    "st.color2"      = green;
-    "st.color3"      = yellow;
-    "st.color4"      = blue;
-    "st.color5"      = magenta;
-    "st.color6"      = cyan;
-    "st.color7"      = white;
-    "st.color8"      = base0;
-    "st.color9"      = base1;
-    "st.color10"     = base2;
-    "st.color11"     = base3;
-    "st.color12"     = base4;
-    "st.color13"     = base5;
-    "st.color14"     = base6;
-    "st.color15"     = base7;
-    "st.cursorColor" = cursor.bg;
-    "st.foreground"  = text.fg;
-    "st.background"  = text.bg;
+  # Written to ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+  # - Sourced by .profile
+  # - Sourced by .config/fish/config.fish
+  # - Sourced by .xprofile (which also sources .profile)
+  home.sessionVariables = with config.home;
+  let
+    profiles = [ "/nix/var/nix/profiles/default" "$HOME/.nix-profile" ];
+    dataDirs = pkgs.lib.concatStringsSep ":" (map (profile: "${profile}/share") profiles);
+  in
+  {
+    # Hack to reload session variables on switches
+    __HM_SESS_VARS_SOURCED = "";
+    # https://github.com/rycee/home-manager/pull/797/files
+    XDG_DATA_DIRS          = "${dataDirs}\${XDG_DATA_DIRS:+:}$XDG_DATA_DIRS";
+    # https://github.com/NixOS/nixpkgs/issues/38991 
+    LOCALE_ARCHIVE         = "${pkgs.glibcLocales}/lib/locale/locale-archive";
+    # https://github.com/NixOS/nixpkgs/issues/3382
+    GIT_SSL_CAINFO         = "$NIX_SSL_CERT_FILE";
+    # Manpages related
+    GROFF_NO_SGR           = "1";
+    # https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
+    PASSWORD_STORE_DIR     = "${homeDirectory}/.local/share/pass";
+    LESSKEY                = "${homeDirectory}/.config/less/lesskey";
+    LESSHISTFILE           = "${homeDirectory}/.cache/less_history";
+    PSQL_HISTORY           = "${homeDirectory}/.cache/postgres_history";
+    MYSQL_HISTFILE         = "${homeDirectory}/.cache/mysql_history";
+    GEM_HOME               = "${homeDirectory}/.local/share/gem";
+    GEM_SPEC_CACHE         = "${homeDirectory}/.cache/gem";
+    GOPATH                 = "${homeDirectory}/.local/share";
+    WEECHAT_HOME           = "${homeDirectory}/.config/weechat";
+    TERMINFO               = "${homeDirectory}/.local/share/terminfo";
+    NOTMUCH_CONFIG         = "${homeDirectory}/.config/notmuch/notmuchrc";
+    NMBGIT                 = "${homeDirectory}/.local/share/notmuch/nmbug";
+    INPUTRC                = "${homeDirectory}/.config/readline/inputrc";
+    RUSTUP_HOME            = "${homeDirectory}/.local/share/rustup";
+    STACK_ROOT             = "${homeDirectory}/.local/share/stack";
+    WGETRC                 = "${homeDirectory}/.config/wgetrc";
+    ICEAUTHORITY           = "${homeDirectory}/.cache/ICEauthority";
+    SQLITE_HISTORY         = "${homeDirectory}/.cache/sqlite_history";
+    DOCKER_CONFIG          = "${homeDirectory}/.config/docker";
+  };
+
+  lib.aliases = rec {
+    cp = "cp -i";
+    df = "df -h";
+    diff = "diff --color=auto";
+    du = "du -ch --summarize";
+    fst = "sed -n '1p'";
+    snd = "sed -n '2p'";
+    ls = "env LC_ALL=C ls --color=auto --group-directories-first";
+    la = "${ls} -a";
+    ll = "${ls} -lh";
+    l = "${ls} -alh";
+    less = "less -R";
+    map = "xargs -n1";
+    maplines = "xargs -n1 -0";
+    mongo = "mongo --norc";
+    open = "xdg-open";
+    dmesg = "dmesg -H";
+    node-shell = "set -lx PATH $PWD/node_modules/.bin $PATH; nix-shell -p nodejs yarn";
+  };
+
+  lib.vars = rec {
+    home = config.home.homeDirectory;
+    isNixos = builtins.pathExists /etc/NIXOS;
+    userBin = "${home}/.nix-profile/bin";
+    userSrc = "${home}/Code";
+    systemBin = if isNixos then "/run/current-system/sw/bin" else "/usr/bin";
+  };
+
+  lib.fonts = {
+    mono = { name = "Iosevka"; attrs = []; size = 9; };
+    sans = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
+    serif = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
+    ui = { name = "SF Pro Rounded"; attrs = ["medium"]; size = 9; };
+  };
+
+  lib.mimetypes = {
+    image = [
+      "image/bmp"
+      "image/gif"
+      "image/jpeg"
+      "image/jpg"
+      "image/pjpeg"
+      "image/png"
+      "image/tiff"
+      "image/webp"
+      "image/x-bmp"
+      "image/x-pcx"
+      "image/x-png"
+      "image/x-portable-anymap"
+      "image/x-portable-bitmap"
+      "image/x-portable-graymap"
+      "image/x-portable-pixmap"
+      "image/x-tga"
+      "image/x-xbitmap"
+    ];
+    audio = [
+      "application/mxf"
+      "application/ogg"
+      "application/sdp"
+      "application/smil"
+      "application/streamingmedia"
+      "application/vnd.rn-realmedia"
+      "application/vnd.rn-realmedia-vbr"
+      "application/x-extension-m4a"
+      "application/x-ogg"
+      "application/x-smil"
+      "application/x-streamingmedia"
+      "audio/3gpp"
+      "audio/3gpp2"
+      "audio/AMR"
+      "audio/aac"
+      "audio/ac3"
+      "audio/aiff"
+      "audio/amr-wb"
+      "audio/dv"
+      "audio/eac3"
+      "audio/flac"
+      "audio/m3u"
+      "audio/m4a"
+      "audio/mp1"
+      "audio/mp2"
+      "audio/mp3"
+      "audio/mp4"
+      "audio/mpeg"
+      "audio/mpeg2"
+      "audio/mpeg3"
+      "audio/mpegurl"
+      "audio/mpg"
+      "audio/musepack"
+      "audio/ogg"
+      "audio/opus"
+      "audio/rn-mpeg"
+      "audio/scpls"
+      "audio/vnd.dolby.heaac.1"
+      "audio/vnd.dolby.heaac.2"
+      "audio/vnd.dts"
+      "audio/vnd.dts.hd"
+      "audio/vnd.rn-realaudio"
+      "audio/vorbis"
+      "audio/wav"
+      "audio/webm"
+      "audio/x-aac"
+      "audio/x-adpcm"
+      "audio/x-aiff"
+      "audio/x-ape"
+      "audio/x-m4a"
+      "audio/x-matroska"
+      "audio/x-mp1"
+      "audio/x-mp2"
+      "audio/x-mp3"
+      "audio/x-mpegurl"
+      "audio/x-mpg"
+      "audio/x-ms-asf"
+      "audio/x-ms-wma"
+      "audio/x-musepack"
+      "audio/x-pls"
+      "audio/x-pn-au"
+      "audio/x-pn-realaudio"
+      "audio/x-pn-wav"
+      "audio/x-pn-windows-pcm"
+      "audio/x-realaudio"
+      "audio/x-scpls"
+      "audio/x-shorten"
+      "audio/x-tta"
+      "audio/x-vorbis"
+      "audio/x-vorbis+ogg"
+      "audio/x-wav"
+      "audio/x-wavpack"
+    ];
+    video = [
+      "video/mpeg"
+      "video/x-mpeg2"
+      "video/x-mpeg3"
+      "video/mp4v-es"
+      "video/x-m4v"
+      "video/mp4"
+      "application/x-extension-mp4"
+      "video/divx"
+      "video/vnd.divx"
+      "video/msvideo"
+      "video/x-msvideo"
+      "video/ogg"
+      "video/quicktime"
+      "video/vnd.rn-realvideo"
+      "video/x-ms-afs"
+      "video/x-ms-asf"
+      "application/vnd.ms-asf"
+      "video/x-ms-wmv"
+      "video/x-ms-wmx"
+      "video/x-ms-wvxvideo"
+      "video/x-avi"
+      "video/avi"
+      "video/x-flic"
+      "video/fli"
+      "video/x-flc"
+      "video/flv"
+      "video/x-flv"
+      "video/x-theora"
+      "video/x-theora+ogg"
+      "video/x-matroska"
+      "video/mkv"
+      "application/x-matroska"
+      "video/webm"
+      "video/x-ogm"
+      "video/x-ogm+ogg"
+      "application/x-ogm"
+      "application/x-ogm-audio"
+      "application/x-ogm-video"
+      "application/x-shorten"
+      "video/mp2t"
+      "application/x-mpegurl"
+      "video/vnd.mpegurl"
+      "application/vnd.apple.mpegurl"
+      "video/3gp"
+      "video/3gpp"
+      "video/3gpp2"
+      "video/dv"
+      "application/x-cue"
+    ];
+    text = [
+      "text/plain"
+      "text/html"
+      "text/xml"
+    ];
+    xscheme = [
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+      "x-scheme-handler/ftp"
+    ];
+  };
+
+  lib.functions = {
+    writeShellScriptsBin = builtins.mapAttrs (name: text:
+      let deriv = pkgs.writeShellScriptBin name text;
+      in deriv // { bin = "${deriv}/bin/${deriv.name}"; }
+    );
+
+    reduceAttrsToString = sep: fn: attrs:
+      builtins.concatStringsSep sep (pkgs.lib.mapAttrsToList fn attrs);
+
+    fontConfigString = font: with pkgs.lib.strings;
+      "${font.name} ${concatStringsSep " " font.attrs} ${toString font.size}";
+
+    xftString = font: with pkgs.lib.strings;
+      "${font.name}:${concatStringsSep ":" font.attrs}:pixelsize=${toString font.size}";
+
+    defaultMimeApp = desktop: mimelist:
+      builtins.listToAttrs (builtins.map (mime: { name = mime; value = desktop; }) mimelist);
   };
 }
-

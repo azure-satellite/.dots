@@ -664,7 +664,7 @@ call plug#end() " {{{2
 syntax manual
 " :h syn-sync-third
 syntax sync minlines=50
-set background=light
+set background=dark
 silent! colorscheme home-manager
 
 " vim: fdm=marker

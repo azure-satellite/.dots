@@ -6,6 +6,11 @@
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
 
+  # https://github.com/flatpak/xdg-desktop-portal/issues/336
+  # https://github.com/NixOS/nixpkgs/pull/65449
+  # Mainly to shut off endless warnings in journalctl
+  xdg.portal.gtkUsePortal = true;
+
   hardware = {
     nvidiaOptimus.disable = true;
 
@@ -19,7 +24,16 @@
   };
 
   fonts = {
-    fontconfig = { dpi = 282; };
+    # https://github.com/NixOS/nixpkgs/issues/69073
+    fonts = [
+      pkgs.twemoji-color-font
+    ];
+    fontconfig = {
+      dpi = 282;
+      antialias = true;
+      hinting.enable = true;
+      subpixel.lcdfilter = "default";
+    };
   };
 
   environment = {
@@ -30,7 +44,7 @@
   };
 
   services = {
-    dbus.packages = [ pkgs.gnome3.dconf ];
+    dbus.packages = [ pkgs.gnome3.dconf pkgs.gnome2.GConf ];
 
     xserver = {
       enable = true;
@@ -71,15 +85,7 @@
         };
       };
 
-      windowManager = {
-        default = "i3";
-        i3.enable = true;
-      };
-
-      desktopManager = {
-        default = "none";
-        xterm.enable = false;
-      };
+      desktopManager.gnome3.enable = true;
     };
 
     xbanish.enable = true;
@@ -87,5 +93,8 @@
 
   programs = {
     dconf.enable = true;
+    sway = {
+      enable = false;
+    };
   };
 }
