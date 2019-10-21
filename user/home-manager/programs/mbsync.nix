@@ -1,9 +1,12 @@
 { config, pkgs, ... }:
 
-with config.lib.email;
 with config.accounts.email;
 
 let
+
+  concatAccounts = separator: fn:
+    builtins.concatStringsSep separator
+      (pkgs.lib.imap1 fn (builtins.attrNames accounts));
 
   mkChannel = acct: local: remote: ''
     Channel ${acct}-${pkgs.lib.strings.toLower local}

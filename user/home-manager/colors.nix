@@ -23,22 +23,22 @@ palettes = {
   };
 
   gotham = {
-    red	    = "#c23127";
-    orange	= "#d26937";
-    yellow	= "#edb443";
+    red     = "#c23127";
+    orange  = "#d26937";
+    yellow  = "#edb443";
     green   = "#2aa889";
-    cyan	  = "#33859e";
-    blue	  = "#195466";
-    violet	= "#4e5166";
-    magenta	= "#888ca6";
-    base0	  = "#0c1014";
-    base1	  = "#11151c";
-    base2	  = "#091f2e";
-    base3	  = "#0a3749";
-    base4	  = "#245361";
-    base5	  = "#599cab";
-    base6	  = "#99d1ce";
-    base7	  = "#d3ebe9";
+    cyan    = "#33859e";
+    blue    = "#195466";
+    violet  = "#4e5166";
+    magenta = "#888ca6";
+    base0   = "#0c1014";
+    base1   = "#11151c";
+    base2   = "#091f2e";
+    base3   = "#0a3749";
+    base4   = "#245361";
+    base5   = "#599cab";
+    base6   = "#99d1ce";
+    base7   = "#d3ebe9";
   };
 
   nordLight = {
@@ -110,7 +110,7 @@ themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
     # TODO: replace this with a lighter/darker shade of primary
     primaryRaised = { fg = base7; bg = base3; };
     # Text
-    text = { fg = base6; bg = base0; };
+    text = { fg = base6; };
     cursor = { fg = base0; bg = "#72f970"; };
     comment = { fg = base4; };
     error = { fg = red; } // attrs.bold;
@@ -124,14 +124,8 @@ themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
 in
 
 {
-  lib = {
-    functions = {
-      lighten = color: {
-      };
-    };
-    colors = {
-      inherit attrs;
-      theme = themes.gotham;
-    };
+  lib.colors = {
+    inherit attrs;
+    theme = themes.gotham;
   };
 }

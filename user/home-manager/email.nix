@@ -6,7 +6,7 @@ let
     inherit primary address;
     realName = "Alejandro Hernandez";
     flavor = "gmail.com";
-    passwordCommand = "PASSWORD_STORE_DIR=${config.lib.sessionVariables.PASSWORD_STORE_DIR} ${pkgs.pass}/bin/pass email/${name} | ${pkgs.coreutils}/bin/head -n1";
+    passwordCommand = "PASSWORD_STORE_DIR=${config.home.sessionVariables.PASSWORD_STORE_DIR} ${pkgs.pass}/bin/pass email/${name} | ${pkgs.coreutils}/bin/head -n1";
     maildir.path = name;
     smtp.tls.useStartTls = true;
     imap.tls.useStartTls = false;
@@ -28,20 +28,15 @@ let
     smartprocure = { address = "ahernandez@govspend.com"; };
   };
 
-  concatAccounts = separator: fn:
-    builtins.concatStringsSep separator
-      (pkgs.lib.imap1 fn (builtins.attrNames accounts));
 in
 
 {
   imports = [ ./programs/mbsync.nix ];
 
-  lib.email = { inherit concatAccounts; };
-
   programs.msmtp.enable = true;
 
   accounts.email = {
     inherit accounts;
-    maildirBasePath = "${config.home.homeDirectory}/Mail";
+    maildirBasePath = "${config.lib.vars.home}/Mail";
   };
 }

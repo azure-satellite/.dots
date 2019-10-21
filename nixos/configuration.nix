@@ -22,6 +22,9 @@
   # should.
   system.stateVersion = "18.09";
 
+  # https://github.com/NixOS/nixpkgs/pull/68671
+  systemd.tmpfiles.rules = [ "f /etc/netgroup" ];
+
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -83,6 +86,8 @@
       uid = 1000;
     };
   };
+
+  nix.trustedUsers = [ config.users.users.berserk.name ];
 
   # https://stackoverflow.com/questions/47952567/how-can-i3-config-execute-sudo-commands
   security.sudo.extraConfig = ''

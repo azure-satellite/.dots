@@ -17,6 +17,5 @@
     ln -sf ${toString ./user/mutable/.config/sway} ~/.config
     ln -sf ${toString ./user/mutable/.config/Code/User} ~/.config/Code
     ln -sf ${toString ./user/mutable/.local/share/pass} ~/.local/share/
-    sudo ln -sfT ${toString ./system} /etc/nixos
   '';
 }

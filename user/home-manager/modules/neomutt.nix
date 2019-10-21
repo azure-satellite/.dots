@@ -1,12 +1,13 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ...}:
 
-with config.lib.email;
-with config.accounts.email;
+with lib;
 
 let
 
+  cfg = config.programs.neomutt;
+
   mkAccountFile = name:
-    let acct = builtins.getAttr name accounts; in
+    let acct = builtins.getAttr name config.accounts.email.accounts; in
     pkgs.writeText "${name}_account" ''
       set from = "${acct.address}"
       set hostname = "gmail.com"
@@ -28,6 +29,10 @@ let
     push ${shortcut}
   '';
 
+  concatAccounts = separator: fn:
+    builtins.concatStringsSep separator
+      (pkgs.lib.imap1 fn (builtins.attrNames config.accounts.email.accounts));
+
   mailcap = pkgs.writeText "mailcap" ''
     image/jpg; ${./view_attachment.sh} %s jpg
     image/jpeg; ${./view_attachment.sh} %s jpg
@@ -42,19 +47,41 @@ let
 in
 
 {
-  home = {
-    packages = with pkgs; [ neomutt urlview ];
-    file.".urlview".text = "COMMAND xdg-open %s";
+  options.programs.neomutt = {
+    enable = mkEnableOption ''
+      Neomutt
+    '';
+
+    config = mkOption {
+      type = types.str;
+      description = ''
+        Extra configuration
+      '';
+      example = ''
+        set history_file = ~/.cache/mutt/history
+      '';
+    };
   };
 
-  xdg.configFile."mutt/muttrc".text = ''
-    ${builtins.readFile ./colors}
-    ${builtins.readFile ./unbindings}
-    ${builtins.readFile ./bindings}
-    ${builtins.readFile ./muttrc}
-    set history_file = "${config.home.homeDirectory}/.cache/mutt/history"
-    set mailcap_path = "${mailcap}"
-    set folder = "${maildirBasePath}"
-    ${concatAccounts "\n" (i: v: mkFolderHook v "<F${toString i}>")}
-  '';
+  config = mkIf cfg.enable {
+    home.packages = [ pkgs.neomutt pkgs.urlview ];
+    home.file.".urlview".text = "COMMAND xdg-open %s";
+
+    xdg.dataFile."applications/neomutt.desktop".text = ''
+      [Desktop Entry]
+      Name=Neomutt
+      Comment=Email client
+      Exec=neomutt %U
+      Terminal=true
+      Type=Application
+      Icon=terminal
+      Categories=Email;
+    '';
+
+    xdg.configFile."mutt/muttrc".text = ''
+      set mailcap_path = "${mailcap}"
+      ${concatAccounts "\n" (i: v: mkFolderHook v "<F${toString i}>")}
+      ${cfg.config}
+    '';
+  };
 }

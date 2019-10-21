@@ -18,7 +18,13 @@ let
 in
 
 {
-  home.packages = [ gitAndTools.hub ];
+  home.packages = [ gitAndTools.hub tig ];
+
+  xsession.profileExtra = "mkdir -p ${config.lib.vars.home}/.local/share/tig";
+
+  lib.aliases = {
+    git = "hub";
+  };
 
   programs.git = {
     enable = true;
@@ -85,7 +91,7 @@ in
     ];
 
     includes = [{
-      condition = "gitdir:${config.lib.paths.userSrc}/smartprocure/";
+      condition = "gitdir:${config.lib.vars.userSrc}/smartprocure/";
       contents = {
         user = with config.accounts.email.accounts.smartprocure; {
           email = address;

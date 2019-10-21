@@ -73,7 +73,7 @@ in {
         font-1 = "${functions.xftString (fonts.ui // { size = fonts.ui.size + 1.5; })};3";
         foreground = text.fg;
         # foreground = primary.fg;
-        background = text.bg;
+        background = primary.bg;
         # background = primary.bg;
         line-size = 3;
         border-top-size = 2;

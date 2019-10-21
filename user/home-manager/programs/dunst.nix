@@ -26,7 +26,7 @@
         word_wrap = true;
         max_icon_size = 64;
         dmenu = "${pkgs.dmenu}/bin/dmenu -p dunst";
-        browser = config.lib.sessionVariables.BROWSER;
+        browser = config.home.sessionVariables.BROWSER;
         corner_radius = 5;
         mouse_left_click = "do_action";
       };

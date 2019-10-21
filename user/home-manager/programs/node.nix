@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ nodejs-11_x yarn ];
+  home.packages = with pkgs; [ nodejs yarn ];
 
-  lib.sessionVariables = with config.home; rec {
+  home.sessionVariables = with config.home; rec {
     # Node/npm
     NPM_PACKAGES = "${homeDirectory}/.local/share/npm";
     PATH = "${homeDirectory}/.local/bin:${NPM_PACKAGES}/bin:$PATH";
@@ -15,10 +15,10 @@
   };
 
   xdg.configFile."npm/npmrc.global".text = with config.home; ''
-    prefix=${config.lib.sessionVariables.NPM_PACKAGES}
+    prefix=${config.home.sessionVariables.NPM_PACKAGES}
     cache=${homeDirectory}/.cache/npm
     init-module=${homeDirectory}/.config/npm/npm-init.js
     globalignorefile=${homeDirectory}/.config/npm/npmignore
-    cafile=${config.lib.sessionVariables.SSL_CERT_FILE}
+    cafile=$NIX_SSL_CERT_FILE
   '';
 }
