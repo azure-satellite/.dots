@@ -25,14 +25,17 @@ if [[ ! -d $code/fzf.vim ]]; then
 fi
 
 # Install everything!
-if [[ ! -f /tmp/home-manager-install-done ]]; then
+hmdone=/tmp/home-manager-install-done
+if [[ ! -f $hmdone ]]; then
 	home-manager -f $code/furnisher/default.nix -b bak switch
-	touch /tmp/home-manager-install-done
+	touch $hmdone
 fi
 
-if false; then
-	# TODO: Make this script idempotent
-	./$code/furnisher/user/mutable/.local/share/pass/install.sh
+keyimported=/tmp/gpg-key-imported
+if [[ ! -f $keyimported ]]; then
+    gpg --import $code/furnisher/user/mutable/.local/share/pass/gpg/store{,.pub}
+    gpg --edit-key $(cat .gpg-id) trust quit
+    touch $keyimported
 fi
 
 # Add ssh keys
@@ -65,3 +68,6 @@ if !(cat /etc/shells | grep $fish > /dev/null); then
 	echo $fish | sudo tee -a /etc/shells
 	sudo chsh -s "$fish" $USER
 fi
+
+rm $hmdone $keyimported
+echo "Done. All that's left is to logout and log back in"
