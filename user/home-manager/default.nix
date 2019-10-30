@@ -7,7 +7,7 @@
     ./programs/default.nix
     ./modules/default.nix
     # ./desktops/gnome-i3.nix 
-    ./desktops/none.nix
+    # ./desktops/none.nix
   ];
 
   fonts.fontconfig.enable = true;
