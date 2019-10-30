@@ -196,6 +196,7 @@ let
       ));
     in
     ''hi! ${higroup} guifg=${def.fg} guibg=${def.bg} gui=${if attrs != "" then attrs else "NONE"}'';
+
 in
 
 {
@@ -203,7 +204,7 @@ in
     (neovim.override { viAlias = true; vimAlias = true; })
   ];
 
-  xdg.configFile."nvim/colors/home-manager.vim".text = ''
+  xdg.configFile."generatedNvim/colors/home-manager.vim".text = ''
     hi clear
     if exists('syntax_on') | syntax reset | endif
     set background=dark

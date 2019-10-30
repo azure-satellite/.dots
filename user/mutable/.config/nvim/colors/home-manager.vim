@@ -1,1 +1,0 @@
-/nix/store/sd66405sk3vanpbl0yc1grl96gj1z42f-home-manager-files/.config/nvim/colors/home-manager.vim

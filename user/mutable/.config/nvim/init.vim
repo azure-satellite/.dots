@@ -677,6 +677,7 @@ augroup END
 
 " Rest {{{1
 
+set rtp+=~/.config/generatedNvim
 syntax manual
 " :h syn-sync-third
 syntax sync minlines=50

@@ -14,9 +14,7 @@
   # https://github.com/rycee/home-manager/issues/589
   home.activation.linkMyFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
-    ln -sf ${toString ./user/mutable/.config/nvim} ~/.config/
-    ln -sf ${toString ./user/mutable/.config/sway} ~/.config
-    ln -sf ${toString ./user/mutable/.local/share/pass} ~/.local/share/
+    ${pkgs.stow}/bin/stow -d ${toString ./user} -t ~ mutable
     ${if config.lib.vars.isNixos then "sudo ln -sfT ${toString ./nixos} /etc/nixos" else ""}
   '';
 }
