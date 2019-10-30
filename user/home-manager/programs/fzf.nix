@@ -44,7 +44,7 @@ let
 in
 
 {
-  lib.sessionVariables = { inherit FZF_DEFAULT_COMMAND FZF_DEFAULT_OPTS; };
+  home.sessionVariables = { inherit FZF_DEFAULT_COMMAND FZF_DEFAULT_OPTS; };
 
   programs = {
     fzf = rec {

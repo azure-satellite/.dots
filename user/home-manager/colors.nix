@@ -110,7 +110,7 @@ themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
     # TODO: replace this with a lighter/darker shade of primary
     primaryRaised = { fg = base7; bg = base3; };
     # Text
-    text = { fg = base6; };
+    text = { fg = base6; bg = "#000000"; };
     cursor = { fg = base0; bg = "#72f970"; };
     comment = { fg = base4; };
     error = { fg = red; } // attrs.bold;

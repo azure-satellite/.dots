@@ -50,7 +50,7 @@ with pkgs;
   };
 
   lib.aliases = {
-    cp-png = "xclip -selection clipboard -t image/png";
+    cp-png = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
     cloc = "tokei";
     rg = ''rg --glob \"!package-lock.json\" --glob \"!package.json\" --glob \"!.git/*\" --smart-case --hidden'';
     grep = config.lib.aliases.rg;

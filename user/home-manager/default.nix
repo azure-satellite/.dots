@@ -12,7 +12,7 @@
 
   fonts.fontconfig.enable = true;
   home.keyboard.options = [ "ctrl:swapcaps" ];
-  home.packages = with pkgs; [ iosevka ];
+  home.packages = with pkgs; [ iosevka fira-code ];
   manual.html.enable = true;
   programs.home-manager.enable = true;
   programs.home-manager.path = "${config.lib.vars.userSrc}/home-manager";
@@ -26,7 +26,7 @@
   # - Sourced by .xprofile (which also sources .profile)
   home.sessionVariables = with config.home;
   let
-    profiles = [ "/nix/var/nix/profiles/default" "$HOME/.nix-profile" ];
+    profiles = [ "$HOME/.nix-profile" ];
     dataDirs = pkgs.lib.concatStringsSep ":" (map (profile: "${profile}/share") profiles);
   in
   {
@@ -37,7 +37,7 @@
     # https://github.com/NixOS/nixpkgs/issues/38991 
     LOCALE_ARCHIVE         = "${pkgs.glibcLocales}/lib/locale/locale-archive";
     # https://github.com/NixOS/nixpkgs/issues/3382
-    GIT_SSL_CAINFO         = "$NIX_SSL_CERT_FILE";
+    GIT_SSL_CAINFO         = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
     # Manpages related
     GROFF_NO_SGR           = "1";
     # https://wiki.archlinux.org/index.php/XDG_Base_Directory_support

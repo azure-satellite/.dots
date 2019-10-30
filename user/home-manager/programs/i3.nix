@@ -13,6 +13,7 @@ let
     '';
 
     # i3 thread: https://faq.i3wm.org/question/150/how-to-launch-a-terminal-from-here/?answer=152#post-id-152
+    # gist: https://gist.github.com/viking/5851049
     openTerminal = ''
       # Get window ID
       ID=$(${xorg.xdpyinfo}/bin/xdpyinfo | ${gnugrep}/bin/grep focus | ${coreutils}/bin/cut -f4 -d " ")
@@ -25,7 +26,6 @@ let
         PID=$(${pstree}/bin/pstree $PID | ${coreutils}/bin/tail -n1 | ${gawk}/bin/awk -v RS=[0-9]+ '{print RT+0;exit}')
       fi
 
-      echo $PID
       cd $(${coreutils}/bin/readlink /proc/$PID/cwd || echo ${config.home.homeDirectory}) && ${config.home.sessionVariables.TERMINAL}
     '';
   });
@@ -112,7 +112,6 @@ in
   home = {
     packages = with pkgs; [
       maim
-      xclip
     ];
   };
 

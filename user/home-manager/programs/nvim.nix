@@ -22,7 +22,7 @@ let
     SpellLocal = { fg = yellow; };
     SpellRare = { fg = base7; bg = violet; };
 
-    Pmenu = { bg = base2; };
+    Pmenu = { bg = base1; };
     PmenuSel = { fg = base7; bg = blue; };
     PmenuSbar = { bg = base2; };
     PmenuThumb = { bg = blue; };

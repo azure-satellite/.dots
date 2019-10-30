@@ -16,7 +16,6 @@
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
     ln -sf ${toString ./user/mutable/.config/nvim} ~/.config/
     ln -sf ${toString ./user/mutable/.config/sway} ~/.config
-    ln -sf ${toString ./user/mutable/.config/Code/User} ~/.config/Code
     ln -sf ${toString ./user/mutable/.local/share/pass} ~/.local/share/
     ${if config.lib.vars.isNixos then "sudo ln -sfT ${toString ./nixos} /etc/nixos" else ""}
   '';

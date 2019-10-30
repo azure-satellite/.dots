@@ -33,6 +33,6 @@ with pkgs;
     "st.color15"     = base7;
     "st.cursorColor" = cursor.bg;
     "st.foreground"  = text.fg;
-    "st.background"  = primary.bg;
+    "st.background"  = text.bg;
   };
 }
