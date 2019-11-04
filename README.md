@@ -4,7 +4,7 @@ These are my personal dotfiles, managed with https://github.com/rycee/home-manag
 
 ## Install
 
-curl https://raw.githubusercontent.com/stellarhoof/furnisher/master/install.sh | sh
+`curl https://raw.githubusercontent.com/stellarhoof/furnisher/master/install.sh | bash`
 
 ## What's in the box
 
