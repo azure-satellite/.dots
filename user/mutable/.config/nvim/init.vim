@@ -202,6 +202,7 @@ function! s:coc_settings() abort
     nmap <buffer> <leader>lf <plug>(coc-refactor)
     xmap <buffer> <leader>la <plug>(coc-codeaction-selected)
     nmap <buffer> <leader>la <plug>(coc-codeaction-selected)
+    nnoremap <buffer> <leader>li :call CocActionAsync('runCommand', 'tsserver.organizeImports')<cr>
     function! s:check_back_space() abort
         let col = col('.') - 1
         return !col || getline('.')[col - 1]  =~ '\s'
@@ -273,7 +274,7 @@ nnoremap <silent> <space>f <cmd>exec 'Files ' . fnamemodify(expand('%'), ':~:h')
 nnoremap <silent> <space>g <cmd>GLFiles<cr>
 
 Plug 'https://github.com/ludovicchabant/vim-gutentags' " {{{3
-let g:gutentags_cache_dir = '~/.cache/gutentags'
+let g:gutentags_cache_dir = expand($HOME).'/.cache/gutentags'
 let g:gutentags_ctags_exclude = [
 \ '.git',
 \ 'node_modules',
