@@ -12,9 +12,11 @@
   lib.vars.isNixos = builtins.pathExists /etc/NIXOS;
 
   # https://github.com/rycee/home-manager/issues/589
-  home.activation.linkMyFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.activation.sideEffects = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
     ${pkgs.stow}/bin/stow -d ${toString ./user} -t ~ mutable
     ${if config.lib.vars.isNixos then "sudo ln -sfT ${toString ./nixos} /etc/nixos" else ""}
+
+    ${pkgs.lib.concatStringsSep "\n" (builtins.attrValues config.lib.activations)}
   '';
 }

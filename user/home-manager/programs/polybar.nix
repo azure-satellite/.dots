@@ -45,7 +45,7 @@ scripts = config.lib.functions.writeShellScriptsBin {
 
 in {
   services.polybar = {
-    enable = true;
+    enable = false;
     script = "polybar main &";
     package = pkgs.polybar.override {
       i3GapsSupport = true;

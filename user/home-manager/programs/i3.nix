@@ -86,8 +86,8 @@ let
     # Reloading
     "Mod1+Shift+c"         = "reload";
     "Mod1+Shift+r"         = "restart";
-    "Mod1+Shift+q"         = "exit";
-    "Mod1+Shift+BackSpace" = "exec --no-startup-id sudo systemctl restart display-manager.service";
+    "Mod1+Shift+q"         = "exec /usr/bin/gnome-session-quit --logout";
+    "Mod1+Shift+BackSpace" = "exec /usr/bin/gnome-session-quit --reboot";
 
     # External commands
     "XF86AudioRaiseVolume" = "exec amixer set Master 5%+";

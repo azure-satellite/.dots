@@ -11,6 +11,7 @@ with pkgs;
     ./python.nix
     ./nvim.nix
     ./fish.nix
+    ./st.nix
   ];
 
   home.packages = [
@@ -45,9 +46,23 @@ with pkgs;
     ];
     profileExtra = ''
       ${lib.optionalString (!config.lib.vars.isNixos) ''. "${nix}/etc/profile.d/nix.sh"''}
+      export NIX_PATH="$HOME/.nix-defexpr/channels:nixpkgs=$HOME/.nix-defexpr/channels"
     '';
 
   };
+
+  programs.neomutt = {
+    enable = true;
+    config = ''
+      ${builtins.readFile ./neomutt/colors}
+      ${builtins.readFile ./neomutt/unbindings}
+      ${builtins.readFile ./neomutt/bindings}
+      ${builtins.readFile ./neomutt/muttrc}
+      set history_file = "${config.lib.vars.home}/.cache/mutt/history"
+      set folder = "${config.accounts.email.maildirBasePath}"
+    '';
+  };
+  lib.aliases.mail = "neomutt";
 
   lib.aliases = {
     cp-png = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
@@ -67,6 +82,8 @@ with pkgs;
     VISUAL = "${userBin}/nvim";
     PAGER = "${systemBin}/less";
     MANPAGER = "${systemBin}/less -s -M";
+    MAILER = "${userBin}/neomutt";
+    TERMINAL = "${userBin}/st";
   };
 
   xdg.mimeApps.defaultApplications = with config.lib.mimetypes; with config.lib.functions;

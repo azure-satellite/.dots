@@ -6,7 +6,7 @@
     ./email.nix
     ./programs/default.nix
     ./modules/default.nix
-    # ./desktops/gnome-i3.nix 
+    ./desktops/gnome-i3.nix 
     # ./desktops/none.nix
   ];
 

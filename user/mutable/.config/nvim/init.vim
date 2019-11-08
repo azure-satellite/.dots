@@ -246,7 +246,7 @@ autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 
 Plug 'https://github.com/liuchengxu/vista.vim' " {{{3
 
-Plug 'https://github.com/junegunn/fzf' | Plug '~/Code/mine/fzf.vim', { 'branch': 'local-gfiles' } " {{{3
+Plug 'https://github.com/junegunn/fzf' | Plug '~/Code/fzf.vim', { 'branch': 'local-gfiles' } " {{{3
 let g:fzf_layout = {'window': 'call core#centered_floating_window(v:true)'}
 
 hi! link fzf1 StatusLine
@@ -330,30 +330,9 @@ Plug 'https://github.com/editorconfig/editorconfig-vim' " {{{3
 " Colors {{{2
 
 Plug 'https://github.com/norcalli/nvim-colorizer.lua' " {{{3
+au VimEnter * lua require'colorizer'.setup()
 
 " Other {{{2
-
-Plug 'https://github.com/mhinz/vim-startify' " {{{3
-let g:startify_change_to_vcs_root = 1
-let g:startify_fortune_use_unicode = 1
-let g:startify_change_to_dir = 0
-let g:startify_lists = [
-\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-\ ]
-let g:startify_bookmarks = [
-\ '~/Notes/random.md',
-\ '~/Notes/todo.md',
-\ '~/Resources/smartprocure/bid-search',
-\ '~/Resources/smartprocure/contexture-react',
-\ '~/Resources/smartprocure/contexture-client',
-\ '~/Resources/smartprocure/contexture',
-\ '~/Resources/smartprocure',
-\ '~/Code/mine/furnisher/user/home-manager',
-\ '~/Code/home-manager/modules',
-\ '~/Code/mine/trello-clone',
-\ ]
-autocmd User Startified setlocal buftype=nofile
-nnoremap <space>s <cmd>Startify<cr>
 
 Plug 'https://github.com/tpope/vim-characterize' " {{{3
 nmap gz <plug>(characterize)
@@ -557,9 +536,6 @@ set exrc
 set secure
 " True color support
 set termguicolors
-" Due to internal representation, Vim has problems with long lines in general.
-" Highlights lines till column 500.
-set synmaxcol=500
 " Do not auto-wrap long lines
 set formatoptions-=t
 " Keep cursor on the bottom window when splitting horizontally. Easier for

@@ -4,7 +4,6 @@ with pkgs;
 
 {
   imports = [
-    ../programs/st.nix
     ../programs/i3.nix
   ];
 
@@ -32,9 +31,6 @@ with pkgs;
   ];
 
   home.sessionVariables = with config.lib.vars; {
-    # Default programs
-    MAILER = "${userBin}/neomutt";
-    TERMINAL = "${userBin}/st";
     # HiDPI stuff
     GDK_SCALE = "2";
     GDK_DPI_SCALE = "0.5";
@@ -43,19 +39,6 @@ with pkgs;
     # Big discussion at Nixpkgs. Can't remember why it's here but it fixes shit.
     GDK_PIXBUF_MODULE_FILE = "${librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
   };
-
-  programs.neomutt = {
-    enable = true;
-    config = ''
-      ${builtins.readFile ../programs/neomutt/colors}
-      ${builtins.readFile ../programs/neomutt/unbindings}
-      ${builtins.readFile ../programs/neomutt/bindings}
-      ${builtins.readFile ../programs/neomutt/muttrc}
-      set history_file = "${config.lib.vars.home}/.cache/mutt/history"
-      set folder = "${config.accounts.email.maildirBasePath}"
-    '';
-  };
-  lib.aliases.mail = "neomutt";
 
   programs.feh.enable = true;
 
