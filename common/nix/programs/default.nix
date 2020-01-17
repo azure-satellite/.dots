@@ -7,7 +7,7 @@ with pkgs;
     ./direnv.nix
     ./fzf.nix
     ./git.nix
-    ./node.nix
+    # ./node.nix
     ./python.nix
     ./nvim.nix
     ./fish.nix
@@ -15,7 +15,7 @@ with pkgs;
   ];
 
   home.packages = [
-    brave
+    # brave
     calibre
     ffmpeg
     imagemagick
@@ -23,7 +23,7 @@ with pkgs;
     pass
     ripgrep
     robo3t
-    slack
+    # slack
     tokei
     transmission-gtk
     tree
@@ -44,7 +44,13 @@ with pkgs;
       "checkwinsize" "globstar" "globasciiranges" "direxpand"
       "dirspell" "histappend" "cmdhist" "autocd" "cdspell"
     ];
+    bashrcExtra = ''
+      export NVM_DIR="$HOME/.config/nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    '';
     profileExtra = ''
+      . $HOME/.nix-profile/etc/profile.d/nix.sh
       ${lib.optionalString (!config.lib.vars.isNixos) ''. "${nix}/etc/profile.d/nix.sh"''}
       export NIX_PATH="$HOME/.nix-defexpr/channels:nixpkgs=$HOME/.nix-defexpr/channels"
     '';
@@ -77,7 +83,7 @@ with pkgs;
     # Default applications
     # The whole userBin thing is so these variables point to the correct one
     # if we build a different version
-    BROWSER = "${userBin}/brave";
+    BROWSER = "/usr/bin/brave-browser";
     EDITOR = "${userBin}/nvim";
     VISUAL = "${userBin}/nvim";
     PAGER = "${systemBin}/less";

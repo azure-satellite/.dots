@@ -15,7 +15,7 @@
   home.activation.sideEffects = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${toString ./default.nix} ~/.config/nixpkgs/home.nix
     ${pkgs.stow}/bin/stow -d ${toString ./user} -t ~ mutable
-    ${if config.lib.vars.isNixos then "sudo ln -sfT ${toString ./nixos} /etc/nixos" else ""}
+    sudo ln -sfT ${toString ./nixos} /etc/nixos
 
     ${pkgs.lib.concatStringsSep "\n" (builtins.attrValues config.lib.activations)}
   '';

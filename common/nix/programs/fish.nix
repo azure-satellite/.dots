@@ -79,6 +79,10 @@ in
   programs = {
     fish = {
       enable = true;
+      # . /home/berserk/.nix-profile/etc/profile.d/hm-session-vars.sh
+      loginShellInit = ''
+        fenv source /home/berserk/.nix-profile/etc/profile.d/nix.sh > /dev/null
+      '';
       interactiveShellInit = with config.lib.functions; ''
         set fish_greeting
         ${reduceAttrsToString "\n" (k: v: ''alias --save ${k}="${v}"'') config.lib.aliases}

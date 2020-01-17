@@ -3,10 +3,10 @@
 {
   imports = [
     ./colors.nix
-    ./email.nix
+    # ./email.nix
     ./programs/default.nix
     ./modules/default.nix
-    ./desktops/gnome-i3.nix 
+    # ./desktops/gnome-i3.nix 
     # ./desktops/none.nix
   ];
 
@@ -86,7 +86,7 @@
     home = config.home.homeDirectory;
     userBin = "${home}/.nix-profile/bin";
     userSrc = "${home}/Code";
-    systemBin = if config.lib.vars.isNixos then "/run/current-system/sw/bin" else "/usr/bin";
+    systemBin = "/usr/bin";
   };
 
   lib.fonts = {

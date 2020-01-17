@@ -1,26 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
+
+os=""
+if [[ "$OSTYPE" == linux* ]]; then
+	os=$(grep -oP '^NAME="\K\w+' /etc/os-release | tr '[:upper:]' '[:lower:]')
+elif [[ "$OSTYPE" == darwin* ]]; then
+	os="darwin"
+fi
+[[ ! -d ./$os ]] && echo "Unsupported OS $os" && exit 1
 
 # Install nix
 if [[ ! -d /nix/store ]]; then
 	curl https://nixos.org/releases/nix/nix-2.3/install | sh
-	. ~/.nix-profile/etc/profile.d/nix.sh
+	. "~/.nix-profile/etc/profile.d/nix.sh"
 fi
 
-# Install home-manager
-if !(nix-channel --list | grep home-manager > /dev/null); then
-	nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
-	nix-channel --update
-	nix-shell '<home-manager>' -A install
-fi
-
-codedir=~/Code
-repodir=$codedir/furnisher
-fzfdir=$codedir/fzf.vim
-hmdir=$codedir/home-manager
-passdir=$repodir/user/mutable/.local/share/pass
-stdir=$repodir/user/home-manager/programs/st
+repodir="~/.furnisher"
+passdir="$repodir/common/mutable/.local/share/pass"
 
 # Clone and setup required repos
 function setOrigin {
@@ -28,21 +25,20 @@ function setOrigin {
 }
 if [[ ! -d $repodir ]]; then
 	git clone --recurse-submodules https://github.com/stellarhoof/furnisher $repodir
-    cd $repodir && setOrigin furnisher
-    cd $passdir && setOrigin pass
-    cd $stdir && setOrigin st
-    git checkout --track origin/config
+	cd "$repodir" && setOrigin furnisher
+	cd "$passdir" && setOrigin pass
+	cd "$repodir/user/home-manager/programs/st" && setOrigin st
+	cd "$repodir/common/home-manager" && setOrigin home-manager
+	cd "$repodir/common/fzf.vim" && setOrigin fzf.vim
 fi
-if [[ ! -d $fzfdir ]]; then
-	git clone https://github.com/stellarhoof/fzf.vim $fzfdir
-    cd $fzfdir && setOrigin fzf.vim
-    git checkout --track origin/local-gfiles
-fi
-if [[ ! -d $hmdir ]]; then
-    git clone https://github.com/stellarhoof/home-manager $hmdir
-    cd $hmdir && setOrigin home-manager
-    git checkout --track origin/my-changes
-fi
+
+cd $repodir
+
+nixdir=~/.config/nixpkgs
+mkdir -p $nixdir
+ln -sf "./$1/default.nix" "$nixdir/home.nix"
+ln -sf "./common/mutable/.config/nixpkgs/config.nix" "$nixdir/config.nix"
+nix-shell "./common/home-manager/default.nix" -A install
 
 # Install everything!
 hmdone=/tmp/home-manager-install-done
@@ -53,9 +49,9 @@ fi
 
 keyimported=/tmp/gpg-key-imported
 if [[ ! -f $keyimported ]]; then
-    gpg --import $passdir/gpg/store{,.pub}
-    gpg --edit-key $(cat $passdir/.gpg-id) trust quit
-    touch $keyimported
+	gpg --import $passdir/gpg/store{,.pub}
+	gpg --edit-key $(cat $passdir/.gpg-id) trust quit
+	touch $keyimported
 fi
 
 # Add ssh keys

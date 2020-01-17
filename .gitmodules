@@ -1,7 +1,16 @@
-[submodule "user/mutable/.local/share/pass"]
-	path = user/mutable/.local/share/pass
+[submodule "pass"]
+	path = modules/pass
 	url = https://github.com/stellarhoof/pass
 	branch = master
-[submodule "user/home-manager/programs/st"]
-	path = user/home-manager/programs/st
+[submodule "st"]
+	path = modules/st
 	url = https://github.com/stellarhoof/st
+	branch = config
+[submodule "home-manager"]
+	path = modules/home-manager
+	url = https://github.com/stellarhoof/home-manager
+	branch = my-changes
+[submodule "fzf.vim"]
+	path = modules/fzf.vim
+	url = https://github.com/stellarhoof/fzf.vim
+	branch = local-gfiles
