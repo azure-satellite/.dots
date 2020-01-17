@@ -85,7 +85,7 @@ with pkgs;
     # We need to export variables here as opposed to lib.sessionVariables
     # because we don't want them quoted
     profileExtra = ''
-      [ -f ${config.lib.vars.home}/.fehbg ] && ${config.lib.vars.home}/.fehbg &
+      [ -f ${config.home.homeDirectory}/.fehbg ] && ${config.home.homeDirectory}/.fehbg &
       export LESS_TERMCAP_mb=$'\e[0;1;31m'
       export LESS_TERMCAP_md=$'\e[0;1;31m'
       export LESS_TERMCAP_me=$'\e[0;39m'

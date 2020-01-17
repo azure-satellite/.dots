@@ -20,7 +20,7 @@ in
 {
   home.packages = [ gitAndTools.hub tig ];
 
-  xsession.profileExtra = "mkdir -p ${config.lib.vars.home}/.local/share/tig";
+  xsession.profileExtra = "mkdir -p ${config.home.homeDirectory}/.local/share/tig";
 
   lib.aliases = {
     git = "hub";
@@ -101,6 +101,7 @@ in
     }];
 
     extraConfig = {
+      http = { sslcainfo = "${config.home.homeDirectory}/.nix-profile/etc/ssl/certs/ca-bundle.crt"; };
       core = { autocrlf = false; whitespace = "cr-at-eol"; };
       pager = { status = false; branch = false; };
       push = { default = "simple"; };

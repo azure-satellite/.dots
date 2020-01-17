@@ -5,7 +5,7 @@ let
   scripts = config.lib.functions.writeShellScriptsBin (with pkgs; {
     takeScreenshot = ''
       set -e
-      PATH="${config.lib.vars.home}/Pictures/screenshots/$(date +%s).png"
+      PATH="${config.home.homeDirectory}/Pictures/screenshots/$(date +%s).png"
       ${coreutils}/bin/mkdir -p $(${coreutils}/bin/dirname "$PATH")
       ${maim}/bin/maim $1 -b 4 "$PATH"
       ${config.lib.aliases.cp-png} "$PATH"

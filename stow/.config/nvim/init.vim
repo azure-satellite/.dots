@@ -247,7 +247,7 @@ autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 
 Plug 'https://github.com/liuchengxu/vista.vim' " {{{3
 
-Plug 'https://github.com/junegunn/fzf' | Plug '~/Code/fzf.vim', { 'branch': 'local-gfiles' } " {{{3
+Plug 'https://github.com/junegunn/fzf' | Plug '~/.furnisher/gitmodules/fzf.vim', { 'branch': 'local-gfiles' } " {{{3
 let g:fzf_layout = {'window': 'call core#centered_floating_window(v:true)'}
 
 hi! link fzf1 StatusLine

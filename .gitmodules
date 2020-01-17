@@ -1,16 +1,16 @@
-[submodule "pass"]
-	path = modules/pass
-	url = https://github.com/stellarhoof/pass
-	branch = master
-[submodule "st"]
-	path = modules/st
-	url = https://github.com/stellarhoof/st
-	branch = config
 [submodule "home-manager"]
-	path = modules/home-manager
+	path = gitmodules/home-manager
 	url = https://github.com/stellarhoof/home-manager
 	branch = my-changes
 [submodule "fzf.vim"]
-	path = modules/fzf.vim
+	path = gitmodules/fzf.vim
 	url = https://github.com/stellarhoof/fzf.vim
 	branch = local-gfiles
+[submodule "pass"]
+	path = gitmodules/pass
+	url = https://github.com/stellarhoof/pass
+	branch = master
+[submodule "st"]
+	path = gitmodules/st
+	url = https://github.com/stellarhoof/st
+	branch = config

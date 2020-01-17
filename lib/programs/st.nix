@@ -6,7 +6,7 @@ with pkgs;
   home.packages = [
     (st.overrideAttrs (old: {
       name = "st-compiled";
-      src = ./st;
+      src = ../../gitmodules/st;
       buildInputs = old.buildInputs ++ [ xorg.libXcursor ];
     }))
   ];

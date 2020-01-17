@@ -1,92 +1,76 @@
 { config, pkgs, ... }:
 
+with pkgs;
+
 {
   imports = [
-    ./colors.nix
-    # ./email.nix
-    ./programs/default.nix
-    ./modules/default.nix
-    # ./desktops/gnome-i3.nix 
-    # ./desktops/none.nix
+    ./email.nix
+    ./programs/st.nix
+    ./programs/neomutt.nix
+    ./programs/mbsync.nix
   ];
+
+  home.packages = [
+    iosevka
+    fira-code
+    brave
+    calibre
+    ffmpeg
+    imagemagick
+    robo3t
+    slack
+    transmission-gtk
+    unrar
+    vscode
+    xclip
+  ];
+
+  programs.msmtp.enable = true;
+  accounts.email = {
+    maildirBasePath = "${config.home.homeDirectory}/Mail";
+    accounts = builtins.mapAttrs (k: v: v // {
+      msmtp.enable = true;
+      passwordCommand = "PASSWORD_STORE_DIR=${config.programs.password-store.settings.PASSWORD_STORE_DIR} ${pass}/bin/pass email/${name} | ${pkgs.coreutils}/bin/head -n1";
+      maildir.path = name;
+      smtp.tls.useStartTls = true;
+      imap.tls.useStartTls = false;
+      mbsync = {
+        enable = true;
+        create = "both";
+        expunge = "both";
+        patterns = ["![Gmail]*"];
+        extraConfig.channel = {
+          CopyArrivalDate = "yes";
+        };
+      };
+    });
+  };
 
   fonts.fontconfig.enable = true;
   home.keyboard.options = [ "ctrl:swapcaps" ];
-  home.packages = with pkgs; [ iosevka fira-code ];
-  manual.html.enable = true;
-  programs.home-manager.enable = true;
-  programs.home-manager.path = "${config.lib.vars.userSrc}/home-manager";
   systemd.user.startServices = true;
-  xdg.enable = true;
   xdg.mimeApps.enable = true;
 
-  # Written to ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  # - Sourced by .profile
-  # - Sourced by .config/fish/config.fish
-  # - Sourced by .xprofile (which also sources .profile)
-  home.sessionVariables = with config.home;
-  let
-    profiles = [ "$HOME/.nix-profile" ];
-    dataDirs = pkgs.lib.concatStringsSep ":" (map (profile: "${profile}/share") profiles);
-  in
-  {
-    # Hack to reload session variables on switches
-    __HM_SESS_VARS_SOURCED = "";
-    # https://github.com/rycee/home-manager/pull/797/files
-    XDG_DATA_DIRS          = "${dataDirs}\${XDG_DATA_DIRS:+:}$XDG_DATA_DIRS";
+  home.sessionVariables = with config.home; {
     # https://github.com/NixOS/nixpkgs/issues/38991 
-    LOCALE_ARCHIVE         = "${pkgs.glibcLocales}/lib/locale/locale-archive";
-    # https://github.com/NixOS/nixpkgs/issues/3382
-    GIT_SSL_CAINFO         = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    # Manpages related
-    GROFF_NO_SGR           = "1";
-    # https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
-    PASSWORD_STORE_DIR     = "${homeDirectory}/.local/share/pass";
-    LESSKEY                = "${homeDirectory}/.config/less/lesskey";
-    LESSHISTFILE           = "${homeDirectory}/.cache/less_history";
-    PSQL_HISTORY           = "${homeDirectory}/.cache/postgres_history";
-    MYSQL_HISTFILE         = "${homeDirectory}/.cache/mysql_history";
-    GEM_HOME               = "${homeDirectory}/.local/share/gem";
-    GEM_SPEC_CACHE         = "${homeDirectory}/.cache/gem";
-    GOPATH                 = "${homeDirectory}/.local/share";
-    WEECHAT_HOME           = "${homeDirectory}/.config/weechat";
-    TERMINFO               = "${homeDirectory}/.local/share/terminfo";
-    NOTMUCH_CONFIG         = "${homeDirectory}/.config/notmuch/notmuchrc";
-    NMBGIT                 = "${homeDirectory}/.local/share/notmuch/nmbug";
-    INPUTRC                = "${homeDirectory}/.config/readline/inputrc";
-    RUSTUP_HOME            = "${homeDirectory}/.local/share/rustup";
-    STACK_ROOT             = "${homeDirectory}/.local/share/stack";
-    WGETRC                 = "${homeDirectory}/.config/wgetrc";
-    ICEAUTHORITY           = "${homeDirectory}/.cache/ICEauthority";
-    SQLITE_HISTORY         = "${homeDirectory}/.cache/sqlite_history";
-    DOCKER_CONFIG          = "${homeDirectory}/.config/docker";
+    LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
+    ICEAUTHORITY = "${homeDirectory}/.cache/ICEauthority";
+    BROWSER = "${profileDirectory}/bin/brave-browser";
+    MAILER = "${profileDirectory}/bin/neomutt";
+    TERMINAL = "${profileDirectory}/bin/st";
   };
 
-  lib.aliases = rec {
-    cp = "cp -i";
-    df = "df -h";
-    diff = "diff --color=auto";
-    du = "du -ch --summarize";
-    fst = "sed -n '1p'";
-    snd = "sed -n '2p'";
-    ls = "env LC_ALL=C ls --color=auto --group-directories-first";
-    la = "${ls} -a";
-    ll = "${ls} -lh";
-    l = "${ls} -alh";
-    less = "less -R";
-    map = "xargs -n1";
-    maplines = "xargs -n1 -0";
-    mongo = "mongo --norc";
+  xdg.mimeApps.defaultApplications = with config.lib.mimetypes; with config.lib.functions;
+    (defaultMimeApp "nvim.desktop" text) //
+    (defaultMimeApp "brave-browser.desktop" xscheme) //
+    {
+      "application/epub+zip" = "calibre-ebook-viewer.desktop";
+    };
+
+  lib.aliases = {
     open = "xdg-open";
-    dmesg = "dmesg -H";
-    node-shell = "set -lx PATH $PWD/node_modules/.bin $PATH; nix-shell -p nodejs yarn";
-  };
-
-  lib.vars = rec {
-    home = config.home.homeDirectory;
-    userBin = "${home}/.nix-profile/bin";
-    userSrc = "${home}/Code";
-    systemBin = "/usr/bin";
+    cp-png = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
+    code = "code --extensions-dir ${config.home.homeDirectory}/.config/Code/extensions";
   };
 
   lib.fonts = {
@@ -253,14 +237,6 @@
   };
 
   lib.functions = {
-    writeShellScriptsBin = builtins.mapAttrs (name: text:
-      let deriv = pkgs.writeShellScriptBin name text;
-      in deriv // { bin = "${deriv}/bin/${deriv.name}"; }
-    );
-
-    reduceAttrsToString = sep: fn: attrs:
-      builtins.concatStringsSep sep (pkgs.lib.mapAttrsToList fn attrs);
-
     fontConfigString = font: with pkgs.lib.strings;
       "${font.name} ${concatStringsSep " " font.attrs} ${toString font.size}";
 
