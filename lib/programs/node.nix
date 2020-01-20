@@ -1,24 +1,25 @@
 { config, pkgs, ... }:
 
+let
+  NPM_PACKAGES = "${config.xdg.dataHome}/npm";
+in
 {
   home.packages = with pkgs; [ nodejs_latest yarn ];
 
-  home.sessionVariables = with config.home; rec {
-    # Node/npm
-    NPM_PACKAGES = "${homeDirectory}/.local/share/npm";
+  home.sessionVariables = with config.home; with config.xdg; {
+    inherit NPM_PACKAGES;
     PATH = "${homeDirectory}/.local/bin:${NPM_PACKAGES}/bin:$PATH";
-    NPM_CONFIG_USERCONFIG = "${homeDirectory}/.config/npm/npmrc.local";
-    NPM_CONFIG_GLOBALCONFIG = "${homeDirectory}/.config/npm/npmrc.global";
+    NPM_CONFIG_USERCONFIG = "${configHome}/npm/npmrc.local";
+    NPM_CONFIG_GLOBALCONFIG = "${configHome}/npm/npmrc.global";
     NODE_REPL_MODE = "strict";
     NODE_PATH = "${NPM_PACKAGES}/lib/node_modules:$NODE_PATH";
-    NODE_REPL_HISTORY = "${homeDirectory}/.cache/node_repl_history";
+    NODE_REPL_HISTORY = "${cacheHome}/node_repl_history";
   };
 
-  xdg.configFile."npm/npmrc.global".text = with config.home; ''
-    prefix=${config.home.sessionVariables.NPM_PACKAGES}
-    cache=${homeDirectory}/.cache/npm
-    init-module=${homeDirectory}/.config/npm/npm-init.js
-    globalignorefile=${homeDirectory}/.config/npm/npmignore
-    cafile=$NIX_SSL_CERT_FILE
+  xdg.configFile."npm/npmrc.global".text = with config.home; with config.xdg; ''
+    prefix=${NPM_PACKAGES}
+    cache=${cacheHome}/npm
+    init-module=${configHome}/npm/npm-init.js
+    globalignorefile=${configHome}/npm/npmignore
   '';
 }

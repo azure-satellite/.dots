@@ -81,7 +81,7 @@ in
     # - Sourced by ~/.profile
     # - Sourced by ~/.config/fish/config.fish
     # - Sourced by ~/.xprofile (which also sources .profile)
-    sessionVariables = with config.home; {
+    sessionVariables = with config.home; with config.xdg; {
       # Hack to reload session variables on switches
       __HM_SESS_VARS_SOURCED = "";
 
@@ -89,26 +89,26 @@ in
       GROFF_NO_SGR = "1";
 
       # https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
-      LESSKEY            = "${homeDirectory}/.config/less/lesskey";
-      LESSHISTFILE       = "${homeDirectory}/.cache/less_history";
-      PSQL_HISTORY       = "${homeDirectory}/.cache/postgres_history";
-      MYSQL_HISTFILE     = "${homeDirectory}/.cache/mysql_history";
-      GEM_HOME           = "${homeDirectory}/.local/share/gem";
-      GEM_SPEC_CACHE     = "${homeDirectory}/.cache/gem";
-      GOPATH             = "${homeDirectory}/.local/share";
-      WEECHAT_HOME       = "${homeDirectory}/.config/weechat";
-      TERMINFO           = "${homeDirectory}/.local/share/terminfo";
-      INPUTRC            = "${homeDirectory}/.config/readline/inputrc";
-      RUSTUP_HOME        = "${homeDirectory}/.local/share/rustup";
-      STACK_ROOT         = "${homeDirectory}/.local/share/stack";
-      WGETRC             = "${homeDirectory}/.config/wgetrc";
-      SQLITE_HISTORY     = "${homeDirectory}/.cache/sqlite_history";
-      DOCKER_CONFIG      = "${homeDirectory}/.config/docker";
+      LESSKEY        = "${configHome}/less/key";
+      LESSHISTFILE   = "${cacheHome}/less/history";
+      PSQL_HISTORY   = "${cacheHome}/postgres_history";
+      MYSQL_HISTFILE = "${cacheHome}/mysql_history";
+      GEM_HOME       = "${dataHome}/gem";
+      GEM_SPEC_CACHE = "${cacheHome}/gem";
+      GOPATH         = "${dataHome}";
+      WEECHAT_HOME   = "${configHome}/weechat";
+      TERMINFO       = "${dataHome}/terminfo";
+      INPUTRC        = "${configHome}/readline/inputrc";
+      RUSTUP_HOME    = "${dataHome}/rustup";
+      STACK_ROOT     = "${dataHome}/stack";
+      WGETRC         = "${configHome}/wgetrc";
+      SQLITE_HISTORY = "${cacheHome}/sqlite_history";
+      DOCKER_CONFIG  = "${configHome}/docker";
 
       # Default applications
-      EDITOR = "${profileDirectory}/bin/nvim";
-      VISUAL = "${profileDirectory}/bin/nvim";
-      PAGER = "${profileDirectory}/bin/less";
+      EDITOR   = "${profileDirectory}/bin/nvim";
+      VISUAL   = "${profileDirectory}/bin/nvim";
+      PAGER    = "${profileDirectory}/bin/less";
       MANPAGER = "${profileDirectory}/bin/less -s -M";
     };
   };

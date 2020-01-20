@@ -25,6 +25,14 @@ OSNAME=""
 if [[ "$OSTYPE" == linux* ]]; then
 	OSNAME=$(grep -oP '^NAME="\K\w+' /etc/OSNAME-release | tr '[:upper:]' '[:lower:]')
 elif [[ "$OSTYPE" == darwin* ]]; then
+    echo "You will need to follow the instructions on https://github.com/NixOS/nix/issues/3125 before proceeding"
+    echo "Do you wish to proceed?"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) break;;
+            No ) exit;;
+        esac
+    done
 	OSNAME="darwin"
 fi
 [[ -d "machines/$OSNAME" ]] || (echo "Unsupported operating system $OSNAME" && exit 1)

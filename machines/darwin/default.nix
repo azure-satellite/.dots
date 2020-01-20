@@ -99,6 +99,10 @@
       set -g mouse on
       set -g status-position top
       set -ag terminal-overrides ",${config.programs.alacritty.settings.env.TERM}:RGB"
+
+      bind c new-window -c "#{pane_current_path}"
+      bind \" split-window -v -c "#{pane_current_path}"
+      bind % split-window -h -c "#{pane_current_path}"
     '';
   };
 }
