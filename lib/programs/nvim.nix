@@ -201,7 +201,11 @@ in
 
 {
   home.packages = with pkgs; [
-    (neovim.override { viAlias = true; vimAlias = true; })
+    (neovim.override {
+      viAlias = true;
+      vimAlias = true;
+      withNodeJs = true;
+    })
   ];
 
   xdg.configFile."generatedNvim/colors/home-manager.vim".text = ''

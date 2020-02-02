@@ -11,13 +11,19 @@ cd $ROOTDIR
 
 if [[ ! -f "$CACHEDIR/repo-setup" ]]; then
     GITPREFIX="git@github.com:stellarhoof"
+    setRemote () {
+        remote="$GITPREFIX/$1.git"
+        git config submodule.$1.url $remote
+        cd "gitmodules/$1"
+        git remote set-url origin $remote
+    }
 	git remote set-url origin $GITPREFIX/furnisher.git
 	git submodule update --init
 	git submodule update --remote
-	git config submodule.st.url $GITPREFIX/st.git
-	git config submodule.pass.url $GITPREFIX/pass.git
-	git config submodule.fzf.vim.url $GITPREFIX/fzf.vim.git
-	git config submodule.home-manager.url $GITPREFIX/home-manager.git
+    setRemote st
+    setRemote pass
+    setRemote fzf
+    setRemote home-manager
     touch "$CACHEDIR/repo-setup"
 fi
 
@@ -46,8 +52,6 @@ ln -sf "$ROOTDIR/machines/$OSNAME/default.nix" "$NIXCONFDIR/home.nix"
 
 hash home-manager || nix-shell "gitmodules/home-manager/default.nix" -A install
 
+# Running a different script to use nix-shell as an interpreter and make an
+# environment with various needed tools installed
 ./post-install.sh
-
-echo "Done. All that's left is to:
-- Change your login shell
-- Log back in"

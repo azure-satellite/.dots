@@ -8,6 +8,10 @@
     findutils
     openssh
     less
+    iosevka
+    # This provides terminfo definitions that are not included with the ancient
+    # version of ncurses present in OSX
+    ncurses
   ];
 
   programs.gpg.enable = true;
@@ -22,16 +26,26 @@
     pinentry-program ${pkgs.pinentry_mac}/${pkgs.pinentry_mac.binaryPath}
   '';
 
+  programs.fish.loginShellInit = with config.home; ''
+    # fenv 'eval $(ssh-agent)' > /dev/null
+    fenv source ${profileDirectory}/etc/profile.d/nix.sh > /dev/null
+  '';
+
   programs.alacritty = {
     enable = true;
     settings = {
-      env.TERM = "alacritty";
+      shell = {
+        program = "${config.home.profileDirectory}/bin/fish";
+        args = [ "-l" "-C" "tmux attach -t alacritty || tmux new -t alacritty" ];
+      };
+      # Alacritty with direct (RGB, true color) color support
+      env = { TERM = "alacritty-direct"; };
       font = {
-        normal = { family = "SF Mono"; style = "Regular"; };
-        bold = { family = "SF Mono"; style = "Bold"; };
-        italic = { family = "SF Mono"; style = "Italic"; };
-        bold_italic = { family = "SF Mono"; style = "Bold Italic"; };
-        size = 15.0;
+        normal = { family = "Iosevka"; style = "Regular"; };
+        bold = { family = "Iosevka"; style = "Bold"; };
+        italic = { family = "Iosevka"; style = "Italic"; };
+        bold_italic = { family = "Iosevka"; style = "Bold Italic"; };
+        size = 16.0;
         use_thin_strokes = true;
       };
       draw_bold_text_with_bright_colors = false;
@@ -44,16 +58,6 @@
       live_config_reload = false;
       mouse = {
         hide_when_typing = true;
-      };
-      shell = let
-        tmux = "${config.home.profileDirectory}/bin/tmux";
-        script = pkgs.writeShellScriptBin "tmux.sh" ''
-          export SHELL="${config.home.profileDirectory}/bin/fish"
-          ${tmux} attach -t alacritty 2> /dev/null || ${tmux} new -t alacritty
-        '';
-      in
-      {
-        program = "${script}/bin/tmux.sh";
       };
       # Get the chars by running `xxd -psd`. The first two is the CTRL modifier
       # code and the last are the actual keys.
@@ -85,24 +89,46 @@
 
         { key = "R"; mods = "Command|Shift"; chars = "\\x02\\x52"; } # Reload config
       ];
+      colors = with config.lib.colors.theme; {
+        primary = {
+          background = text.bg;
+          foreground = text.fg;
+        };
+        cursor = {
+          text = cursor.fg;
+          cursor = cursor.bg;
+        };
+        normal = {
+          inherit black red green yellow blue magenta cyan white;
+        };
+      };
     };
   };
 
   programs.tmux = {
     enable = true;
-    terminal = "screen-256color";
+    terminal = "tmux";
     # This option is incompatible with Darwin
     secureSocket = false;
     baseIndex = 1;
     disableConfirmationPrompt = true;
-    extraConfig = ''
+    escapeTime = 0;
+    historyLimit = 50000;
+    sensibleOnTop = false;
+    extraConfig = with config.home; ''
       set -g mouse on
       set -g status-position top
-      set -ag terminal-overrides ",${config.programs.alacritty.settings.env.TERM}:RGB"
-
+      set -g default-shell ${profileDirectory}/bin/fish
       bind c new-window -c "#{pane_current_path}"
       bind \" split-window -v -c "#{pane_current_path}"
       bind % split-window -h -c "#{pane_current_path}"
     '';
   };
+
+  lib.activations.darwin = with config.home; ''
+    # https://wiki.archlinux.org/index.php/XDG_Base_Directory
+    # This directory has to exist, otherwise ~/.tig_history gets written
+    mkdir -p ${config.xdg.dataHome}/tig
+    find -L ${profileDirectory}/share/fonts/ -type f -exec cp -f '{}' ${homeDirectory}/Library/Fonts/ \;
+  '';
 }

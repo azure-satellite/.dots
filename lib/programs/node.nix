@@ -8,7 +8,7 @@ in
 
   home.sessionVariables = with config.home; with config.xdg; {
     inherit NPM_PACKAGES;
-    PATH = "${homeDirectory}/.local/bin:${NPM_PACKAGES}/bin:$PATH";
+    PATH = "$PATH:${NPM_PACKAGES}/bin";
     NPM_CONFIG_USERCONFIG = "${configHome}/npm/npmrc.local";
     NPM_CONFIG_GLOBALCONFIG = "${configHome}/npm/npmrc.global";
     NODE_REPL_MODE = "strict";

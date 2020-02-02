@@ -86,13 +86,6 @@ with pkgs;
     # because we don't want them quoted
     profileExtra = ''
       [ -f ${config.home.homeDirectory}/.fehbg ] && ${config.home.homeDirectory}/.fehbg &
-      export LESS_TERMCAP_mb=$'\e[0;1;31m'
-      export LESS_TERMCAP_md=$'\e[0;1;31m'
-      export LESS_TERMCAP_me=$'\e[0;39m'
-      export LESS_TERMCAP_se=$'\e[0;39m'
-      export LESS_TERMCAP_so=$'\e[0;1;30;43m'
-      export LESS_TERMCAP_ue=$'\e[0;39m'
-      export LESS_TERMCAP_us=$'\e[0;1;32m'
     '';
   };
 

@@ -91,9 +91,7 @@ attrs = {
 
 themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
   solarizedLight = with palettes.solarized; {
-    # UI
     primary = { fg = base7; bg = orange; };
-    # Text
     text = { fg = base0; bg = base7; };
     cursor = { fg = base7; bg = "#cf000f"; };
     comment = { fg = base4; };
@@ -105,11 +103,9 @@ themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
   } // palettes.solarized;
 
   gotham = with palettes.gotham; {
-    # UI
     primary = { fg = base7; bg = base0; };
     # TODO: replace this with a lighter/darker shade of primary
     primaryRaised = { fg = base7; bg = base3; };
-    # Text
     text = { fg = base6; bg = "#000000"; };
     cursor = { fg = base0; bg = "#72f970"; };
     comment = { fg = base4; };

@@ -17,9 +17,9 @@
       [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
       [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
     '';
-    profileExtra = ''
-      . $HOME/.nix-profile/etc/profile.d/nix.sh
-      export NIX_PATH="$HOME/.nix-defexpr/channels:nixpkgs=$HOME/.nix-defexpr/channels"
+    profileExtra = with config.home; ''
+      . ${profileDirectory}/etc/profile.d/nix.sh
+      export NIX_PATH="${homeDirectory}/.nix-defexpr/channels:nixpkgs=${homeDirectory}/.nix-defexpr/channels"
     '';
   };
 }

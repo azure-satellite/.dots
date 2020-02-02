@@ -219,6 +219,14 @@ endfunction
 
 au FileType javascript call s:coc_settings()
 
+let g:coc_global_extensions = [
+\ "coc-tsserver",
+\ "coc-eslint",
+\ "coc-prettier",
+\ "coc-css",
+\ "coc-json",
+\ "coc-reason",
+\ ]
 let g:coc_user_config = {
 \   "suggest.maxPreviewWidth": &columns,
 \   "suggest.autoTrigger": "none",
@@ -240,7 +248,7 @@ let g:coc_user_config = {
 \   "signature.target": "echo",
 \   "list.nextKeymap": "<c-n>",
 \   "list.previousKeymap": "<c-p>",
-\   "coc.preferences.formatOnSaveFiletypes": ["javascript"],
+\   "coc.preferences.formatOnSaveFiletypes": ["javascript", "reason"],
 \ }
 set noshowmode " Otherwise echoing the signature doesn't work
 autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')

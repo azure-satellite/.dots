@@ -25,7 +25,12 @@ with pkgs;
     xclip
   ];
 
+  programs.fish.loginShellInit = ''
+    if test -f /etc/profile; fenv source /etc/profile; end
+  '';
+
   programs.msmtp.enable = true;
+
   accounts.email = {
     maildirBasePath = "${config.home.homeDirectory}/Mail";
     accounts = builtins.mapAttrs (k: v: v // {

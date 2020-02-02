@@ -79,10 +79,8 @@ in
   programs.fish = {
     enable = true;
     loginShellInit = ''
-      set fish_function_path ${pkgs.fish-foreign-env}/share/fish-foreign-env/functions ${config.home.profileDirectory}/share/fish/vendor_functions.d $fish_function_path
-      if test -f /etc/profile; fenv source /etc/profile; end
-      fenv source ${config.home.profileDirectory}/etc/profile.d/nix.sh > /dev/null
       set fish_complete_path ${config.home.profileDirectory}/share/fish/vendor_completions.d $fish_complete_path
+      set fish_function_path ${pkgs.fish-foreign-env}/share/fish-foreign-env/functions ${config.home.profileDirectory}/share/fish/vendor_functions.d $fish_function_path
     '';
     interactiveShellInit = with config.lib.functions; ''
       set fish_greeting

@@ -7,7 +7,7 @@
     ../../lib/desktops/none.nix
   ];
 
-  lib.activations.installSystemFiles = ''
+  lib.activations.nixos = ''
     sudo ln -sfT ${toString ./system} /etc/nixos
   '';
 }
