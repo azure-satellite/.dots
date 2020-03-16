@@ -208,6 +208,10 @@ in
     })
   ];
 
+  xdg.configFile."generatedNvim/init.vim".text = ''
+    let &grepprg="${config.lib.aliases.rg} --vimgrep"
+  '';
+
   xdg.configFile."generatedNvim/colors/home-manager.vim".text = ''
     hi clear
     if exists('syntax_on') | syntax reset | endif

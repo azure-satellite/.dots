@@ -78,13 +78,6 @@ with pkgs;
     code = "code --extensions-dir ${config.home.homeDirectory}/.config/Code/extensions";
   };
 
-  lib.fonts = {
-    mono = { name = "Iosevka"; attrs = []; size = 9; };
-    sans = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
-    serif = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
-    ui = { name = "SF Pro Rounded"; attrs = ["medium"]; size = 9; };
-  };
-
   lib.mimetypes = {
     image = [
       "image/bmp"

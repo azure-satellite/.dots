@@ -6,9 +6,11 @@ in
 {
   home.packages = with pkgs; [ nodejs_latest yarn ];
 
+  # TODO: This doesn't work
+  lib.vars.PATH = builtins.concatLists config.lib.vars.PATH [ "${NPM_PACKAGES}/bin" ];
+
   home.sessionVariables = with config.home; with config.xdg; {
     inherit NPM_PACKAGES;
-    PATH = "$PATH:${NPM_PACKAGES}/bin";
     NPM_CONFIG_USERCONFIG = "${configHome}/npm/npmrc.local";
     NPM_CONFIG_GLOBALCONFIG = "${configHome}/npm/npmrc.global";
     NODE_REPL_MODE = "strict";

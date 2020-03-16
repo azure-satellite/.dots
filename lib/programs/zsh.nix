@@ -1,12 +1,12 @@
 { config, pkgs, ... }:
 
 {
-  programs.zsh = {
+  programs.zsh = rec {
     enable = true;
-    dotDir = "${config.xdg.configHome}/zsh";
+    dotDir = ".config/zsh";
     profileExtra = with config.home; ''
-      source ${homeDirectory}/.zshrc > /dev/null
       source ${profileDirectory}/etc/profile.d/nix.sh > /dev/null
+      source ${homeDirectory}/${dotDir}/.zshrc > /dev/null
     '';
   };
 }

@@ -2,56 +2,9 @@
 
 with pkgs;
 
-let
-  vars = {
-    userSrc = "${config.home.homeDirectory}/Code";
-  };
-
-  aliases = rec {
-    cp = "cp -i";
-    df = "df -h";
-    diff = "diff --color=auto";
-    du = "du -ch --summarize";
-    fst = "sed -n '1p'";
-    snd = "sed -n '2p'";
-    ls = "env LC_ALL=C ls --color=auto --group-directories-first";
-    la = "${ls} -a";
-    ll = "${ls} -lh";
-    l = "${ls} -alh";
-    map = "xargs -n1";
-    maplines = "xargs -n1 -0";
-    mongo = "mongo --norc";
-    dmesg = "dmesg -H";
-    cloc = "tokei";
-    rg = ''rg --glob \"!package-lock.json\" --glob \"!.git/*\" --smart-case --hidden'';
-    grep = config.lib.aliases.rg;
-    tree = "tree -a --dirsfirst -I .git";
-    tl = "tldr";
-    less = "less -R";
-    p = config.home.sessionVariables.PAGER;
-  };
-
-  functions = {
-    writeShellScriptsBin = builtins.mapAttrs (name: text:
-      let deriv = writeShellScriptBin name text;
-      in deriv // { bin = "${deriv}/bin/${deriv.name}"; }
-    );
-
-    reduceAttrsToString = sep: fn: attrs:
-      builtins.concatStringsSep sep (lib.mapAttrsToList fn attrs);
-
-    mkGmailAccount = { name, address, primary ? false }: {
-      inherit primary address;
-      realName = "Alejandro Hernandez";
-      flavor = "gmail.com";
-    };
-  };
-
-in
-
 {
   imports = [
-    ./colors.nix
+    ./lib.nix
     ./programs/direnv.nix
     ./programs/fzf.nix
     ./programs/git.nix
@@ -63,15 +16,17 @@ in
     ./programs/zsh.nix
   ];
 
-  lib = {
-    inherit aliases vars functions;
-    activations = {};
-  };
-
   home = {
     packages = [
       bench
       htop
+      (iosevka.override {
+        set = "slab";
+        privateBuildPlan = {
+          family = "Iosevka Slab";
+          design = [ "slab" ];
+        };
+      })
       pandoc
       ripgrep
       tokei
@@ -89,7 +44,7 @@ in
       # Hack to reload session variables on switches
       __HM_SESS_VARS_SOURCED = "";
 
-      PATH = "${homeDirectory}/.local/bin:$PATH";
+      PATH = "$PATH:${builtins.concatStringsSep ":" config.lib.vars.PATH}";
 
       # Manpages related. Don't ask me.
       GROFF_NO_SGR = "1";
@@ -118,6 +73,7 @@ in
       PAGER    = "${profileDirectory}/bin/less";
       MANPAGER = "${profileDirectory}/bin/less -s -M";
     };
+
     sessionVariablesUnquoted = {
       LESS_TERMCAP_mb = "$'\\e[0;1;31m'";
       LESS_TERMCAP_md = "$'\\e[0;1;31m'";
@@ -130,7 +86,7 @@ in
   };
 
   accounts.email.accounts =
-    builtins.mapAttrs (k: v: functions.mkGmailAccount (v // { name = k; })) {
+    builtins.mapAttrs (k: v: config.lib.functions.mkGmailAccount (v // { name = k; })) {
       personal = { primary = true; address = "azure.satellite@gmail.com"; };
       sidekick = { address = "panoramic.giggle@gmail.com"; };
       smartprocure = { address = "ahernandez@govspend.com"; };
@@ -140,7 +96,7 @@ in
 
   programs.home-manager = {
     enable = true;
-    path = "${../gitmodules/home-manager}";
+    path = toString ../gitmodules/home-manager;
   };
 
   programs.password-store = {

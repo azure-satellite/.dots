@@ -8,7 +8,6 @@
     findutils
     openssh
     less
-    iosevka
     # This provides terminfo definitions that are not included with the ancient
     # version of ncurses present in OSX
     ncurses
@@ -40,12 +39,12 @@
       };
       # Alacritty with direct (RGB, true color) color support
       env = { TERM = "alacritty-direct"; };
-      font = {
-        normal = { family = "Iosevka"; style = "Regular"; };
-        bold = { family = "Iosevka"; style = "Bold"; };
-        italic = { family = "Iosevka"; style = "Italic"; };
-        bold_italic = { family = "Iosevka"; style = "Bold Italic"; };
-        size = 16.0;
+      font = with config.lib.fonts; {
+        normal = { family = mono.name; style = "Regular"; };
+        bold = { family = mono.name; style = "Bold"; };
+        italic = { family = mono.name; style = "Italic"; };
+        bold_italic = { family = mono.name; style = "Bold Italic"; };
+        size = 18;
         use_thin_strokes = true;
       };
       draw_bold_text_with_bright_colors = false;

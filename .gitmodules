@@ -1,7 +1,7 @@
 [submodule "home-manager"]
 	path = gitmodules/home-manager
 	url = https://github.com/stellarhoof/home-manager
-	branch = my-changes
+	branch = master
 [submodule "fzf.vim"]
 	path = gitmodules/fzf.vim
 	url = https://github.com/stellarhoof/fzf.vim

@@ -1,5 +1,7 @@
 scriptencoding utf-8
 
+set rtp+=~/.config/generatedNvim
+so ~/.config/generatedNvim/init.vim
 command! -nargs=+ Cabbrev call core#cabbrev(<f-args>)
 
 " Plugins {{{1
@@ -343,6 +345,15 @@ au VimEnter * lua require'colorizer'.setup()
 
 " Other {{{2
 
+Plug 'https://github.com/rizzatti/dash.vim'
+function! s:dash()
+  nmap <silent><buffer> <space>k <Plug>DashSearch
+endfunction
+let g:dash_map = {
+\ 'javascript': ['javascript', 'lodash', 'css', 'html']
+\ }
+au FileType javascript call s:dash()
+
 Plug 'https://github.com/tpope/vim-characterize' " {{{3
 nmap gz <plug>(characterize)
 
@@ -473,7 +484,6 @@ set nowrapscan
 set timeoutlen=3000
 " Do not insert two spaces after '.' when using J
 set nojoinspaces
-let &grepprg='rg --glob "!package-lock.json" --glob "!package.json" --smart-case --hidden --vimgrep $* $PWD'
 set grepformat=%f:%l:%c:%m,%f:%l:%m
 " Fold by indentation
 au FileType * if &foldmethod ==# 'manual' | setlocal foldmethod=indent | endif
@@ -662,7 +672,6 @@ augroup END
 
 " Rest {{{1
 
-set rtp+=~/.config/generatedNvim
 syntax manual
 " :h syn-sync-third
 syntax sync minlines=50
