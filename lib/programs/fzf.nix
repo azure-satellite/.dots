@@ -49,59 +49,17 @@ in
   programs = {
     fzf = rec {
       enable = true;
+      enableFishIntegration = true;
       enableBashIntegration = false;
       enableZshIntegration = false;
     };
 
-    # See https://github.com/jethrokuan/fzf
-    # Buf after the keybindings setup down there, they end up being:
-    # Ctrl-f       | Paste a file in the cmdline.
-    # Ctrl-r       | Paste a command from history in the cmdline.
-    # (not set)    | cd into sub-directories.
-    # Ctrl-t       | cd into sub-directories, including hidden ones.
-    # Ctrl-g       | Edit a file/dir with $EDITOR.
-    # Ctrl-o       | `xdg-open` or `open` a file/dir>
     fish.interactiveShellInit = ''
-      set -U FZF_FIND_FILE_COMMAND ${FZF_DEFAULT_COMMAND}
-      set -U FZF_OPEN_COMMAND ${FZF_DEFAULT_COMMAND}
-
-      set -U FZF_ENABLE_OPEN_PREVIEW 0
-      set -U FZF_LEGACY_KEYBINDINGS 0
-
-      # I cannot for the life of me figure out where fzf sets these
       bind -e \ec
-      bind -e \ct
+      bind \co fzf-cd-widget
       if bind -M insert >/dev/null 2>/dev/null
         bind -M insert -e \ec
-        bind -M insert -e \ct
-      end
-
-      # Erase https://github.com/jethrokuan/fzf plugin unwanted bindings
-      bind -e \eo
-      bind -e \eO
-      bind -e \cr
-      bind \cr 'fzf-history-widget'
-      bind -e \cf
-      bind \cf '__fzf_find_file'
-      bind -e \ct
-      bind \ct '__fzf_cd --hidden'
-      bind -e \co
-      bind \co '__fzf_open'
-      bind -e \cg
-      bind \cg '__fzf_open --editor'
-      if bind -M insert >/dev/null 2>/dev/null
-        bind -M insert -e \eo
-        bind -M insert -e \eO
-        bind -M insert -e \cr
-        bind -M insert \cr 'fzf-history-widget'
-        bind -M insert -e \cf
-        bind -M insert \cf '__fzf_find_file'
-        bind -M insert -e \ct
-        bind -M insert \ct '__fzf_cd --hidden'
-        bind -M insert -e \co
-        bind -M insert \co '__fzf_open'
-        bind -M insert -e \cg
-        bind -M insert \cg '__fzf_open --editor'
+        bind -M insert \co fzf-cd-widget
       end
     '';
   };

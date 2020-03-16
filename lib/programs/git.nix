@@ -3,13 +3,15 @@
 let
 
   vimdiff = with config.home; {
-    cmd = ''${profileDirectory}/bin/nvim -f -c "Gdiff" "$MERGED"'';
+    # cmd = ''${profileDirectory}/bin/nvim -f -c "Gdiff" "$MERGED"'';
+    cmd = ''/usr/local/bin/nvim -f -c "Gdiff" "$MERGED"'';
     keepBackup = false;
     trustExitCode = true; # So we can abort with :cq
   };
 
   diffconflicts = with config.home; {
-    cmd = ''${profileDirectory}/bin/nvim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
+    # cmd = ''${profileDirectory}/bin/nvim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
+    cmd = ''/usr/local/bin/nvim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
     trustExitCode = true;
   };
 
