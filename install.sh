@@ -14,23 +14,24 @@ if [[ ! -f "$CACHEDIR/repo-setup" ]]; then
     setRemote () {
         remote="$GITPREFIX/$1.git"
         git config submodule.$1.url $remote
-        cd "gitmodules/$1"
-        git remote set-url origin $remote
+        git -C "gitmodules/$1" remote set-url origin $remote
     }
-	git remote set-url origin $GITPREFIX/furnisher.git
-	git submodule update --init
-	git submodule update --remote
+    git remote set-url origin $GITPREFIX/furnisher.git
+    git submodule update --init
+    git submodule update --remote
     setRemote st
     setRemote pass
-    setRemote fzf
+    setRemote fzf.vim
     setRemote home-manager
     touch "$CACHEDIR/repo-setup"
 fi
 
 OSNAME=""
 if [[ "$OSTYPE" == linux* ]]; then
-	OSNAME=$(grep -oP '^NAME="\K\w+' /etc/OSNAME-release | tr '[:upper:]' '[:lower:]')
+    OSNAME=$(grep -oP '^NAME="\K\w+' /etc/OSNAME-release | tr '[:upper:]' '[:lower:]')
 elif [[ "$OSTYPE" == darwin* ]]; then
+    # TODO: select doesn't work on bash < 4, which is the default installed on
+    # mac os
     echo "You will need to follow the instructions on https://github.com/NixOS/nix/issues/3125 before proceeding"
     echo "Do you wish to proceed?"
     select yn in "Yes" "No"; do
@@ -39,7 +40,7 @@ elif [[ "$OSTYPE" == darwin* ]]; then
             No ) exit;;
         esac
     done
-	OSNAME="darwin"
+    OSNAME="darwin"
 fi
 [[ -d "machines/$OSNAME" ]] || (echo "Unsupported operating system $OSNAME" && exit 1)
 

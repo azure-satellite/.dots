@@ -15,7 +15,9 @@ let
     du = "du -ch --summarize";
     fst = "sed -n '1p'";
     snd = "sed -n '2p'";
-    ls = "env LC_ALL=C ls --color=auto --group-directories-first";
+    # Using the full path to avoid some recursion issue when trying
+    # to complete
+    ls = "LC_ALL=C ${coreutils}/bin/ls --color=auto --group-directories-first";
     la = "${ls} -a";
     ll = "${ls} -lh";
     l = "${ls} -alh";

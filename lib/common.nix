@@ -68,8 +68,10 @@ with pkgs;
       MACHINE_STORAGE_PATH = "${dataHome}/docker-machine";
 
       # Default applications
-      EDITOR   = "${profileDirectory}/bin/nvim";
-      VISUAL   = "${profileDirectory}/bin/nvim";
+      # EDITOR   = "${profileDirectory}/bin/nvim";
+      # VISUAL   = "${profileDirectory}/bin/nvim";
+      EDITOR   = "/usr/local/bin/nvim";
+      VISUAL   = "/usr/local/bin/nvim";
       PAGER    = "${profileDirectory}/bin/less";
       MANPAGER = "${profileDirectory}/bin/less -s -M";
     };

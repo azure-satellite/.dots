@@ -200,13 +200,14 @@ let
 in
 
 {
-  home.packages = with pkgs; [
-    (neovim.override {
-      viAlias = true;
-      vimAlias = true;
-      withNodeJs = true;
-    })
-  ];
+  # Uncomment once https://github.com/NixOS/nixpkgs/pull/80528 is merged
+  # home.packages = with pkgs; [
+  #   (neovim.override {
+  #     viAlias = true;
+  #     vimAlias = true;
+  #     withNodeJs = true;
+  #   })
+  # ];
 
   xdg.configFile."generatedNvim/init.vim".text = ''
     let &grepprg="${config.lib.aliases.rg} --vimgrep"

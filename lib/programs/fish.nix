@@ -78,31 +78,20 @@ in
 {
   programs.fish = {
     enable = true;
+    shellAliases = config.lib.aliases;
     loginShellInit = ''
       set fish_complete_path ${config.home.profileDirectory}/share/fish/vendor_completions.d $fish_complete_path
       set fish_function_path ${pkgs.fish-foreign-env}/share/fish-foreign-env/functions ${config.home.profileDirectory}/share/fish/vendor_functions.d $fish_function_path
     '';
     interactiveShellInit = with config.lib.functions; ''
       set fish_greeting
-      ${reduceAttrsToString "\n" (k: v: ''alias --save ${k}="${v}"'') config.lib.aliases}
       set -U fish_prompt_pwd_dir_length 5
       ${reduceAttrsToString "\n" colorDefToString colors}
     '';
   };
 
-  xdg.configFile = {
-    "fish/functions" = {
-      recursive = true;
-      source = ./fish/functions;
-    };
-
-    "fish/functions/fisher.fish".source = builtins.fetchurl "https://raw.githubusercontent.com/jorgebucaran/fisher/master/fisher.fish?nocache";
-
-    "fish/fishfile" = {
-      onChange = "fish -c fisher";
-      text = ''
-        jethrokuan/fzf
-      '';
-    };
+  xdg.configFile."fish/functions" = {
+    recursive = true;
+    source = ./fish/functions;
   };
 }
