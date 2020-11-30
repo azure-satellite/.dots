@@ -90,6 +90,18 @@ attrs = {
 };
 
 themes = builtins.mapAttrs (k: v: v // { black = v.base0; white = v.base7; }) {
+  nordLight = with palettes.nordLight; {
+    primary = { fg = base7; bg = orange; };
+    text = { fg = base0; bg = base7; };
+    cursor = { fg = base7; bg = "#cf000f"; };
+    comment = { fg = base4; };
+    error = { fg = red; } // attrs.bold;
+    string = { fg = green; };
+    highlight = { fg = red; } // attrs.bold;
+    suggestion = { fg = base1; };
+    selectedSuggestion = { fg = base0; } // attrs.bold;
+  } // palettes.nordLight;
+
   solarizedLight = with palettes.solarized; {
     primary = { fg = base7; bg = orange; };
     text = { fg = base0; bg = base7; };
@@ -122,6 +134,7 @@ in
 {
   lib.colors = {
     inherit attrs;
+    # theme = themes.solarizedLight;
     theme = themes.gotham;
   };
 }

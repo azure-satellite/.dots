@@ -22,7 +22,6 @@ if [[ ! -f "$CACHEDIR/repo-setup" ]]; then
     setRemote st
     setRemote pass
     setRemote fzf.vim
-    setRemote home-manager
     touch "$CACHEDIR/repo-setup"
 fi
 
@@ -51,7 +50,7 @@ NIXCONFDIR="$HOME/.config/nixpkgs"
 mkdir -p $NIXCONFDIR
 ln -sf "$ROOTDIR/machines/$OSNAME/default.nix" "$NIXCONFDIR/home.nix"
 
-hash home-manager || nix-shell "gitmodules/home-manager/default.nix" -A install
+hash home-manager || nix-shell "<home-manager>" -A install
 
 # Running a different script to use nix-shell as an interpreter and make an
 # environment with various needed tools installed

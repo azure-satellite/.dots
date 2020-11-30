@@ -5,7 +5,6 @@ with pkgs;
 let
   vars = with config.home; {
     userSrc = "${homeDirectory}/Code";
-    PATH = [ "${homeDirectory}/.local/bin" ];
   };
 
   aliases = rec {
@@ -51,7 +50,11 @@ let
   };
 
   fonts = {
-    mono = { name = "Iosevka Slab"; attrs = []; size = 9; };
+    mono = { name = "iMWritingMonoS Nerd Font"; attrs = []; size = 9.5; };
+    # mono = { name = "Inconsolata Nerd Font"; attrs = []; size = 11; };
+    # mono = { name = "FiraCode Nerd Font"; attrs = []; size = 9; };
+    # mono = { name = "FantasqueSansMono Nerd Font"; attrs = []; size = 10.5; };
+    # mono = { name = "Iosevka Nerd Font"; attrs = []; size = 10; };
     sans = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
     serif = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
     ui = { name = "SF Pro Rounded"; attrs = ["medium"]; size = 9; };

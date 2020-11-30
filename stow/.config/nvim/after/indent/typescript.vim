@@ -1,1 +1,1 @@
-call core#set_indent(4)
+call core#set_indent(2)

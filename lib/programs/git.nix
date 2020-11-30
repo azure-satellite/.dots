@@ -1,22 +1,4 @@
 { config, pkgs, ... }:
-
-let
-
-  vimdiff = with config.home; {
-    # cmd = ''${profileDirectory}/bin/nvim -f -c "Gdiff" "$MERGED"'';
-    cmd = ''/usr/local/bin/nvim -f -c "Gdiff" "$MERGED"'';
-    keepBackup = false;
-    trustExitCode = true; # So we can abort with :cq
-  };
-
-  diffconflicts = with config.home; {
-    # cmd = ''${profileDirectory}/bin/nvim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
-    cmd = ''/usr/local/bin/nvim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'';
-    trustExitCode = true;
-  };
-
-in
-
 {
   home.packages = with pkgs; [ gitAndTools.hub tig ];
 
@@ -93,14 +75,22 @@ in
       core = { autocrlf = false; whitespace = "cr-at-eol"; };
       pager = { status = false; branch = false; };
       push = { default = "simple"; };
-      diff = { tool = "vimdiff"; };
-      merge = { tool = "vimdiff"; };
-      difftool = { prompt = false; keepBackup = false; };
-      mergetool = { prompt = true; keepBackup = false; };
-      "difftool \"vimdiff\"" = vimdiff;
-      "mergetool \"vimdiff\"" = vimdiff;
-      "difftool \"diffconflicts\"" = diffconflicts;
-      "mergetool \"diffconflicts\"" = diffconflicts;
+      diff = { tool = "vim"; };
+      "difftool \"vim\"" = with config.home; {
+        # cmd = ''${profileDirectory}/bin/nvim -f -c "Gdiff" "$MERGED"'';
+        cmd = ''/usr/local/bin/nvim -f -c "Gdiff" "$MERGED"'';
+        prompt = false;
+        keepBackup = false;
+        trustExitCode = true;
+      };
+      merge = { tool = "vim"; };
+      "mergetool \"vim\"" = with config.home; {
+        # cmd = "${config.home.profileDirectory}/bin/nvim +Conflicted";
+        cmd = "/usr/local/bin/nvim +Conflicted";
+        prompt = true;
+        keepBackup = false;
+        trustExitCode = true;
+      };
       grep = { extendRegexp = true; lineNumber = true; };
       "filter \"lfs\"" = {
         smudge = "git-lfs smudge -- %f";

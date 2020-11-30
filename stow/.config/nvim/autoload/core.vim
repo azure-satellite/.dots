@@ -47,21 +47,6 @@ function! core#argdo(command)
     set nolazyredraw
 endfunction
 
-function! core#cabbrev(target, ...)
-    if a:0 == 0
-        echoe 'Missing RHS of command'
-        return 1
-    endif
-    let lhs = matchlist(a:target, '\v(\w+)%(\[(\w+)\])?')
-    let rhs = join(a:000)
-    let s:abbr = {val -> printf('cabbrev %s <C-R>=(getcmdtype() == ":" && getcmdpos() == 1 ? "%s" : "%s")<CR>', val, rhs, val)}
-    let i = 0
-    while i <= strwidth(lhs[2])
-        exe s:abbr(lhs[1] . strcharpart(lhs[2], 0, i))
-        let i += 1
-    endwhile
-endfunction
-
 function! core#set_indent(num)
     execute 'set tabstop='.a:num
     execute 'set shiftwidth='.a:num
@@ -79,13 +64,27 @@ function! core#is_file_like()
     return empty(&buftype) || &buftype ==# 'acwrite' || &buftype ==# 'nowrite'
 endfunction
 
+function! core#statusline_file()
+  let l:file = expand(@%)
+  if get(g:, 'loaded_conflicted')
+    let l:version = trim(ConflictedVersion())
+    if !empty(l:version) && l:version !=? 'working'
+      return l:version
+    else
+      return l:file
+    endif
+  else
+    return l:file
+  endif
+endfunction
+
 function! core#statusline_branch()
     " Uncomment to not show branch info on buffers that aren't tracked, but it
     " will also not show branch info on buffers outside vim's pwd
     " if get(b:, 'tracked') && get(g:, 'loaded_fugitive') && empty(&buftype)
     if get(g:, 'loaded_fugitive') && core#is_file_like() && !empty(bufname(''))
-        let branch = fugitive#head()
-        return empty(branch) ? '' : '▏'.branch.' '
+        let branch = fugitive#head(6)
+        return empty(branch) ? '' : '  שׂ '.branch.' '
     endif
     return ''
 endfunction
@@ -105,36 +104,19 @@ function! core#statusline_flags()
     return ''
 endfunction
 
-function! core#statusline_linter()
-    let s = ''
-    if get(g:, 'loaded_ale') && 
-     \ get(g:, 'ale_enabled') &&
-     \ get(b:, 'ale_enabled', 1) &&
-     \ index(g:ale_filetype_blacklist, &filetype) == -1 &&
-     \ empty(&buftype)
-        let s = ale#statusline#Count(bufnr('%'))
-        let s = (s.error   ? printf('%se ', s.error) : '') .
-              \ (s.warning ? printf('%sw ', s.warning) : '') .
-              \ (s.info    ? printf('%si ', s.info) : '')
-        if empty(s)
-            let s = '▏OK '
-        else
-            let s = '▏LINT('.s[:-2].') '
-        endif
+function! core#statusline_lsp() abort
+  let sl = ''
+  if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+    let errors = luaeval('vim.lsp.diagnostic.get_count(0, [[Error]])')
+    if errors > 0
+      let sl .= 'ﰸ '.errors.' '
     endif
-    return s
-endfunction
-
-function! core#statusline_git()
-    let s = ''
-    if get(b:, 'tracked') && exists('b:gitgutter') && has_key(b:gitgutter, 'summary') && empty(&buftype)
-        let s = b:gitgutter.summary
-        let s = (s[0] ? printf('%s+ ', s[0]) : '') .
-              \ (s[1] ? printf('%s~ ', s[1]) : '') .
-              \ (s[2] ? printf('%s! ', s[2]) : '')
-        let s = empty(s) ? '' : 'GIT('.s[:-2].')▕ '
+    let warnings = luaeval('vim.lsp.diagnostic.get_count(0, [[Warning]])')
+    if warnings > 0
+      let sl .= ' '.warnings.' '
     endif
-    return s
+  endif
+  return sl
 endfunction
 
 function! core#filesize() abort
@@ -157,6 +139,18 @@ function! core#filesize() abort
     endif
 endfunction
 
+function! core#mv(files, dest)
+  let dest = fnameescape(a:dest)
+  for file in a:files
+    let from = fnameescape(file)
+    let to = dest . fnamemodify('/'.trim(from, '/'), ':t')
+    let code = rename(from, to)
+    if code == -1
+      echoe 'Failed moving ' . from . ' to ' . to
+    endif
+  endfor
+endfunction
+
 function! core#tabline()
     let s = ''
     for l:i in range(tabpagenr('$'))
@@ -171,20 +165,6 @@ function! core#tabline()
     let s .= 'BUFL('.len(getbufinfo({'buflisted':1})).')▕ '
     let s .= 'ARGL('.len(argv()).') '
     return s
-endfunction
-
-" Return the text covered by a motion after an operator
-function! core#operated_text(wise)
-    " TODO: Remove dependency on operator_user
-    let l:sel = &selection
-    let &selection = 'inclusive'
-    let l:reg = @"
-    let l:v = operator#user#visual_command_from_wise_name(a:wise)
-    execute printf('normal! `[%s`]y', l:v)
-    let l:text = @"
-    let &selection = l:sel
-    let @" = l:reg
-    return l:text
 endfunction
 
 function! core#centered_floating_window(border)
@@ -212,6 +192,14 @@ function! core#centered_floating_window(border)
     else
         call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
     endif
+endfunction
+
+" Execute command and output result at cursor
+function! core#out(cmd) abort
+  let lines = [a:cmd] + split(execute(a:cmd), '\n')
+  let start = line('.') - 1
+  let end = start + len(lines)
+  call nvim_buf_set_lines(0, start, end, 0, lines)
 endfunction
 
 " vim: fdm=indent

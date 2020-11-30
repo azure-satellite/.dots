@@ -19,6 +19,7 @@ with pkgs;
   home = {
     packages = [
       bench
+      go
       htop
       (iosevka.override {
         set = "slab";
@@ -27,6 +28,11 @@ with pkgs;
           design = [ "slab" ];
         };
       })
+      (nerdfonts.override {
+        fonts = [ "iA-Writer" ];
+      })
+      inconsolata
+      nixpkgs-fmt
       pandoc
       ripgrep
       tokei
@@ -34,6 +40,7 @@ with pkgs;
       tree
       universal-ctags
       youtube-dl
+      wget
     ];
 
     # Written to ~/.nix-profile/etc/profile.d/hm-session-vars.sh
@@ -44,47 +51,56 @@ with pkgs;
       # Hack to reload session variables on switches
       __HM_SESS_VARS_SOURCED = "";
 
-      PATH = "$PATH:${builtins.concatStringsSep ":" config.lib.vars.PATH}";
+      PATH = builtins.concatStringsSep ":" [
+        "./node_modules/.bin"
+        "${config.lib.vars.NPM_PACKAGES}/bin"
+        "${dataHome}/cargo/bin"
+        "${homeDirectory}/.local/bin"
+        "${homeDirectory}/google-cloud-sdk/bin"
+        "${dataHome}/bin"
+        "$PATH"
+      ];
 
       # Manpages related. Don't ask me.
       GROFF_NO_SGR = "1";
 
       # https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
-      LESSKEY              = "${configHome}/less/key";
-      LESSHISTFILE         = "${cacheHome}/less/history";
-      PSQL_HISTORY         = "${cacheHome}/postgres_history";
-      MYSQL_HISTFILE       = "${cacheHome}/mysql_history";
-      GEM_HOME             = "${dataHome}/gem";
-      GEM_SPEC_CACHE       = "${cacheHome}/gem";
-      GOPATH               = "${dataHome}";
-      WEECHAT_HOME         = "${configHome}/weechat";
-      TERMINFO             = "${dataHome}/terminfo";
-      INPUTRC              = "${configHome}/readline/inputrc";
-      RUSTUP_HOME          = "${dataHome}/rustup";
-      STACK_ROOT           = "${dataHome}/stack";
-      WGETRC               = "${configHome}/wgetrc";
-      SQLITE_HISTORY       = "${cacheHome}/sqlite_history";
-      DOCKER_CONFIG        = "${configHome}/docker";
+      LESSKEY = "${configHome}/less/key";
+      LESSHISTFILE = "${cacheHome}/less/history";
+      PSQL_HISTORY = "${cacheHome}/postgres_history";
+      MYSQL_HISTFILE = "${cacheHome}/mysql_history";
+      CARGO_HOME = "${dataHome}/cargo";
+      GEM_HOME = "${dataHome}/gem";
+      GEM_SPEC_CACHE = "${cacheHome}/gem";
+      GOPATH = "${dataHome}";
+      WEECHAT_HOME = "${configHome}/weechat";
+      TERMINFO = "${dataHome}/terminfo";
+      INPUTRC = "${configHome}/readline/inputrc";
+      RUSTUP_HOME = "${dataHome}/rustup";
+      STACK_ROOT = "${dataHome}/stack";
+      # WGETRC               = "${configHome}/wgetrc";
+      SQLITE_HISTORY = "${cacheHome}/sqlite_history";
+      DOCKER_CONFIG = "${configHome}/docker";
       MACHINE_STORAGE_PATH = "${dataHome}/docker-machine";
 
       # Default applications
       # EDITOR   = "${profileDirectory}/bin/nvim";
       # VISUAL   = "${profileDirectory}/bin/nvim";
-      EDITOR   = "/usr/local/bin/nvim";
-      VISUAL   = "/usr/local/bin/nvim";
-      PAGER    = "${profileDirectory}/bin/less";
+      EDITOR = "/usr/local/bin/nvim";
+      VISUAL = "/usr/local/bin/nvim";
+      PAGER = "${profileDirectory}/bin/less";
       MANPAGER = "${profileDirectory}/bin/less -s -M";
     };
 
-    sessionVariablesUnquoted = {
-      LESS_TERMCAP_mb = "$'\\e[0;1;31m'";
-      LESS_TERMCAP_md = "$'\\e[0;1;31m'";
-      LESS_TERMCAP_me = "$'\\e[0;39m'";
-      LESS_TERMCAP_se = "$'\\e[0;39m'";
-      LESS_TERMCAP_so = "$'\\e[0;1;30;43m'";
-      LESS_TERMCAP_ue = "$'\\e[0;39m'";
-      LESS_TERMCAP_us = "$'\\e[0;1;32m'";
-    };
+    sessionVariablesExtra = ''
+      export LESS_TERMCAP_mb=$'\e[0;1;31m'
+      export LESS_TERMCAP_md=$'\e[0;1;31m'
+      export LESS_TERMCAP_me=$'\e[0;39m'
+      export LESS_TERMCAP_se=$'\e[0;39m'
+      export LESS_TERMCAP_so=$'\e[0;1;30;43m'
+      export LESS_TERMCAP_ue=$'\e[0;39m'
+      export LESS_TERMCAP_us=$'\e[0;1;32m'
+    '';
   };
 
   accounts.email.accounts =
@@ -96,10 +112,7 @@ with pkgs;
 
   nixpkgs.config = import ../stow/.config/nixpkgs/config.nix;
 
-  programs.home-manager = {
-    enable = true;
-    path = toString ../gitmodules/home-manager;
-  };
+  programs.home-manager = { enable = true; };
 
   programs.password-store = {
     enable = true;
@@ -111,7 +124,7 @@ with pkgs;
   xdg.enable = true;
 
   # https://github.com/rycee/home-manager/issues/589
-  home.activation.sideEffects = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.activation.sideEffects = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     ${stow}/bin/stow -d ${toString ./..} -t ~ stow
     ${builtins.concatStringsSep "\n" (builtins.attrValues config.lib.activations)}
   '';

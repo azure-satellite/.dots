@@ -1,0 +1,90 @@
+" use {"https://github.com/sheerun/vim-polyglot"}
+" -- See https://github.com/sheerun/vim-polyglot/issues/478
+" use {"https://github.com/masukomi/vim-markdown-folding"}
+
+" use {"https://github.com/neoclide/coc.nvim", branch = "release"}
+" function! s:coc_settings() abort
+"   vmap <buffer><silent> = <plug>(coc-format-selected)
+"   nmap <buffer><silent> = <plug>(coc-format-selected)
+"   nmap <buffer><silent> == <plug>(coc-format)
+"   nmap <buffer> ]r <plug>(coc-diagnostic-next)
+"   nmap <buffer> [r <plug>(coc-diagnostic-prev)
+"   nmap <buffer> gd <plug>(coc-definition)
+"   nnoremap <buffer> K :call CocAction('doHover')<cr>
+"   nmap <buffer> <leader>lu <plug>(coc-references)
+"   nmap <buffer> <leader>lr <plug>(coc-rename)
+"   nmap <buffer> <leader>lf <plug>(coc-refactor)
+"   xmap <buffer> <leader>la <plug>(coc-codeaction-selected)
+"   nmap <buffer> <leader>la <plug>(coc-codeaction-selected)
+"   nnoremap <buffer> <leader>li :call CocActionAsync('runCommand', 'tsserver.organizeImports')<cr>
+"   function! s:check_back_space() abort
+"     let col = col('.') - 1
+"     return !col || getline('.')[col - 1]  =~ '\s'
+"   endfunction
+"   " <tab> triggers completion and navigates to next suggestion
+"   inoremap <buffer><silent><expr> <tab>
+"     \ pumvisible() ? "\<C-n>" :
+"     \ <SID>check_back_space() ? "\<TAB>" :
+"     \ coc#refresh()
+"   " <cr> accepts current suggestion (accepting a suggestion may perform
+"   " side-effects like auto importing the selected symbol and expanding a snippet)
+"   inoremap <buffer><expr> <cr> pumvisible() ? "\<C-y>" : "\<c-g>u\<cr>"
+" endfunction
+" au FileType javascript,purescript,javascriptreact,rust call s:coc_settings()
+" let g:coc_global_extensions = [
+" \ "coc-tsserver",
+" \ "coc-prettier",
+" \ "coc-css",
+" \ "coc-json",
+" \ "coc-rls",
+" \ ]
+" let g:coc_user_config = {
+" \   "diagnostic.maxWindowWidth": &columns,
+" \   "signature.floatMaxWidth": &columns,
+" \   "suggest.maxPreviewWidth": &columns,
+" \   "suggest.autoTrigger": "none",
+" \   "suggest.noselect": v:false,
+" \   "suggest.completionItemKindLabels": {
+" \     "function": "𝜆 ",
+" \     "variable": "𝑥 ",
+" \     "constant": "𝑥 ",
+" \     "keyword" : "abc",
+" \     "method"  : "􀋱  ",
+" \     "property": "􀋱  ",
+" \     "field"   : "􀋱  ",
+" \     "class"   : "􀐘  ",
+" \     "module"  : "􀐚  ",
+" \     "file"    : "􀈿  ",
+" \   },
+" \   "diagnostic.enable": v:true,
+" \   "diagnostic.refreshAfterSave": v:true,
+" \   "diagnostic.level": "warn",
+" \   "signature.target": "echo",
+" \   "list.nextKeymap": "<c-n>",
+" \   "list.previousKeymap": "<c-p>",
+" \   "coc.preferences.formatOnSaveFiletypes": [
+" \     "javascript",
+" \     "typescript",
+" \     "javascriptreact",
+" \     "json",
+" \     "html",
+" \     "css",
+" \     "rust"
+" \   ],
+" \   "javascript.suggestionActions.enabled": v:false,
+" \   "languageserver": {
+" \     "purescript": {
+" \       "command": "purescript-language-server",
+" \       "args": ["--stdio"],
+" \       "filetypes": ["purescript"],
+" \       "rootPatterns": ["bower.json", "psc-package.json", "spago.dhall"]
+" \     }
+" \   },
+" \   "rust-client.disableRustup": v:true,
+" \ }
+" set noshowmode " Otherwise echoing the signature doesn't work
+" au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+" end
+
+" " polyglot
+" let g:vim_markdown_no_default_key_mappings = 1

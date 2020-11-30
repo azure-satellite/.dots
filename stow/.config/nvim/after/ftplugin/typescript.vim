@@ -1,3 +1,3 @@
-source './javascript.vim'
+" source './javascript.vim'
 
 set textwidth=120
