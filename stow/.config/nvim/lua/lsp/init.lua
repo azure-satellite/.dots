@@ -72,44 +72,31 @@ local eslint = {
   lintIgnoreExitCode = true,
   lintStdin = true
 }
+local languages = {
+  javascript = {prettier, eslint},
+  typescript = {prettier, eslint},
+  javascriptreact = {prettier, eslint},
+  typescriptreact = {prettier, eslint},
+  yaml = {prettier},
+  json = {prettier},
+  html = {prettier},
+  scss = {prettier},
+  css = {prettier},
+  markdown = {prettier},
+  -- npm i -g lua-fmt
+  lua = {{formatCommand = "luafmt -i 2 -l 82 --stdin", formatStdin = true}}
+}
+local root_markers = {".git/", ".bashrc"}
 
 lspconfig.efm.setup {
   cmd = {"efm-langserver", "-logfile", log_dir .. "/efm.log"},
   on_attach = on_attach(log_dir .. "/efm.log"),
   -- Fallback to .bashrc as a project root to enable LSP on loose files
-  root_dir = lspconfig.util.root_pattern(".git/", ".bashrc"),
+  root_dir = lspconfig.util.root_pattern(unpack(root_markers)),
   -- Enable document formatting (other capabilities are off by default).
   init_options = {documentFormatting = true},
-  filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "css",
-    "scss",
-    "yaml",
-    "json",
-    "html",
-    "markdown",
-    "lua"
-  },
-  settings = {
-    rootMarkers = {".git/", ".bashrc"},
-    languages = {
-      javascript = {prettier, eslint},
-      typescript = {prettier, eslint},
-      javascriptreact = {prettier, eslint},
-      typescriptreact = {prettier, eslint},
-      yaml = {prettier},
-      json = {prettier},
-      html = {prettier},
-      scss = {prettier},
-      css = {prettier},
-      markdown = {prettier},
-      -- npm i -g lua-fmt
-      lua = {{formatCommand = "luafmt -i 2 -l 82 --stdin", formatStdin = true}}
-    }
-  }
+  filetypes = vim.tbl_keys(languages),
+  settings = {rootMarkers = root_markers, languages = languages}
 }
 
 -- -- Keep an eye out for https://github.com/denoland/deno_lint and

@@ -5,8 +5,3 @@ These are my personal dotfiles, managed with https://github.com/rycee/home-manag
 ## Install
 
 `curl https://raw.githubusercontent.com/stellarhoof/furnisher/master/install.sh | sh`
-
-## TODO
-
-- ssh-add permanent under osx
-- setup tmux
