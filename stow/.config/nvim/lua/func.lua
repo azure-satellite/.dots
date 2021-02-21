@@ -2,17 +2,17 @@
 
 -- map(function, table)
 -- e.g: map(double, {1,2,3})    -> {2,4,6}
-function map(func, tbl)
-  local newtbl = {}
-  for i, v in pairs(tbl) do
-    newtbl[i] = func(v)
+local function map(fun, iter)
+  local results = {}
+  for _, v in pairs(iter) do
+    table.insert(results, fun(v))
   end
-  return newtbl
+  return results
 end
 
 -- head(table)
 -- e.g: head({1,2,3}) -> 1
-function head(tbl)
+local function head(tbl)
   return tbl[1]
 end
 
@@ -21,7 +21,7 @@ end
 --
 -- XXX This is a BAD and ugly implementation.
 -- should return the address to next pointer, like in C (arr+1)
-function tail(tbl)
+local function tail(tbl)
   if table.getn(tbl) < 1 then
     return nil
   else
@@ -38,7 +38,7 @@ end
 
 -- foldr(function, default_value, table)
 -- e.g: foldr(operator.mul, 1, {1,2,3,4,5}) -> 120
-function foldr(func, val, tbl)
+local function foldr(func, val, tbl)
   for _, v in ipairs(tbl) do
     val = func(val, v)
   end
@@ -47,8 +47,14 @@ end
 
 -- reduce(function, table)
 -- e.g: reduce(operator.add, {1,2,3,4}) -> 10
-function reduce(func, tbl)
+local function reduce(func, tbl)
   return foldr(func, head(tbl), tail(tbl))
 end
 
-return {map = map, reduce = reduce, tail = tail, head = head}
+return {
+  map = map,
+  reduce = reduce,
+  tail = tail,
+  head = head,
+  concat = concat
+}

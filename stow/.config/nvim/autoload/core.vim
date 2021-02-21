@@ -115,6 +115,10 @@ function! core#statusline_lsp() abort
     if warnings > 0
       let sl .= ' '.warnings.' '
     endif
+    let hints = luaeval('vim.lsp.diagnostic.get_count(0, [[Hint]])')
+    if hints > 0
+      let sl .= ' '.hints.' '
+    endif
   endif
   return sl
 endfunction

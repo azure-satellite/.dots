@@ -54,7 +54,7 @@ let
     # mono = { name = "Inconsolata Nerd Font"; attrs = []; size = 11; };
     # mono = { name = "FiraCode Nerd Font"; attrs = []; size = 9; };
     # mono = { name = "FantasqueSansMono Nerd Font"; attrs = []; size = 10.5; };
-    # mono = { name = "Iosevka Nerd Font"; attrs = []; size = 10; };
+    # mono = { name = "Iosevka Nerd Font"; attrs = []; size = 11; };
     sans = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
     serif = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
     ui = { name = "SF Pro Rounded"; attrs = ["medium"]; size = 9; };

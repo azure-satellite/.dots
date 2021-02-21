@@ -55,22 +55,113 @@ return function(use)
 
   -- Language Server Protocol
 
-  use {
-    "https://github.com/neovim/nvim-lspconfig",
-    event = "VimEnter *",
-    config = function()
-      require("lsp")
-    end
+  -- use {
+  --   "https://github.com/neovim/nvim-lspconfig",
+  --   event = "VimEnter *",
+  --   config = function()
+  --     require("lsp")
+  --   end
+  -- }
+
+  use {"https://github.com/neoclide/coc.nvim", branch = "release"}
+  util.au(
+    {
+      event = "FileType",
+      pattern = "javascript,javascriptreact,lua",
+      cmd = function()
+        util.buf_map('n', '=', '<plug>(coc-format-selected)', { silent = true })
+        util.buf_map('n', '==', '<plug>(coc-format)', { silent = true })
+        util.buf_map('n', '[r', '<plug>(coc-diagnostic-prev)')
+        util.buf_map('n', ']r', '<plug>(coc-diagnostic-next)')
+        util.buf_map('n', 'gd', '<plug>(coc-definition)')
+        util.buf_noremap('n', 'K', '<cmd>call CocAction("doHover")<cr>')
+        util.buf_map('n', '<leader>lu', '<plug>(coc-references)')
+        util.buf_map('n', '<leader>lr', '<plug>(coc-rename)')
+        util.buf_map('n', '<leader>lf', '<plug>(coc-refactor)')
+        util.buf_map('x', '<leader>la', '<plug>(coc-codeaction-selected)')
+        util.buf_map('n', '<leader>la', '<plug>(coc-codeaction-selected)')
+        util.buf_noremap('n', '<leader>li', '<cmd>call CocActionAsync("runCommand", "tsserver.organizeImports")<cr>')
+        --   function! s:check_back_space() abort
+        --     let col = col('.') - 1
+        --     return !col || getline('.')[col - 1]  =~ '\s'
+        --   endfunction
+        -- <tab> triggers completion and navigates to next suggestion
+        -- util.buf_noremap('i', '<tab>', 'pumvisible() ? "\\<C-n>" : <SID>check_back_space() ? "\\<TAB>" : coc#refresh()', { silent = true, expr = true })
+        -- <cr> accepts current suggestion (accepting a suggestion may perform
+        -- side-effects like auto importing the selected symbol and expanding a snippet)
+        -- util.buf_noremap('i', '<cr>', 'pumvisible() ? "\\<C-y>" : "\\<c-g>u\\<cr>"', { expr = true })
+      end
+    }
+  )
+
+  vim.g.coc_global_extensions = {
+    "coc-tsserver",
+    "coc-eslint",
+    "coc-prettier",
+    "coc-css",
+    "coc-json",
+    "coc-lua"
+  }
+
+  vim.g.coc_user_config = {
+    diagnostic = {
+      enable = true,
+      level = 'warning',
+    },
+    signature = {
+      enable = false,
+    },
+    list = {
+      nextKeymap = '<c-n>',
+      previousKeymap = '<c-p>',
+    },
+    suggest = {
+      -- noselect = false,
+      completionItemKindLabels = {
+        ["function"] = "𝜆 ",
+        variable     = "𝑥 ",
+        constant     = "𝑥 ",
+        keyword      = "abc",
+        method       = "􀋱  ",
+        property     = "􀋱  ",
+        field        = "􀋱  ",
+        class        = "􀐘  ",
+        module       = "􀐚  ",
+        file         = "􀈿  ",
+      }
+    },
+    coc = {
+      preferences = {
+        formatOnSaveFiletypes = {
+          'javascript',
+          'javascriptreact',
+          'json',
+          'html',
+          'css'
+        },
+      }
+    },
+    javascript = {
+      suggestionActions = {
+        enabled = false,
+      }
+    },
+    Lua = { diagnostics = { globals = { 'vim' } } }
   }
 
   -- Filetypes
 
+  -- use {"https://github.com/sheerun/vim-polyglot"}
+
   use {
     "https://github.com/nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate",
     event = "VimEnter *",
     config = function()
       require("nvim-treesitter.configs").setup {
-        ensure_installed = "all",
+        -- Can't install from a nix-shell so once installed do open vim in a
+        -- non nix-shell shell and `:TSInstall all`
+        -- ensure_installed = "maintained",
         highlight = {
           enable = true
         },
@@ -126,7 +217,6 @@ return function(use)
         "force",
         vim.g.grepper,
         {
-          quickfix = 0,
           switch = 0,
           dir = "repo,file,pwd",
           side_cmd = "tabnew",
@@ -200,6 +290,7 @@ return function(use)
   vim.g.openbrowser_message_verbosity = 1
   vim.g.openbrowser_use_vimproc = 0
   util.map("n", "go", "<plug>(openbrowser-smart-search)")
+  util.map("v", "go", "<plug>(openbrowser-smart-search)")
   use {"https://github.com/tpope/vim-eunuch"}
 
   -- Colors
@@ -208,14 +299,12 @@ return function(use)
     "https://github.com/norcalli/nvim-colorizer.lua",
     event = "VimEnter *",
     config = function()
-      require("colorizer").setup()
+      require("colorizer").setup(nil, {hsl_fn = true})
     end
   }
+  use {"https://github.com/whatyouhide/vim-gotham"}
   -- use {"https://github.com/xolox/vim-misc"}
   -- use {"https://github.com/xolox/vim-colorscheme-switcher"}
-  -- use {"https://github.com/lifepillar/vim-solarized8"}
-  -- use {"https://github.com/ayu-theme/ayu-vim"}
-  -- use {"https://github.com/sainnhe/edge"}
 
   -- Window Management
 
@@ -232,7 +321,7 @@ return function(use)
   -- use {"https://github.com/tjdevries/express_line.nvim"}
   use {"https://github.com/tpope/vim-scriptease"}
   use {"https://github.com/tpope/vim-characterize"}
-  use {"https://github.com/zhimsel/vim-stay"}
+  -- use {"https://github.com/zhimsel/vim-stay"}
 
   use {"https://github.com/kopischke/vim-fetch"}
   util.map("n", "gz", "<plug>(characterize)")
@@ -273,15 +362,26 @@ return function(use)
     "<cmd>exe 'Dirvish ' . fnamemodify(b:git_dir, ':h')<cr>",
     {silent = true}
   )
-  function _G._dirvish_ft()
-    local util = require("util")
-    -- Sort directories first
-    vim.cmd("sort ,^.*[\\/],")
-    -- Reload after entering a dirvish window
-    util.buf_map("n", "q", "gq")
-    vim.cmd("au! WinEnter,FocusGained <buffer> Dirvish %")
-  end
-  vim.cmd("au! FileType dirvish call v:lua._dirvish_ft()")
+  util.au(
+    {
+      event = "FileType",
+      pattern = "dirvish",
+      cmd = function()
+        local util = require("util")
+        -- Sort directories first
+        vim.cmd("sort ,^.*[\\/],")
+        -- Reload after entering a dirvish window
+        util.buf_map("n", "q", "gq")
+        util.au(
+          {
+            event = {"WinEnter", "FocusGained"},
+            pattern = "<buffer>",
+            cmd = "Dirvish %"
+          }
+        )
+      end
+    }
+  )
 
   use {
     "https://github.com/konfekt/vim-alias",
@@ -323,7 +423,6 @@ return function(use)
 
       -- Edit/load vimrc
       vim.cmd("Alias vime exec\\ 'e\\ '.$MYVIMRC")
-      vim.cmd("Alias viml exec\\ 'so\\ '.$MYVIMRC")
 
       -- Generic aliases
       vim.cmd("Alias w up")

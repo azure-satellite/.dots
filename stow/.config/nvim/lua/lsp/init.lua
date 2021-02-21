@@ -1,7 +1,7 @@
 -- Good references:
 -- https://github.com/lukas-reineke/dotfiles/blob/7eec44f99c64be1916e246ab51c1d4e4a4083670/vim/lua/lsp.lua
 local lspconfig = require("lspconfig")
-local util = require("lsp/util")
+local util = require("util")
 local diagnostics = require("lsp/diagnostics")
 require("lsp/completion")
 
@@ -22,19 +22,31 @@ local function on_attach(serverLog)
 
     -- Formatting
     if client.resolved_capabilities.document_formatting then
-      vim.cmd [[augroup Format]]
-      vim.cmd [[autocmd! * <buffer>]]
-      -- Use BufWritePre with formatting_sync so the buffer doesn't stay
-      -- modified after formatting.
-      vim.cmd [[autocmd BufWritePre <buffer> :call v:lua.site.lsp.util.format_buf()]]
-      vim.cmd [[augroup END]]
+      util.au(
+        {
+          event = "BufWritePost",
+          pattern = "<buffer>",
+          cmd = vim.lsp.buf.formatting
+        }
+      )
+
       -- Toggle formatting unimpaired style
-      util.buf_nnoremap("yof", "call v:lua.site.lsp.util.toggle_format_buf()")
+      util.buf_noremap(
+        "n",
+        "yof",
+        function()
+          vim.b.format_buf = not (vim.b.format_buf == nil or vim.b.format_buf)
+        end
+      )
     end
 
     local function map_capability(mapping, name, capability_name)
       if client.resolved_capabilities[capability_name or name] then
-        util.buf_nnoremap(mapping, "lua vim.lsp.buf." .. name .. "()")
+        util.buf_noremap(
+          "n",
+          mapping,
+          "<cmd>lua vim.lsp.buf." .. name .. "()<cr>"
+        )
       end
     end
 
@@ -48,6 +60,21 @@ local function on_attach(serverLog)
     map_capability("gW", "workspace_symbol")
 
     diagnostics.on_attach(client)
+  end
+end
+
+vim.lsp.handlers["textDocument/formatting"] = function(err, _, result, _, bufnr)
+  if err ~= nil or result == nil then
+    return
+  end
+  if
+    vim.fn.exists("b:format_buf") == 0 or
+      vim.api.nvim_buf_get_var(bufnr, "format_buf")
+   then
+    vim.lsp.util.apply_text_edits(result, bufnr)
+    if vim.api.nvim_get_current_buf() == bufnr then
+      vim.api.nvim_command("noautocmd update")
+    end
   end
 end
 

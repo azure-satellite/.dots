@@ -10,7 +10,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
   vim.lsp.diagnostic.on_publish_diagnostics,
   {
     underline = false,
-    virtual_text = true,
+    virtual_text = false,
     signs = true,
     update_in_insert = false
   }
@@ -31,8 +31,8 @@ set_sign("Error", "ﰸ")
 local function set_highlight(type, color)
   vim.cmd(string.format("hi! LspDiagnosticsDefault%s guifg=%s", type, color))
 end
-set_highlight("Hint", colors.green)
-set_highlight("Information", colors.cyan)
+set_highlight("Hint", colors.magenta)
+set_highlight("Information", colors.magenta)
 set_highlight("Warning", colors.yellow)
 set_highlight("Error", colors.red)
 
@@ -42,28 +42,28 @@ function M.on_attach(client)
   util.buf_noremap(
     "n",
     "[r",
-    "lua vim.lsp.diagnostic.goto_prev({ wrap = false, popup_opts = { } })"
+    "<cmd>lua vim.lsp.diagnostic.goto_prev({ wrap = false, popup_opts = { } })<cr>"
   )
 
   -- Go to first diagnostic
   util.buf_noremap(
     "n",
     "[R",
-    "lua vim.lsp.diagnostic.goto_next({ cursor_position = {0, 0} })"
+    "<cmd>lua vim.lsp.diagnostic.goto_next({ cursor_position = {0, 0} })<cr>"
   )
 
   -- Go to next diagnostic
   util.buf_noremap(
     "n",
     "]r",
-    "lua vim.lsp.diagnostic.goto_next({ wrap = false })"
+    "<cmd>lua vim.lsp.diagnostic.goto_next({ wrap = false })<cr>"
   )
 
   -- Go to last diagnostic
   util.buf_noremap(
     "n",
     "]R",
-    "lua vim.lsp.diagnostic.goto_prev({ cursor_position = {-1, -1} })"
+    "<cmd>lua vim.lsp.diagnostic.goto_prev({ cursor_position = {-1, -1} })<cr>"
   )
 end
 

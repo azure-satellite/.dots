@@ -1,4 +1,4 @@
--- See https://github.com/neovim/neovim/issues/12978 for buffer/window options
+-- Highly recommended to run :options
 
 vim.o.viewoptions = "cursor,folds,slash,unix"
 
@@ -33,7 +33,7 @@ vim.o.showbreak = "↪  "
 -- Round indent to multiple of shiftwidth
 vim.o.shiftround = true
 
--- Dont complain when leaving buffers with changes
+-- Do not complain when leaving buffers with changes
 vim.o.hidden = true
 
 -- Always open vertical diffsplits. Ignore whitespace
@@ -81,6 +81,7 @@ vim.o.splitright = true
 
 vim.o.tabline = "%!core#tabline()"
 
+-- TODO: Look into https://gist.github.com/tasmo/bb79473aedb6797f016522109884ad9a
 -- Values obtained from evaluating %{} blocks don't get evaluated themselves.
 -- They are taken verbatim (including other %{} blocks). Ex:
 -- <
@@ -99,44 +100,48 @@ vim.o.tabline = "%!core#tabline()"
 -- that it comes with despair and performance problems. I don't know about you,
 -- future self, but I like performance, and dislike despair.
 vim.o.statusline =
-  "%{core#statusline_branch()} ▏%{core#statusline_file()} %{core#statusline_flags()} %= %{core#statusline_lsp()} ▏%{&ft} ▏%l:%c %p%%"
+  "%{core#statusline_file()} %{core#statusline_flags()} %=%{&ft} ▏%l:%c %p%%"
+-- "%{core#statusline_file()} %{core#statusline_flags()} %= %{core#statusline_lsp()}▏%{&ft} ▏%l:%c %p%%"
 
-vim.cmd("set tabstop=2")
+-- Buffer/window/tab local options don't work with vim.o as with :set. See
+-- https://github.com/neovim/neovim/issues/12978 for more details
 
-vim.cmd("set shiftwidth=2")
+-- Buffer local options
 
-vim.cmd("set softtabstop=2")
+vim.cmd [[
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set noswapfile
+set textwidth=80
+set expandtab
+set matchpairs=(:),{:},[:],<:>
+set formatoptions=jcroql
 
-vim.cmd("set noswapfile")
+" Scan current buffer, buffers from buffer list and tags for completion
+set complete=.,b,t
 
-vim.cmd("set textwidth=80")
+" Persistent undo
+set undofile
+]]
 
--- Insert spaces instead of tabs when pressing <TAB>
-vim.cmd("set expandtab")
+-- Window local options
 
-vim.cmd('set matchpairs="(:),{:},[:],<:>"')
+vim.cmd [[
+set signcolumn=yes
 
--- Scan current buffer, buffers from buffer list and tags for completion
-vim.cmd('set complete=".,b,t"')
+" Fold by indentation and set it to a high nesting value
+set foldmethod=indent
+set foldlevel=99
 
--- Persistent undo
-vim.cmd("set undofile")
+" Fold one liners too
+set foldminlines=0
 
-vim.cmd('set formatoptions="jcroql"')
+" Break only at non-word characters (:h breakat)
+set linebreak
 
-vim.cmd("set signcolumn=yes")
+" Every visually-indented line will have the same indent as the beginning of
+" the line
+set breakindent
+]]
 
--- Fold by indentation
-vim.cmd("set foldmethod=indent")
-
--- But set it to a high nesting value
-vim.cmd("set foldlevel=99")
-
--- Fold one liners too
-vim.cmd("set foldminlines=0")
-
--- Break only at non-word characters (:h breakat)
-vim.cmd("set linebreak")
-
--- Every visually-indented line will have the same indent as the beginning of the line
-vim.cmd("set breakindent")

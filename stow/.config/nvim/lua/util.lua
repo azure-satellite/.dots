@@ -1,53 +1,27 @@
 local M = {}
 
-local function completion_search(s_arr, prefix, r_arr)
-  if #s_arr == 0 then
-    return
+local function map_callback(cmd)
+  if type(cmd) == "string" then
+    return cmd
   end
-  if not r_arr then
-    r_arr = _G
-  end
-  local head = table.remove(s_arr, 1)
-  if type(r_arr[head]) == "table" then
-    prefix = prefix .. head .. "."
-    return completion_search(s_arr, prefix, r_arr[head])
-  end
-  local result = {}
-  local keys = vim.tbl_keys(r_arr)
-  table.sort(keys)
-  for _, v in ipairs(keys) do
-    local regex = "^" .. string.gsub(head, "%*", ".*")
-    if v:find(regex) then
-      table.insert(result, prefix .. v)
-    end
-  end
-  return result
-end
-
--- https://github.com/rafcamlet/nvim-luapad/blob/master/lua/luapad/completion.lua
-function M.complete_lua(line)
-  local index = line:find("[%w._*]*$")
-  local cmd = line:sub(index)
-  local prefix = line:sub(1, index - 1)
-  local arr = vim.split(cmd, ".", true)
-  return completion_search(arr, prefix)
+  return string.format("<cmd>%s<cr>", site.callback(cmd))
 end
 
 function M.map(mode, lhs, rhs, opts)
-  vim.api.nvim_set_keymap(mode, lhs, rhs, opts or {})
+  vim.api.nvim_set_keymap(mode, lhs, map_callback(rhs), opts or {})
 end
 
 function M.noremap(mode, lhs, rhs, opts)
   vim.api.nvim_set_keymap(
     mode,
     lhs,
-    rhs,
+    map_callback(rhs),
     vim.tbl_extend("force", opts or {}, {noremap = true})
   )
 end
 
 function M.buf_map(mode, lhs, rhs, opts)
-  vim.api.nvim_buf_set_keymap(0, mode, lhs, rhs, opts or {})
+  vim.api.nvim_buf_set_keymap(0, mode, lhs, map_callback(rhs), opts or {})
 end
 
 function M.buf_noremap(mode, lhs, rhs, opts)
@@ -55,8 +29,40 @@ function M.buf_noremap(mode, lhs, rhs, opts)
     0,
     mode,
     lhs,
-    rhs,
+    map_callback(rhs),
     vim.tbl_extend("force", opts or {}, {noremap = true})
+  )
+end
+
+-- https://github.com/vheon/ycm.nvim/blob/585c7b645db705ed76700b692bc5da7a738fd22f/lua/ycm/autocmd.lua
+
+-- Just some lua for defining autocmds.
+-- It mimics https://github.com/neovim/neovim/pull/12076 so that when it is
+-- merged we can just lose this file.
+
+function M.augroup(group, opts)
+  vim.cmd("augroup " .. group)
+  if opts.clear then
+    vim.cmd("au!")
+  end
+  vim.cmd("augroup END")
+end
+
+function M.au(spec)
+  vim.cmd(
+    table.concat(
+      {
+        "au!",
+        spec.group or "",
+        type(spec.event) == "table" and table.concat(spec.event, ",") or
+          spec.event,
+        spec.pattern or "*",
+        spec.once and "++once" or "",
+        spec.nested and "++nested" or "",
+        site.callback(spec.cmd)
+      },
+      " "
+    )
   )
 end
 

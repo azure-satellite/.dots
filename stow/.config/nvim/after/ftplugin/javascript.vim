@@ -1,1 +1,0 @@
-let g:foo = 'this'
