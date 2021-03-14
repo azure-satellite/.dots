@@ -5,7 +5,10 @@ with pkgs;
 {
   home.packages = [
     python
-    python37
+    (python3Packages.python.buildEnv.override {
+      extraLibs = [ python3Packages.pynvim ];
+      ignoreCollisions = true;
+    })
   ];
 
   lib.aliases = {

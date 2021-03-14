@@ -1,48 +1,30 @@
+# Copied from /Users/berserk/.config/fish/functions/fish_prompt.fish just so I
+# can remove the user/host
+
 function fish_prompt --description 'Write out the prompt'
-    set -l last_status $status
-    set -l tokens
+    set -l last_pipestatus $pipestatus
+    set -lx __fish_last_status $status # Export for __fish_print_pipestatus.
+    set -l normal (set_color normal)
 
-    # NIX shell
-    if set -q IN_NIX_SHELL
-        if not set -q NIX_SHELL_NAME
-            set -gx NIX_SHELL_NAME (basename $PWD)
-        end
-        set tokens $tokens (set_color $fish_color_host --bold)"NIX:"$NIX_SHELL_NAME(set_color normal)
-    else
-        if set -q NIX_SHELL_NAME
-            set -e NIX_SHELL_NAME
-        end
-    end
-
-    # Current working directory
+    # Color the prompt differently when we're root
     set -l color_cwd $fish_color_cwd
-    if test "$USER" = "root"; set color_cwd $fish_color_cwd_root; end
-    set tokens $tokens (set_color $color_cwd)(prompt_pwd)(set_color normal)
-
-    set -l branch (command git rev-parse --abbrev-ref HEAD 2> /dev/null)
-    if test "$status" = 0
-        set -l git_stats ""
-
-        command git diff-index --no-ext-diff --ignore-submodules --diff-algorithm=default --quiet --cached HEAD
-        if test "$status" != 0
-            set git_stats $git_stats(set_color green --bold)"*"(set_color normal)
+    set -l suffix ''
+    if functions -q fish_is_root_user; and fish_is_root_user
+        if set -q fish_color_cwd_root
+            set color_cwd $fish_color_cwd_root
         end
-
-        # Will take longer on a cold run
-        command git diff-files --no-ext-diff --ignore-submodules --diff-algorithm=default --quiet
-        if test "$status" != 0
-            set git_stats $git_stats(set_color red --bold)"*"(set_color normal)
-        end
-
-        set tokens $tokens (set_color $fish_color_user)$branch(set_color normal)$git_stats
+        set suffix '#'
     end
 
-    # Error code
-    set -l error ""
-    if test $last_status -ne 0
-        set tokens $tokens (set_color red --bold)"$last_status"(set_color normal)
+    # Write pipestatus
+    # If the status was carried over (e.g. after `set`), don't bold it.
+    set -l bold_flag --bold
+    set -q __fish_prompt_status_generation; or set -g __fish_prompt_status_generation $status_generation
+    if test $__fish_prompt_status_generation = $status_generation
+        set bold_flag
     end
+    set __fish_prompt_status_generation $status_generation
+    set -l prompt_status (__fish_print_pipestatus "[" "]" "|" (set_color $fish_color_status) (set_color $bold_flag $fish_color_status) $last_pipestatus)
 
-    # Print the prompt
-    echo -s (set_color $fish_color_prompt --bold)"["(set_color normal)(string join " " $tokens)(set_color $fish_color_prompt --bold)"]: "(set_color normal)
+    echo -n -s (set_color $color_cwd) (prompt_pwd) $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
 end

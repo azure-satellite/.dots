@@ -1,63 +1,80 @@
-local c = require("colors")
+local c = require("theme")
 local f = require("func")
+
+vim.g.terminal_color_0 = c.white
+vim.g.terminal_color_1 = c.red
+vim.g.terminal_color_2 = c.green
+vim.g.terminal_color_3 = c.yellow
+vim.g.terminal_color_4 = c.blue
+vim.g.terminal_color_5 = c.magenta
+vim.g.terminal_color_6 = c.cyan
+vim.g.terminal_color_7 = c.black
+vim.g.terminal_color_8 = c.neutral0
+vim.g.terminal_color_9 = c.neutral1
+vim.g.terminal_color_10 = c.neutral2
+vim.g.terminal_color_11 = c.neutral3
+vim.g.terminal_color_12 = c.neutral4
+vim.g.terminal_color_13 = c.neutral5
+vim.g.terminal_color_14 = c.neutral6
+vim.g.terminal_color_15 = c.neutral7
 
 -- :h highlight-groups
 local builtin_groups = {
-  {g = "StatusLine", fg = c.black, bg = c.base6, style = "bold"},
-  {g = "StatusLineNC", fg = c.base6, bg = c.base3, style = "bold"},
-  {g = "TabLine", fg = c.base6, bg = c.base3, style = "bold"},
-  {g = "TabLineFill", fg = c.base6, bg = c.base3, style = "bold"},
-  {g = "TabLineSel", fg = c.black, bg = c.base6, style = "bold"},
-  {g = "Cursor", fg = c.black, bg = "#72f970"},
-  {g = "CursorColumn", bg = c.base1},
-  {g = "CursorLine", bg = c.base2, style = "bold"},
-  {g = "CursorLineNr", fg = c.base5, bg = c.base1},
-  {g = "ColorColumn", bg = c.base1},
+  {g = "StatusLine", fg = c.neutral0, bg = c.neutral6, style = "bold"},
+  {g = "StatusLineNC", fg = c.neutral6, bg = c.neutral3, style = "bold"},
+  {g = "TabLine", fg = c.neutral6, bg = c.neutral3, style = "bold"},
+  {g = "TabLineFill", fg = c.neutral6, bg = c.neutral3, style = "bold"},
+  {g = "TabLineSel", fg = c.neutral0, bg = c.neutral6, style = "bold"},
+  {g = "Cursor", fg = c.neutral0, bg = "#72f970"},
+  {g = "CursorColumn", bg = c.neutral1},
+  {g = "CursorLine", bg = c.neutral2, style = "bold"},
+  {g = "CursorLineNr", fg = c.neutral5, bg = c.neutral1},
+  {g = "ColorColumn", bg = c.neutral1},
   {g = "DiffAdd", fg = "#859900", style = "bold"},
   {g = "DiffChange"},
   {g = "DiffDelete", fg = "#dc322f", style = "bold"},
   {g = "DiffText", fg = "#268bd2", style = "bold"},
-  {g = "TermCursor", fg = c.black, bg = "#72f970"},
-  {g = "TermCursorNC", fg = c.black, bg = "#72f970"},
+  {g = "TermCursor", fg = c.neutral0, bg = "#72f970"},
+  {g = "TermCursorNC", fg = c.neutral0, bg = "#72f970"},
   {g = "FoldColumn", fg = c.blue},
   {g = "Folded", fg = c.blue},
-  {g = "VertSplit", fg = c.base6, bg = c.base3, style = "bold"},
-  {g = "Visual", fg = c.base3},
-  {g = "WarningMsg", fg = "#d26937", style = "bold"},
+  {g = "VertSplit", fg = c.neutral6, bg = c.neutral3, style = "bold"},
+  {g = "Visual", bg = c.neutral3},
+  {g = "WarningMsg", fg = c.orange, style = "bold"},
   {g = "Whitespace", fg = c.blue},
-  {g = "WildMenu", fg = c.base7, bg = c.cyan},
+  {g = "WildMenu", fg = c.neutral7, bg = c.cyan},
   {g = "LineNr", fg = c.blue},
   {g = "Conceal", fg = c.cyan},
   {g = "EndOfBuffer", fg = c.blue},
   {g = "ErrorMsg", fg = c.red, style = "bold"},
   {g = "Directory", fg = c.green},
-  {g = "IncSearch", fg = c.yellow, c.base3, style = "bold"},
-  {g = "MatchParen", fg = c.base6, bg = "#d26937"},
+  {g = "IncSearch", fg = c.yellow, c.neutral3, style = "bold"},
+  {g = "MatchParen", fg = c.neutral6, bg = c.orange},
   {g = "ModeMsg", fg = c.yellow},
   {g = "MoreMsg", fg = c.yellow},
   {g = "NonText", fg = c.blue},
-  {g = "Normal", fg = c.base6},
-  {g = "Pmenu", fg = c.base6, bg = c.base2},
-  {g = "PmenuSel", fg = c.black, bg = c.base6},
-  {g = "PmenuSbar", bg = c.base2},
+  {g = "Normal", fg = c.neutral6},
+  {g = "Pmenu", fg = c.neutral6, bg = c.neutral2},
+  {g = "PmenuSel", fg = c.neutral0, bg = c.neutral6},
+  {g = "PmenuSbar", bg = c.neutral2},
   {g = "PmenuThumb", bg = c.blue},
   {g = "Question", fg = c.yellow},
-  {g = "QuickFixLine", c.base2, style = "bold"},
-  {g = "Search", fg = c.yellow, bg = c.base3, style = "bold"},
+  {g = "QuickFixLine", c.neutral2, style = "bold"},
+  {g = "Search", fg = c.yellow, bg = c.neutral3, style = "bold"},
   {g = "SignColumn", fg = c.blue},
-  {g = "SpecialKey", fg = c.base3},
-  {g = "SpellBad", fg = c.base7, bg = c.red},
-  {g = "SpellCap", fg = c.base7, bg = c.blue},
+  {g = "SpecialKey", fg = c.neutral3},
+  {g = "SpellBad", fg = c.neutral7, bg = c.red},
+  {g = "SpellCap", fg = c.neutral7, bg = c.blue},
   {g = "SpellLocal", fg = c.yellow},
-  {g = "SpellRare", fg = c.base7, bg = "#4e5166"},
-  {g = "Substitute", fg = c.yellow, bg = c.base3, style = "bold"},
-  {g = "Title", fg = "#d26937"}
+  {g = "SpellRare", fg = c.neutral7, bg = "#4e5166"},
+  {g = "Substitute", fg = c.yellow, bg = c.neutral3, style = "bold"},
+  {g = "Title", fg = c.orange}
 }
 
 -- :h group-name
 local syntax_groups = {
   -- Comment
-  {g = "Comment", fg = c.base4},
+  {g = "Comment", fg = c.neutral4},
   -- Constants
   {g = "Constant", fg = c.blue},
   {g = "String", fg = c.cyan, style = "italic"},
@@ -69,13 +86,13 @@ local syntax_groups = {
   -- {g = "Identifier", fg = c.green, style = "bold"},
   -- {g = "Function", fg = c.green, style = "bold"},
   -- -- Statements
-  -- {g = "Statement", fg = c.base6},
-  -- {g = "Conditional", fg = c.base6},
-  -- {g = "Repeat", fg = c.base6},
-  -- {g = "Label", fg = c.base6},
-  -- {g = "Operator", fg = c.base6},
+  -- {g = "Statement", fg = c.neutral6},
+  -- {g = "Conditional", fg = c.neutral6},
+  -- {g = "Repeat", fg = c.neutral6},
+  -- {g = "Label", fg = c.neutral6},
+  -- {g = "Operator", fg = c.neutral6},
   -- {g = "Keyword", fg = c.magenta, style = "bold,italic"},
-  -- {g = "Exception", fg = c.base6},
+  -- {g = "Exception", fg = c.neutral6},
   -- -- Preprocs
   -- {g = "PreProc", fg = c.magenta},
   -- {g = "Include", fg = c.magenta, style = "bold,italic"},
@@ -84,16 +101,16 @@ local syntax_groups = {
   -- {g = "PreCondit", fg = c.magenta},
   -- -- Types
   -- {g = "Type", fg = c.green},
-  -- {g = "StorageClass", fg = c.base6},
-  -- {g = "Structure", fg = c.base6},
-  -- {g = "Typedef", fg = c.base6},
+  -- {g = "StorageClass", fg = c.neutral6},
+  -- {g = "Structure", fg = c.neutral6},
+  -- {g = "Typedef", fg = c.neutral6},
   -- -- Specials
-  -- {g = "Special", fg = c.base6},
-  -- {g = "SpecialChar", fg = c.base6},
-  -- {g = "Tag", fg = c.base6},
+  -- {g = "Special", fg = c.neutral6},
+  -- {g = "SpecialChar", fg = c.neutral6},
+  -- {g = "Tag", fg = c.neutral6},
   -- {g = "Delimiter", fg = c.cyan},
   -- {g = "SpecialComment", fg = "#4e5166"},
-  -- {g = "Debug", fg = c.base6},
+  -- {g = "Debug", fg = c.neutral6},
   -- Underline
   {g = "Underlined", fg = c.yellow, style = "underline"},
   -- Ignore
@@ -163,19 +180,19 @@ local ts_groups = {
   {g = "TSInclude", fg = c.cyan, style = "bold,italic"},
   {g = "TSKeyword", fg = c.cyan, style = "bold,italic"},
   -- The rest
-  {g = "Comment", fg = c.base4},
+  {g = "Comment", fg = c.neutral4},
   {g = "TSString", fg = c.cyan, style = "italic"},
   {g = "TSPunctBracket", fg = c.cyan},
   {g = "TSTag", fg = c.green, style = "bold"},
   {g = "TSTagDelimiter", fg = c.green, style = "bold"}
 }
 
--- Make clear command
+-- Build clear command
 local function clear(group)
   return string.format("hi clear %s", string.match(group, "^%g+"))
 end
 
--- Make highlight command
+-- Build highlight command
 local function highlight(def)
   return string.format(
     "hi! %s guifg=%s guibg=%s gui=%s",

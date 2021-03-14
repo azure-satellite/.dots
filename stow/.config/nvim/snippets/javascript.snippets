@@ -15,3 +15,16 @@ snippet Modal "Chakra Modal"
       </ModalFooter>
     </ModalContent>
   </Modal>
+
+snippet story "Storybook Story"
+import React from 'react'
+import Component from './${1:Component}'
+
+export default {
+  title: 'Layout/$1',
+}
+
+export let $1 = () => (
+  <Component>
+  </Component>
+)

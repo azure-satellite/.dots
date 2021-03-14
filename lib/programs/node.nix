@@ -3,7 +3,7 @@ let
   NPM_PACKAGES = "${config.xdg.dataHome}/npm";
 in
 {
-  # home.packages = with pkgs; [ nodejs_latest yarn ];
+  home.packages = with pkgs; [ nodejs-14_x ];
 
   lib.vars = { inherit NPM_PACKAGES; };
 

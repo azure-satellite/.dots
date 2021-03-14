@@ -25,7 +25,7 @@ util.au(
       util.buf_map("n", "q", "gq")
       util.au(
         {
-          event = {"WinEnter", "FocusGained"},
+          event = {"FocusGained"},
           pattern = "<buffer>",
           cmd = "Dirvish %"
         }

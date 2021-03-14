@@ -105,7 +105,6 @@ in
 {
   imports = [
     ./dunst.nix
-    ./polybar.nix
     ./rofi.nix
   ];
 
@@ -125,27 +124,7 @@ in
       fonts = with config.lib; [
         (functions.fontConfigString fonts.ui)
       ];
-      colors = with config.lib.colors; rec {
-        focused = rec {
-          text = theme.primary.bg;
-          background = theme.text.fg;
-          border = theme.base5;
-          childBorder = border;
-          indicator = border;
-        };
-        unfocused = rec {
-          text = theme.text.fg;
-          background = theme.primary.bg;
-          border = theme.base2;
-          childBorder = border;
-          indicator = border;
-        };
-        # For example: Tab color when it has splits
-        focusedInactive = focused // {
-          childBorder = unfocused.childBorder;
-          indicator = unfocused.indicator;
-        };
-      };
+      colors = config.lib.colors.i3;
     };
     extraConfig = ''
       default_border pixel 1

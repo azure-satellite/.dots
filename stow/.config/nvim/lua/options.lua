@@ -23,8 +23,22 @@ vim.o.wrapscan = false
 -- Do not insert two spaces after J
 vim.o.joinspaces = false
 
-vim.o.grepprg =
-  "rg --glob '!package-lock.json' --glob '!.git/*' --smart-case --hidden --vimgrep"
+-- Not a vim option, but this allows us to use this value for other things
+vim.g.grepprg = {
+  "rg",
+  "--color=never",
+  "--no-heading",
+  "--with-filename",
+  "--line-number",
+  "--column",
+  "--smart-case",
+  "--hidden",
+  "--glob",
+  "'!package-lock.json'",
+  "--glob",
+  "'!.git'"
+}
+vim.o.grepprg = table.concat(vim.g.grepprg, " ")
 
 vim.o.grepformat = "%f:%l:%c:%m,%f:%l:%m"
 
@@ -106,6 +120,8 @@ vim.o.statusline =
 -- Buffer/window/tab local options don't work with vim.o as with :set. See
 -- https://github.com/neovim/neovim/issues/12978 for more details
 
+-- vim.cmd does not support comments!
+
 -- Buffer local options
 
 vim.cmd [[
@@ -117,11 +133,7 @@ set textwidth=80
 set expandtab
 set matchpairs=(:),{:},[:],<:>
 set formatoptions=jcroql
-
-" Scan current buffer, buffers from buffer list and tags for completion
 set complete=.,b,t
-
-" Persistent undo
 set undofile
 ]]
 
@@ -129,19 +141,9 @@ set undofile
 
 vim.cmd [[
 set signcolumn=yes
-
-" Fold by indentation and set it to a high nesting value
 set foldmethod=indent
 set foldlevel=99
-
-" Fold one liners too
 set foldminlines=0
-
-" Break only at non-word characters (:h breakat)
 set linebreak
-
-" Every visually-indented line will have the same indent as the beginning of
-" the line
 set breakindent
 ]]
-

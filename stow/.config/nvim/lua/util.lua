@@ -1,27 +1,41 @@
 local M = {}
 
-local function map_callback(cmd)
+local function map_callback(cmd, expr)
   if type(cmd) == "string" then
     return cmd
   end
-  return string.format("<cmd>%s<cr>", site.callback(cmd))
+  if expr == true then
+    return string.format('luaeval("%s")', site.callback(cmd))
+  end
+  return string.format("<cmd>lua %s<cr>", site.callback(cmd))
 end
 
 function M.map(mode, lhs, rhs, opts)
-  vim.api.nvim_set_keymap(mode, lhs, map_callback(rhs), opts or {})
+  vim.api.nvim_set_keymap(
+    mode,
+    lhs,
+    map_callback(rhs, (opts or {}).expr),
+    opts or {}
+  )
 end
 
 function M.noremap(mode, lhs, rhs, opts)
   vim.api.nvim_set_keymap(
     mode,
     lhs,
-    map_callback(rhs),
+    map_callback(rhs, (opts or {}).expr),
     vim.tbl_extend("force", opts or {}, {noremap = true})
   )
 end
 
 function M.buf_map(mode, lhs, rhs, opts)
-  vim.api.nvim_buf_set_keymap(0, mode, lhs, map_callback(rhs), opts or {})
+  vim.api.nvim_buf_set_keymap(
+    0,
+    mode,
+    lhs,
+    map_callback(rhs, (opts or {}).expr),
+    opts or {}
+  )
 end
 
 function M.buf_noremap(mode, lhs, rhs, opts)
@@ -29,7 +43,7 @@ function M.buf_noremap(mode, lhs, rhs, opts)
     0,
     mode,
     lhs,
-    map_callback(rhs),
+    map_callback(rhs, (opts or {}).expr),
     vim.tbl_extend("force", opts or {}, {noremap = true})
   )
 end
@@ -59,7 +73,11 @@ function M.au(spec)
         spec.pattern or "*",
         spec.once and "++once" or "",
         spec.nested and "++nested" or "",
-        site.callback(spec.cmd)
+        string.format(
+          "%s%s",
+          type(spec.cmd) == "string" and "" or "lua ",
+          site.callback(spec.cmd)
+        )
       },
       " "
     )

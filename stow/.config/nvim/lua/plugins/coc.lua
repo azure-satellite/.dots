@@ -45,7 +45,12 @@ vim.g.coc_user_config = {
   },
   list = {
     nextKeymap = "<c-n>",
-    previousKeymap = "<c-p>"
+    previousKeymap = "<c-p>",
+    source = {
+      symbols = {
+        excludes = {"**/node_modules/**"}
+      }
+    }
   },
   suggest = {
     autoTrigger = "none",
@@ -98,27 +103,16 @@ util.au(
       util.buf_map("n", "[r", "<plug>(coc-diagnostic-prev)")
       util.buf_map("n", "]r", "<plug>(coc-diagnostic-next)")
       util.buf_map("n", "gd", "<plug>(coc-definition)")
-      util.buf_map("n", "<space>lu", "<plug>(coc-references)")
-      util.buf_map("n", "<space>lr", "<plug>(coc-rename)")
-      util.buf_map("n", "<space>lf", "<plug>(coc-refactor)")
+      -- util.buf_map("n", "<space>lu", "<plug>(coc-references)")
+      -- util.buf_map("n", "<space>lr", "<plug>(coc-rename)")
+      -- util.buf_map("n", "<space>lf", "<plug>(coc-refactor)")
       util.buf_map(
         "x",
         "<space>la",
         "<plug>(coc-codeaction-selected)",
         {silent = true}
       )
-      util.buf_map(
-        "n",
-        "<space>la",
-        "<plug>(coc-codeaction-selected)",
-        {silent = true}
-      )
-      util.buf_noremap(
-        "n",
-        "<leader>li",
-        '<cmd>call CocActionAsync("runCommand", "tsserver.organizeImports")<cr>'
-      )
-
+      util.buf_map("n", "<space>la", "<plug>(coc-codeaction)", {silent = true})
       util.buf_noremap(
         "i",
         "<tab>",

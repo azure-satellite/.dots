@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   services.dunst = {
@@ -7,7 +7,7 @@
       name = "Papirus-Light";
       package = pkgs.papirus-icon-theme;
     };
-    settings = with config.lib.colors.theme; {
+    settings = lib.recursiveUpdate {
       global = {
         # {width}][x{height}][+/-{x}[+/-{y}]]
         geometry = "1000x10-10+80";
@@ -15,8 +15,6 @@
         horizontal_padding = 20;
         frame_width = 4;
         separator_height = 4;
-        frame_color = base1;
-        separator_color = base1;
         sort = false;
         font = with config.lib;
           functions.fontConfigString (fonts.ui // { size = fonts.ui.size + 0.5; });
@@ -36,25 +34,15 @@
         history = "ctrl+grave";
         context = "ctrl+shift+period";
       };
-      # Colors taken from https://www.materialpalette.com/colors
       urgency_low = rec {
-        background = "#b0bec5";
-        foreground = "#000000";
-        frame_color = foreground;
         timeout = 0;
       };
       urgency_normal = rec {
-        background = "#c5e1a5";
-        foreground = "#000000";
-        frame_color = foreground;
         timeout = 0;
       };
       urgency_critical = rec {
-        background = "#ef9a9a";
-        foreground = "#000000";
-        frame_color = foreground;
         timeout = 0;
       };
-    };
+    } config.lib.colors.dunst;
   };
 }

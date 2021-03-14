@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  home.packages = with pkgs; [ gitAndTools.hub tig ];
+  home.packages = with pkgs; [ gitAndTools.hub gitAndTools.gh ];
 
   lib.aliases = {
     git = "hub";
@@ -39,8 +39,6 @@
       re = "rebase";
       set-upstream = "!git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD)";
       # External Tools
-      # tig
-      lga = "!tig --all";
       # hub
       pro = "pull-request -a stellarhoof --push --browse";
       prls = "pr list -f '%sC%>(8)%i%Creset %Cyellow%<(17)%au%Creset %Cblue%U%Creset %t%n'";
