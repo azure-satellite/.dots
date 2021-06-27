@@ -18,9 +18,8 @@ let
     # Using the full path to avoid some recursion issue when trying
     # to complete
     ls = "LC_ALL=C ${coreutils}/bin/ls --color=auto --group-directories-first";
-    la = "${ls} -a";
-    ll = "${ls} -lh";
-    l = "${ls} -alh";
+    la = "${ls} -A";
+    l = "${ls} -Alho";
     map = "xargs -n1";
     maplines = "xargs -n1 -0";
     mongo = "mongo --norc";
@@ -51,9 +50,10 @@ let
   };
 
   fonts = {
-    mono = { name = "iMWritingMonoS Nerd Font"; attrs = []; size = 8; };
+    mono = { name = "SF Mono"; attrs = []; size = 9; };
+    # mono = { name = "iMWritingMonoS Nerd Font"; attrs = []; size = 9; };
     # mono = { name = "Inconsolata Nerd Font"; attrs = []; size = 9; };
-    # mono = { name = "FiraCode Nerd Font"; attrs = []; size = 9; };
+    # mono = { name = "FiraCode Nerd Font"; attrs = []; size = 8.5; };
     # mono = { name = "FantasqueSansMono Nerd Font"; attrs = []; size = 10.5; };
     # mono = { name = "Iosevka Nerd Font"; attrs = []; size = 8; };
     sans = { name = "SF Pro Text"; attrs = ["medium"]; size = 9; };
@@ -66,6 +66,7 @@ in
 {
   imports = [
     ./colors.nix
+    ./programs/dircolors.nix
     ./programs/direnv.nix
     ./programs/fzf.nix
     ./programs/git.nix
@@ -95,11 +96,11 @@ in
       #     design = [ "slab" ];
       #   };
       # })
-      (nerdfonts.override {
-        fonts = [ "iA-Writer" ];
-      })
-      fastmod
+      # (nerdfonts.override {
+      #   fonts = [ "iA-Writer" ];
+      # })
       inconsolata
+      fastmod
       nixpkgs-fmt
       pandoc
       ripgrep
@@ -108,7 +109,6 @@ in
       tree
       universal-ctags
       youtube-dl
-      # XXX: This will get fixed soon
       # wget
     ];
 
@@ -147,7 +147,7 @@ in
       INPUTRC = "${configHome}/readline/inputrc";
       RUSTUP_HOME = "${dataHome}/rustup";
       STACK_ROOT = "${dataHome}/stack";
-      # WGETRC               = "${configHome}/wgetrc";
+      # WGETRC = "${configHome}/wgetrc";
       SQLITE_HISTORY = "${cacheHome}/sqlite_history";
       DOCKER_CONFIG = "${configHome}/docker";
       MACHINE_STORAGE_PATH = "${dataHome}/docker-machine";
@@ -161,14 +161,28 @@ in
       MANPAGER = "${profileDirectory}/bin/less -s -M";
     };
 
+    # TODO: Generate this programmatically based off a less mapping
+    # TODO: Seems like escape sequences here are the same as in dircolors.
+    # The format is #;##;##. Forget about the `\e[` prefix and `m` postfix.
+    #
+    # Attribute codes:
+    # 0=none 1=bold 3=italic 4=underscore 5=blink 7=reverse 8=concealed 9=strikethrough
+    #
+    # Text color codes:
+    # 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+    #
+    # Background color codes:
+    # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
     sessionVariablesExtra = ''
-      export LESS_TERMCAP_mb=$'\e[0;1;31m'
-      export LESS_TERMCAP_md=$'\e[0;1;31m'
-      export LESS_TERMCAP_me=$'\e[0;39m'
-      export LESS_TERMCAP_se=$'\e[0;39m'
-      export LESS_TERMCAP_so=$'\e[0;1;30;43m'
-      export LESS_TERMCAP_ue=$'\e[0;39m'
-      export LESS_TERMCAP_us=$'\e[0;1;32m'
+      export LESS_TERMCAP_mb=$'\e[1;31m'    # begin bold
+      export LESS_TERMCAP_md=$'\e[1;31m'    # being blink
+      export LESS_TERMCAP_so=$'\e[1;37;40m' # begin standout
+      export LESS_TERMCAP_us=$'\e[1;32m'    # begin underline
+
+      # Resets are all the same
+      export LESS_TERMCAP_me=$'\e[0;39m'    # reset bold/blink
+      export LESS_TERMCAP_se=$'\e[0;39m'    # reset standout
+      export LESS_TERMCAP_ue=$'\e[0;39m'    # reset underline
     '';
   };
 

@@ -5,9 +5,9 @@ local function map_callback(cmd, expr)
     return cmd
   end
   if expr == true then
-    return string.format('luaeval("%s")', site.callback(cmd))
+    return string.format('luaeval("%s")', _G.callback(cmd))
   end
-  return string.format("<cmd>lua %s<cr>", site.callback(cmd))
+  return string.format("<cmd>lua %s<cr>", _G.callback(cmd))
 end
 
 function M.map(mode, lhs, rhs, opts)
@@ -76,7 +76,7 @@ function M.au(spec)
         string.format(
           "%s%s",
           type(spec.cmd) == "string" and "" or "lua ",
-          site.callback(spec.cmd)
+          _G.callback(spec.cmd)
         )
       },
       " "

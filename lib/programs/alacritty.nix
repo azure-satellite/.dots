@@ -10,7 +10,6 @@
         decorations = "buttonless";
         startup_mode = "Maximized";
       };
-      # background_opacity = 0.7;
       font = with config.lib.fonts; {
         normal = { family = mono.name; style = "Regular"; };
         bold = { family = mono.name; style = "Bold"; };
@@ -54,8 +53,6 @@
         { key = "H"; mods = "Command"; chars = "\\x02\\x1b\\x5b\\x44"; } # Select pane left
         { key = "O"; mods = "Command"; chars = "\\x02\\x7a"; } # Maximize pane
         { key = "Period"; mods = "Command"; chars = "\\x02\\x78"; } # Kill pane
-
-        { key = "R"; mods = "Command|Shift"; chars = "\\x02\\x52"; } # Reload config
 
         # Option as Meta(Alt)
         # https://github.com/alacritty/alacritty/issues/62

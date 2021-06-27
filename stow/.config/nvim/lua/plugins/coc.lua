@@ -38,7 +38,8 @@ vim.g.coc_global_extensions = {
 
 vim.g.coc_user_config = {
   diagnostic = {
-    enable = true
+    enable = true,
+    messageTarget = "echo"
   },
   signature = {
     enable = false

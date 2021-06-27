@@ -23,9 +23,9 @@ util.noremap(
   {silent = true, expr = true}
 )
 
-util.noremap(
-  "n",
-  "<space>r",
-  "'<cmd>Rg ' . (&ft ==# 'dirvish' ? fnamemodify(expand('%'), ':~:h') : '') . '<cr>'",
-  {silent = true, expr = true}
-)
+-- util.noremap(
+--   "n",
+--   "<space>r",
+--   "'<cmd>Rg ' . (&ft ==# 'dirvish' ? fnamemodify(expand('%'), ':~:h') : '') . '<cr>'",
+--   {silent = true, expr = true}
+-- )

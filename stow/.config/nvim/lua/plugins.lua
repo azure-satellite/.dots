@@ -1,12 +1,5 @@
 local util = require "util"
 
-vim.g.loaded_gzip = 0 -- Edit compressed files
-vim.g.loaded_matchparen = 1 -- Show matching parentheses
-vim.g.loaded_netrwPlugin = 1 -- Filetree and more
-vim.g.loaded_spellfile_plugin = 1 -- Download spell files
-vim.g.loaded_2html_plugin = 1 -- Convert syntax highlighted file to html
-vim.g.loaded_tutor_mode_plugin = 1 -- Vim tutor
-
 return function(use)
   -- Let packer manage itself
 
@@ -21,10 +14,6 @@ return function(use)
       vim.cmd("Alias vime exec\\ 'e\\ '.$MYVIMRC")
       vim.cmd("Alias w up")
       vim.cmd("Alias man Man")
-      vim.cmd("Alias bufdo Bufdo")
-      vim.cmd("Alias windo Windo")
-      vim.cmd("Alias tabdo Tabdo")
-      vim.cmd("Alias argdo Argdo")
       vim.cmd("Alias o Out")
       vim.cmd("Alias lua Lua")
       vim.cmd("Alias lo LuaOut")
@@ -139,7 +128,7 @@ return function(use)
       require "util".noremap(
         "n",
         "<space>e",
-        "<cmd>write<bar>edit<bar>TSBufEnable highlight<cr>"
+        "<cmd>write<bar>edit<bar>TSBufEnable highlight<bar>set fdm=indent<cr>"
       )
     end,
     requires = {
@@ -253,6 +242,10 @@ return function(use)
     config = 'require "colorizer".setup(nil, {hsl_fn = true})'
   }
 
+  use {"https://github.com/sainnhe/edge"}
+  use {"https://github.com/RRethy/nvim-base16"}
+  use {"https://github.com/lourenci/github-colors"}
+
   -- Window Management
 
   -- use {
@@ -330,6 +323,10 @@ return function(use)
     "https://github.com/justinmk/vim-dirvish",
     config = 'require "plugins.dirvish"'
   }
+
+  use {"https://github.com/diepm/vim-rest-console"}
+
+  use {"iamcco/markdown-preview.nvim", run = "cd app && yarn install"}
 
   -- use {
   --   "https://github.com/kyazdani42/nvim-tree.lua",

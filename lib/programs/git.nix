@@ -83,8 +83,8 @@
       };
       merge = { tool = "vim"; };
       "mergetool \"vim\"" = with config.home; {
-        # cmd = "${config.home.profileDirectory}/bin/nvim +Conflicted";
-        cmd = "/usr/local/bin/nvim +Conflicted";
+        # cmd = "${config.home.profileDirectory}/bin/nvim +'packadd vim-fugitive' +Conflicted";
+        cmd = "/usr/local/bin/nvim +'packadd vim-fugitive' +Conflicted";
         prompt = true;
         keepBackup = false;
         trustExitCode = true;

@@ -20,22 +20,32 @@ vim.g.terminal_color_15 = c.neutral7
 
 -- :h highlight-groups
 local builtin_groups = {
+  -- Cursor
+  {g = "Cursor", fg = c.cursor.fg, bg = c.cursor.bg},
+  {g = "TermCursor", fg = c.cursor.fg, bg = c.cursor.bg},
+  {g = "TermCursorNC", fg = c.cursor.fg, bg = c.cursor.bg},
+  -- Statusline
   {g = "StatusLine", fg = c.neutral0, bg = c.neutral6, style = "bold"},
   {g = "StatusLineNC", fg = c.neutral6, bg = c.neutral3, style = "bold"},
+  -- Tabline
   {g = "TabLine", fg = c.neutral6, bg = c.neutral3, style = "bold"},
   {g = "TabLineFill", fg = c.neutral6, bg = c.neutral3, style = "bold"},
   {g = "TabLineSel", fg = c.neutral0, bg = c.neutral6, style = "bold"},
-  {g = "Cursor", fg = c.neutral0, bg = "#72f970"},
-  {g = "CursorColumn", bg = c.neutral1},
-  {g = "CursorLine", bg = c.neutral2, style = "bold"},
-  {g = "CursorLineNr", fg = c.neutral5, bg = c.neutral1},
-  {g = "ColorColumn", bg = c.neutral1},
+  -- Diff
   {g = "DiffAdd", fg = "#859900", style = "bold"},
   {g = "DiffChange"},
   {g = "DiffDelete", fg = "#dc322f", style = "bold"},
   {g = "DiffText", fg = "#268bd2", style = "bold"},
-  {g = "TermCursor", fg = c.neutral0, bg = "#72f970"},
-  {g = "TermCursorNC", fg = c.neutral0, bg = "#72f970"},
+  -- Popup menu
+  {g = "Pmenu", fg = c.neutral6, bg = c.neutral2},
+  {g = "PmenuSel", fg = c.neutral0, bg = c.neutral6},
+  {g = "PmenuSbar", bg = c.neutral2},
+  {g = "PmenuThumb", bg = c.blue},
+  -- Other
+  {g = "CursorColumn", bg = c.neutral1},
+  {g = "CursorLine", bg = c.neutral2, style = "bold"},
+  {g = "CursorLineNr", fg = c.neutral5, bg = c.neutral1},
+  {g = "ColorColumn", bg = c.neutral1},
   {g = "FoldColumn", fg = c.blue},
   {g = "Folded", fg = c.blue},
   {g = "VertSplit", fg = c.neutral6, bg = c.neutral3, style = "bold"},
@@ -54,10 +64,6 @@ local builtin_groups = {
   {g = "MoreMsg", fg = c.yellow},
   {g = "NonText", fg = c.blue},
   {g = "Normal", fg = c.neutral6},
-  {g = "Pmenu", fg = c.neutral6, bg = c.neutral2},
-  {g = "PmenuSel", fg = c.neutral0, bg = c.neutral6},
-  {g = "PmenuSbar", bg = c.neutral2},
-  {g = "PmenuThumb", bg = c.blue},
   {g = "Question", fg = c.yellow},
   {g = "QuickFixLine", c.neutral2, style = "bold"},
   {g = "Search", fg = c.yellow, bg = c.neutral3, style = "bold"},

@@ -15,62 +15,80 @@ attrs = {
   standout = { standout = true; };
 };
 
-addBlackWhite = builtins.mapAttrs (k: v: v // { black = "#000000"; white = "#ffffff"; });
+# s:lightBackground = '#ffffff'
+# s:lightBackground2 = '#f6f8fa'
+# s:almostBlack ='#24292e'
+# s:gray = '#6a737d'
+# s:red = '#d73a49'
+# s:hardBlue = '#032f62'
+# s:blue = '#005cc5'
+# s:green = '#22863a'
+# s:purple = '#6f42c1'
+# s:yellow = '#fffbdd'
+# s:orange = '#e36209'
+# s:folded = '#f1f8ff'
+# s:diffGreen = '#e6ffed'
+# s:diffRed = '#ffeef0'
+# s:diffText = '#ffea7f'
 
-themes = addBlackWhite (with attrs; {
-  atelier = rec {
+themes = with attrs; {
+  githubLight = rec {
     # Colors
-    red        = "#d73737";
-    orange     = "#d26937";
-    yellow     = "#cfb017";
-    green      = "#60ac39";
-    cyan       = "#1fad83";
-    blue       = "#6684e1";
-    magenta    = "#b854d4";
+    black   = "#24292e";
+    red     = "#d73a49";
+    green   = "#22863a";
+    yellow  = "#b08800";
+    blue    = "#0366d6";
+    magenta = "#6f42c1";
+    cyan    = "#1b7c83";
+    white   = "#ffffff";
 
     # Grayscale
-    neutral0   = "#fefdf5";
-    neutral1   = "#fdf9e2";
-    neutral2   = "#d6d4cd";
-    neutral3   = "#b5b2a5";
-    neutral4   = "#93907e";
-    neutral5   = "#6d6b5b";
-    neutral6   = "#46443a";
-    neutral7   = "#1e1d19";
+    neutral0 = "#ffffff";
+    neutral1 = "#f6f8fa";
+    neutral2 = "#e1e4e8";
+    neutral3 = "#d1d5da";
+    neutral4 = "#959da5";
+    neutral5 = "#6a737d";
+    neutral6 = "#586069";
+    neutral7 = "#444d56";
+    neutral8 = "#2f363d";
+    neutral9 = "#24292e";
 
     # Text
-    text = { fg = neutral7; };
+    text = { fg = black; };
     muted = { fg = neutral5; };
     error = { fg = red; } // bold // underline;
     success = { fg = green; } // bold;
-    highlight = { fg = neutral4; bg = neutral0; } // reverse;
+    highlight = { fg = "#ffea7f"; bg = neutral9; } // reverse;
     important = { fg = red; } // bold;
 
     # Syntax elements
-    string = { fg = green; };
-    comment = { fg = neutral4; };
-    keyword = important;
+    string = { fg = "#032f62"; };
+    constant = { fg = "#005cc5"; };
+    comment = { fg = neutral5; };
+    keyword = { fg = red; };
 
     # UI
     background = { bg = neutral0; };
     raised = { bg = neutral2; };
-    border = { fg = red; };
-    cursor = { fg = neutral0; bg = "#FF1F1F"; };
+    border = { fg = neutral5; };
+    cursor = { fg = neutral0; bg = black; };
   };
 
   gotham = rec {
     # Colors
+    black      = neutral0;
     red        = "#c23127";
-    orange     = "#d26937";
-    yellow     = "#edb443";
     green      = "#2aa889";
-    cyan       = "#33859e";
+    yellow     = "#edb443";
     blue       = "#195466";
-    violet     = "#4e5166";
     magenta    = "#888ca6";
+    cyan       = "#33859e";
+    white      = neutral7;
 
     # Grayscale
-    neutral0   = "#000000";
+    neutral0   = "#0c1014";
     neutral1   = "#11151c";
     neutral2   = "#091f2e";
     neutral3   = "#0a3749";
@@ -79,19 +97,29 @@ themes = addBlackWhite (with attrs; {
     neutral6   = "#99d1ce";
     neutral7   = "#d3ebe9";
 
-    # Colorscheme
-    cursor = { fg = neutral0; bg = "#72f970"; };
+    # Text
     text = { fg = neutral6; bg = neutral0; };
     muted = { fg = neutral4; };
-    error = { fg = red; } // bold;
-    string = { fg = cyan; } // italic;
+    error = { fg = red; } // bold // underline;
+    success = { fg = green; } // bold;
     highlight = { fg = yellow; } // bold;
-    suggestion = { fg = neutral5; };
-    selectedSuggestion = { fg = neutral6; } // bold;
-  };
-});
+    important = { fg = neutral6; } // bold;
 
-theme = themes.atelier;
+    # Syntax elements
+    string = { fg = cyan; } // italic;
+    constant = { fg = cyan; };
+    comment = { fg = neutral5; };
+    keyword = important;
+
+    # UI
+    background = { bg = neutral0; };
+    raised = { bg = neutral2; };
+    border = { fg = neutral5; };
+    cursor = { fg = neutral0; bg = "#72f970"; };
+  };
+};
+
+theme = themes.githubLight;
 
 i3 = with theme; {
   focused = rec {
@@ -167,6 +195,46 @@ alacritty = with theme; {
   bright = { inherit black red green yellow blue magenta cyan white; };
 };
 
+kitty = with theme; {
+  active_tab_background = black;
+  active_tab_foreground = neutral6;
+  color0 = black;
+  color1 = red;
+  color2 = green;
+  color3 = yellow;
+  color4 = blue;
+  color5 = magenta;
+  color6 = cyan;
+  color7 = white;
+  color8 = neutral0;
+  color9 = neutral1;
+  color10 = neutral2;
+  color11 = neutral3;
+  color12 = neutral4;
+  color13 = neutral5;
+  color14 = neutral6;
+  color15 = neutral7;
+  foreground = neutral6;
+  background = black;
+  cursor = cursor.bg;
+  cursor_text_color = cursor.fg;
+  selection_background = neutral4;
+  selection_foreground = neutral6;
+  inactive_border_color = green;
+  inactive_tab_background = black;
+  inactive_tab_foreground = cyan;
+  url_color = cursor.fg;
+};
+
+tmux = with theme; rec {
+  # "window-style" = { bg = neutral1; };
+  # "pane-border-style" = { fg = border.fg; bg = window-style.bg; };
+  "pane-border-style" = { fg = border.fg; };
+  # "window-active-style" = { bg = neutral0; };
+  # "pane-active-border-style" = { fg = border.fg; bg = window-style.bg; };
+  "pane-active-border-style" = { fg = border.fg; };
+};
+
 fish = with theme; with attrs; {
   # Command line
   fish_color_normal         = text; # Default color
@@ -216,7 +284,7 @@ fish = with theme; with attrs; {
   fish_pager_color_secondary_description = text;
 
   # Ex. "12 more rows..." at the bottom left
-  fish_pager_color_progress              = raised;
+  fish_pager_color_progress              = highlight;
 
   # Used by the fish_git_prompt function
   # https://fishshell.com/docs/current/cmds/fish_git_prompt.html
@@ -229,7 +297,7 @@ fzf = with theme; rec {
   # Non-selected line
   "fg"         = "-1";
   "bg"         = "-1";
-  "hl"         = "${highlight.fg}:reverse";
+  "hl"         = "${red}:underline";
 
   # Selected line
   "fg+"        = "-1";
@@ -254,5 +322,7 @@ fzf = with theme; rec {
 in
 
 {
-  lib.colors = { inherit attrs theme i3 dunst st alacritty fish fzf; };
+  lib.colors = {
+    inherit attrs theme i3 dunst st alacritty kitty tmux fish fzf;
+  };
 }

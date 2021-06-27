@@ -4,6 +4,7 @@
   imports = [
     ../../lib/common.nix
     ../../lib/programs/alacritty.nix
+    ../../lib/programs/kitty.nix
     ../../lib/programs/tmux.nix
   ];
 

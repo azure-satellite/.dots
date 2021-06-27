@@ -1,4 +1,7 @@
-snippet Modal "Chakra Modal"
+snippet imodal "Chakra modal import"
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton
+
+snippet modal "Chakra modal"
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
@@ -15,6 +18,29 @@ snippet Modal "Chakra Modal"
       </ModalFooter>
     </ModalContent>
   </Modal>
+
+snippet itabs "Chakra tabs import"
+  Tabs, TabList, TabPanels, Tab, TabPanel
+
+snippet tabs "Chakra tabs"
+  <Tabs>
+    <TabList>
+      <Tab>One</Tab>
+      <Tab>Two</Tab>
+      <Tab>Three</Tab>
+    </TabList>
+    <TabPanels>
+      <TabPanel>
+        <p>one!</p>
+      </TabPanel>
+      <TabPanel>
+        <p>two!</p>
+      </TabPanel>
+      <TabPanel>
+        <p>three!</p>
+      </TabPanel>
+    </TabPanels>
+  </Tabs>
 
 snippet story "Storybook Story"
 import React from 'react'

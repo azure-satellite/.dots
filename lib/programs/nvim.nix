@@ -2,6 +2,7 @@
 
 let
 
+# TODO: Code for attributes (e.g. bold, underline, etc...)
 # Warning. Hacky indent code ahead!
 attrSetToLuaTable = v: indent: ''{''\n${config.lib.functions.reduceAttrsToString ",\n" (k: v: ''${indent}${k} = ${toLuaValue v (indent + "  ")}'') v}''\n${indent}}'';
 

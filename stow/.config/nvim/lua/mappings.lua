@@ -62,8 +62,6 @@ util.noremap("v", ",", ":")
 util.noremap("v", "v", "<esc>")
 util.noremap("v", "j", "gj")
 util.noremap("v", "k", "gk")
-util.noremap("x", "*", '<cmd>call core#vsetsearch("/")<cr>/<c-r>=@/<cr><cr>')
-util.noremap("x", "#", '<cmd>call core#vsetsearch("?")<cr>?<c-r>=@/<cr><cr>')
 
 -- Command
 
