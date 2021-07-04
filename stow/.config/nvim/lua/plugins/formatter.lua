@@ -15,7 +15,7 @@ require("formatter").setup(
   }
 )
 
-require("util").au(
+U.au(
   {
     event = "BufWritePost",
     pattern = "*.lua",

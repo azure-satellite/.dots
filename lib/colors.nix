@@ -74,6 +74,11 @@ themes = with attrs; {
     raised = { bg = neutral2; };
     border = { fg = neutral5; };
     cursor = { fg = neutral0; bg = black; };
+
+    # Diff
+    diffAdded = { bg = "#e6ffed"; };
+    diffRemoved = { bg = "#ffeef0"; fg = "#ffeef0"; };
+    diffChanged = { bg = "#ffea7f"; };
   };
 
   gotham = rec {

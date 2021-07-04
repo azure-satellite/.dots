@@ -6,8 +6,6 @@
 -- Move code to existing file
 -- Port https://marketplace.visualstudio.com/items?itemName=nicoespeon.abracadabra to COC
 
-local util = require "util"
-
 local ft = {
   "typescript",
   "typescriptreact",
@@ -77,13 +75,13 @@ vim.g.coc_user_config = {
   Lua = {diagnostics = {globals = {"vim"}}}
 }
 
-util.au(
+U.au(
   {
     event = "FileType",
     pattern = table.concat(ft, ","),
     cmd = function()
       -- Disable coc when a file is being diffed
-      util.au(
+      U.au(
         {
           event = "OptionSet",
           pattern = "diff",
@@ -99,22 +97,17 @@ util.au(
         }
       )
 
-      util.buf_map("n", "=", "<plug>(coc-format-selected)", {silent = true})
-      util.buf_map("n", "==", "<plug>(coc-format)", {silent = true})
-      util.buf_map("n", "[r", "<plug>(coc-diagnostic-prev)")
-      util.buf_map("n", "]r", "<plug>(coc-diagnostic-next)")
-      util.buf_map("n", "gd", "<plug>(coc-definition)")
-      -- util.buf_map("n", "<space>lu", "<plug>(coc-references)")
-      -- util.buf_map("n", "<space>lr", "<plug>(coc-rename)")
-      -- util.buf_map("n", "<space>lf", "<plug>(coc-refactor)")
-      util.buf_map(
-        "x",
-        "<space>la",
-        "<plug>(coc-codeaction-selected)",
-        {silent = true}
-      )
-      util.buf_map("n", "<space>la", "<plug>(coc-codeaction)", {silent = true})
-      util.buf_noremap(
+      U.buf_map("n", "=", "<plug>(coc-format-selected)", {silent = true})
+      U.buf_map("n", "==", "<plug>(coc-format)", {silent = true})
+      U.buf_map("n", "[r", "<plug>(coc-diagnostic-prev)")
+      U.buf_map("n", "]r", "<plug>(coc-diagnostic-next)")
+      U.buf_map("n", "gd", "<plug>(coc-definition)")
+      -- U.buf_map("n", "<space>lu", "<plug>(coc-references)")
+      -- U.buf_map("n", "<space>lr", "<plug>(coc-rename)")
+      -- U.buf_map("n", "<space>lf", "<plug>(coc-refactor)")
+      U.buf_map("x", "<space>la", "<plug>(coc-codeaction-selected)", {silent = true})
+      U.buf_map("n", "<space>la", "<plug>(coc-codeaction)", {silent = true})
+      U.buf_noremap(
         "i",
         "<tab>",
         function()
@@ -134,7 +127,7 @@ util.au(
         {expr = true}
       )
 
-      util.buf_noremap(
+      U.buf_noremap(
         "i",
         "<cr>",
         function()
@@ -144,12 +137,12 @@ util.au(
           elseif vim.fn["coc#expandableOrJumpable"]() then
             -- If the input string is a snippet, expand it
             return string.format(
-              "=%s\",
+              "=%s\",
               "coc#rpc#request('doKeymap', ['snippets-expand', ''])"
             )
           else
             -- Insert <cr> and notify coc so it formats the buffer
-            return string.format("\=%s\", "coc#on_enter()")
+            return string.format("\=%s\", "coc#on_enter()")
           end
         end,
         {expr = true}

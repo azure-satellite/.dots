@@ -75,16 +75,16 @@
       push = { default = "simple"; };
       diff = { tool = "vim"; };
       "difftool \"vim\"" = with config.home; {
-        # cmd = ''${profileDirectory}/bin/nvim -f -c "Gdiff" "$MERGED"'';
-        cmd = ''/usr/local/bin/nvim -f -c "Gdiff" "$MERGED"'';
+        # ${profileDirectory}/bin/nvim
+        cmd = ''/usr/local/bin/nvim +Gdiff "$MERGED"'';
         prompt = false;
         keepBackup = false;
         trustExitCode = true;
       };
       merge = { tool = "vim"; };
       "mergetool \"vim\"" = with config.home; {
-        # cmd = "${config.home.profileDirectory}/bin/nvim +'packadd vim-fugitive' +Conflicted";
-        cmd = "/usr/local/bin/nvim +'packadd vim-fugitive' +Conflicted";
+        # ${config.home.profileDirectory}/bin/nvim
+        cmd = "/usr/local/bin/nvim +Conflicted";
         prompt = true;
         keepBackup = false;
         trustExitCode = true;
@@ -100,17 +100,17 @@
       "color \"branch\"" = {
         current = "red";
         upstream = "red";
-        local = "yellow";
-        plain = "yellow";
+        local = "blue";
+        plain = "blue";
         remote = "green";
       };
       "color \"status\"" = {
         added = "green";
-        changed = "yellow";
+        changed = "blue";
         untracked = "red";
         header = "reset";
-        branch = "yellow";
-        localBranch = "yellow";
+        branch = "blue";
+        localBranch = "blue";
       };
       "color \"diff\"" = {
         meta = "cyan bold";

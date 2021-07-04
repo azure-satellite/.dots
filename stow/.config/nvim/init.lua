@@ -19,13 +19,11 @@ vim.g.loaded_netrwFileHandlers = 1
 vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_tutor_mode_plugin = 1
 
-require("globals")
-_G.core = require("core")
-require("commands")
+U = require("util")
 require("options")
 require("mappings")
--- require("colorscheme")
 require("autocmds")
-require("init_packer")
+require("plugins")
+
 vim.o.background = "light"
-vim.cmd [[colorscheme github-colors]]
+vim.cmd [[colorscheme furnisher]]

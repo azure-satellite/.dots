@@ -1,5 +1,4 @@
 -- TODO: compose/flow
-
 -- map(function, table)
 -- e.g: map(double, {1,2,3})    -> {2,4,6}
 local function map(fun, iter)
@@ -51,10 +50,4 @@ local function reduce(func, tbl)
   return foldr(func, head(tbl), tail(tbl))
 end
 
-return {
-  map = map,
-  reduce = reduce,
-  tail = tail,
-  head = head,
-  concat = concat
-}
+return {map = map, reduce = reduce, tail = tail, head = head}
