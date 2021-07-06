@@ -5,21 +5,21 @@ return function(on_attach)
     cmd = {
       U.os.data .. "/lspinstall/lua/sumneko-lua-language-server",
       "--logpath=" .. vim.g.lsp_log_dir .. "/sumneko_lua",
-      "--locale=en-us",
+      "--locale=en-us"
     },
     filetypes = {"lua"},
     on_attach = on_attach,
     settings = {
       -- https://github.com/sumneko/vscode-lua/blob/master/setting/schema.json
       Lua = {
-        diagnostics = { globals = {'vim'}, },
+        diagnostics = {globals = {"vim", "U"}},
         -- Neovim uses LuaJIT
-        runtime = { version = 'LuaJIT', path = vim.split(package.path, ';'), },
+        runtime = {version = "LuaJIT", path = vim.split(package.path, ";")},
         -- Make the server aware of Neovim runtime files
-        workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+        workspace = {library = vim.api.nvim_get_runtime_file("", true)},
         -- Do not send telemetry data containing a randomized but unique identifier
-        telemetry = { enable = false, },
-      },
-    },
+        telemetry = {enable = false}
+      }
+    }
   }
 end

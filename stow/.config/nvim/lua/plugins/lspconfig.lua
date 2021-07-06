@@ -1,16 +1,88 @@
 local c = require "theme"
+local lsp = vim.lsp
 local lspconfig = require "lspconfig"
 local lspinstall = require "lspinstall"
 
 -- Set LSP client's log level. Server's log level is not affected.
-vim.lsp.set_log_level("warn")
+lsp.set_log_level("warn")
 
-vim.g.lsp_log_dir = vim.fn.fnamemodify(vim.lsp.get_log_path(), ":h") .. "/lsp_servers"
+vim.g.lsp_log_dir = vim.fn.fnamemodify(lsp.get_log_path(), ":h") .. "/lsp_servers"
 
--- Enable/disable specific diagnostics features
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-  vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics,
+-- All LSP messages
+-- https://microsoft.github.io/language-server-protocol/specifications/specification-current
+--
+-- window/showMessage
+-- window/showMessageRequest
+-- window/showDocument
+-- window/logMessage
+-- window/workDoneProgress/create
+-- window/workDoneProgress/cancel
+--
+-- client/registerCapability
+-- client/unregisterCapability
+--
+-- workspace/workspaceFolders
+-- workspace/didChangeWorkspaceFolders
+-- workspace/didChangeConfiguration
+-- workspace/configuration
+-- workspace/didChangeWatchedFiles
+-- workspace/symbol
+-- workspace/executeCommand
+-- workspace/applyEdit
+-- workspace/willCreateFiles
+-- workspace/didCreateFiles
+-- workspace/willRenameFiles
+-- workspace/didRenameFiles
+-- workspace/willDeleteFiles
+-- workspace/didDeleteFiles
+-- workspace/semanticTokens/refresh
+--
+-- textDocument/didOpen
+-- textDocument/didChange
+-- textDocument/willSave
+-- textDocument/willSaveWaitUntil
+-- textDocument/didSave
+-- textDocument/didClose
+-- textDocument/publishDiagnostics
+-- textDocument/completion
+-- completionItem/resolve
+-- textDocument/hover
+-- textDocument/signatureHelp
+-- textDocument/declaration
+-- textDocument/definition
+-- textDocument/typeDefinition
+-- textDocument/implementation
+-- textDocument/references
+-- textDocument/documentHighlight
+-- textDocument/documentSymbol
+-- textDocument/codeAction
+-- codeAction/resolve
+-- textDocument/codeLens
+-- codeLens/resolve
+-- workspace/codeLens/refresh
+-- textDocument/documentLink
+-- documentLink/resolve
+-- textDocument/documentColor
+-- textDocument/colorPresentation
+-- textDocument/formatting
+-- textDocument/rangeFormatting
+-- textDocument/onTypeFormatting
+-- textDocument/rename
+-- textDocument/prepareRename
+-- textDocument/foldingRange
+-- textDocument/selectionRange
+-- textDocument/prepareCallHierarchy
+-- callHierarchy/incomingCalls
+-- callHierarchy/outgoingCalls
+-- textDocument/semanticTokens/full
+-- textDocument/semanticTokens/full/delta
+-- textDocument/semanticTokens/range
+-- textDocument/linkedEditingRange
+-- textDocument/moniker
+
+lsp.handlers["textDocument/publishDiagnostics"] =
+  lsp.with(
+  lsp.diagnostic.on_publish_diagnostics,
   {
     underline = false,
     virtual_text = false,
@@ -18,18 +90,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
     update_in_insert = false
   }
 )
-
-vim.lsp.handlers["textDocument/formatting"] = function(err, _, result, _, bufnr)
-  if err ~= nil or result == nil then
-    return
-  end
-  if vim.fn.exists("b:format_buf") == 0 or vim.api.nvim_buf_get_var(bufnr, "format_buf") then
-    vim.lsp.util.apply_text_edits(result, bufnr)
-    if vim.api.nvim_get_current_buf() == bufnr then
-      vim.api.nvim_command("noautocmd update")
-    end
-  end
-end
 
 -- Diagnostics highlights and signs
 local function set_diagnostic_sign(type, icon, color)
@@ -65,33 +125,23 @@ set_diagnostic_sign("Error", "", c.red)
 -- Class = " [class]",
 -- Interface = " [interface]"
 
+-- Ideas for mappings:
+-- Show floating window with both definition and references of a given symbol
+-- Show floating window for all code actions
 local function on_attach(client)
   -- Completion
-  vim.api.nvim_buf_set_option(0, "omnifunc", "v:lua.vim.lsp.omnifunc")
+  vim.api.nvim_buf_set_option(0, "omnifunc", "v:lua.lsp.omnifunc")
 
   -- Formatting
   if client.resolved_capabilities.document_formatting then
     U.au(
-      {
-        event = "BufWritePost",
-        pattern = "<buffer>",
-        cmd = vim.lsp.buf.formatting
-      }
-    )
-
-    -- Toggle formatting unimpaired style
-    U.buf_noremap(
-      "n",
-      "yof",
-      function()
-        vim.b.format_buf = not (vim.b.format_buf == nil or vim.b.format_buf)
-      end
+      {event = "BufWritePost", pattern = "<buffer>", cmd = lsp.buf.formatting_seq_sync}
     )
   end
 
   local function map_capability(mapping, name, capability_name)
     if client.resolved_capabilities[capability_name or name] then
-      U.buf_noremap("n", mapping, "<cmd>lua vim.lsp.buf." .. name .. "()<cr>")
+      U.buf_noremap("n", mapping, "<cmd>lua lsp.buf." .. name .. "()<cr>")
     end
   end
 
@@ -132,28 +182,46 @@ local function on_attach(client)
   map_capability("g0", "document_symbol")
   map_capability("gW", "workspace_symbol")
 
+  -- See `:h lsp.util.open_floating_preview()` for `popup_opts` values
+  local opts = {
+    wrap = false
+    -- border = {"╔", "═", "╗", "║", "╝", "═", "╚", "║"}
+  }
+
   -- Go to prev diagnostic
   U.buf_noremap(
     "n",
     "[r",
-    "<cmd>lua vim.lsp.diagnostic.goto_prev({ wrap = false, popup_opts = { } })<cr>"
+    function()
+      lsp.diagnostic.goto_prev(opts)
+    end
   )
 
   -- Go to first diagnostic
   U.buf_noremap(
     "n",
     "[R",
-    "<cmd>lua vim.lsp.diagnostic.goto_next({ cursor_position = {0, 0} })<cr>"
+    function()
+      lsp.diagnostic.goto_next(vim.fn.extend(opts, {cursor_position = {0, 0}}))
+    end
   )
 
   -- Go to next diagnostic
-  U.buf_noremap("n", "]r", "<cmd>lua vim.lsp.diagnostic.goto_next({ wrap = false })<cr>")
+  U.buf_noremap(
+    "n",
+    "]r",
+    function()
+      lsp.diagnostic.goto_next(opts)
+    end
+  )
 
   -- Go to last diagnostic
   U.buf_noremap(
     "n",
     "]R",
-    "<cmd>lua vim.lsp.diagnostic.goto_prev({ cursor_position = {-1, -1} })<cr>"
+    function()
+      lsp.diagnostic.goto_next(vim.fn.extend(opts, {cursor_position = {-1, -1}}))
+    end
   )
 end
 

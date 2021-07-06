@@ -32,7 +32,7 @@ function find_binary() {
 }
 
 # Start server if not running
-if [ ! -f ~/.prettier_d_slim ]; then
+if ! pgrep prettier_d_slim; then
   bin="$(find_binary)"
   "$bin" start
   sleep 0.1

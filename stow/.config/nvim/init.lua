@@ -12,9 +12,10 @@ vim.g.loaded_matchparen = 1
 vim.g.loaded_2html_plugin = 1
 vim.g.loaded_logiPat = 1
 vim.g.loaded_rrhelper = 1
-vim.g.loaded_netrw = 1
+-- Needed for vim-rhubarb
+-- vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrwSettings = 1
+  vim.g.loaded_netrwSettings = 1
 vim.g.loaded_netrwFileHandlers = 1
 vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_tutor_mode_plugin = 1
@@ -25,5 +26,6 @@ require("mappings")
 require("autocmds")
 require("plugins")
 
+vim.o.statusline = "%!v:lua.require'statusline'()"
 vim.o.background = "light"
 vim.cmd [[colorscheme furnisher]]

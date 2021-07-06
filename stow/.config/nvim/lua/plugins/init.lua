@@ -16,7 +16,16 @@ local plugins = {
   },
   -- Motions
   {"https://github.com/vim-utils/vim-vertical-move"},
-  {"https://github.com/justinmk/vim-sneak"},
+  {
+    "https://github.com/ggandor/lightspeed.nvim",
+    event = "VimEnter", -- So config actually run after the plugin
+    config = [[
+      vim.cmd("silent! unmap f")
+      vim.cmd("silent! unmap F")
+      vim.cmd("silent! unmap t")
+      vim.cmd('silent! unmap T')
+    ]]
+  },
   {"https://github.com/justinmk/vim-ipmotion"},
   {
     "https://github.com/tpope/vim-rsi",
@@ -48,14 +57,14 @@ local plugins = {
   {
     "https://github.com/tommcdo/vim-exchange",
     config = [[
-        U.map("x", "X", "<plug>(Exchange)")
-        U.map("n", "gx", "<plug>(Exchange)")
-        U.map("n", "gxc", "<plug>(ExchangeClear)")
-        U.map("n", "gxx", "<plug>(ExchangeLine)")
-      ]]
+      U.map("x", "X", "<plug>(Exchange)")
+      U.map("n", "gx", "<plug>(Exchange)")
+      U.map("n", "gxc", "<plug>(ExchangeClear)")
+      U.map("n", "gxx", "<plug>(ExchangeLine)")
+    ]]
   },
   -- Editing
-  {"https://github.com/9mm/vim-closer"},
+  {"https://github.com/rstacruz/vim-closer"},
   {"https://github.com/tpope/vim-abolish"},
   {
     "https://github.com/tpope/vim-surround",
@@ -70,7 +79,6 @@ local plugins = {
   -- * https://github.com/rslint/rslint
   {
     "https://github.com/neovim/nvim-lspconfig",
-    disable = false,
     config = "require 'plugins.lspconfig'",
     requires = {
       {"https://github.com/kabouzeid/nvim-lspinstall"}
@@ -86,39 +94,27 @@ local plugins = {
         "https://github.com/mhartington/formatter.nvim",
         ft = {"lua"},
         config = "require 'plugins.formatter'"
+      },
+      {
+        "https://github.com/antoinemadec/coc-fzf",
+        branch = "release",
+        config = [[
+          vim.g.coc_fzf_opts = {"--layout=reverse"}
+          U.noremap("n", "<space>a", "<cmd>CocFzfList actions<cr>", {silent = true})
+          U.noremap("n", "<space>c", "<cmd>CocFzfList commands<cr>", {silent = true})
+          U.noremap("n", "<space>d", "<cmd>CocFzfList diagnostics<cr>", {silent = true})
+          U.noremap("n", "<space>o", "<cmd>CocFzfList outline<cr>", {silent = true})
+          U.noremap("n", "<space>s", "<cmd>CocFzfList snippets<cr>", {silent = true})
+          U.noremap("n", "<space>w", "<cmd>CocFzfList symbols<cr>", {silent = true})
+        ]]
       }
     }
   },
   -- Filetypes
   {
-    "https://github.com/sheerun/vim-polyglot",
-    -- I used polyglot _mostly_ for syntax, for which I got treesitter now.
-    disable = true
-  },
-  {
     "https://github.com/nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
-    config = [[
-      require "nvim-treesitter.configs".setup {
-        ensure_installed = "maintained",
-        highlight = { enable = true },
-        playground = {
-          enable = true,
-          disable = {},
-          -- Debounced time for highlighting nodes in the playground from
-          -- source code
-          updatetime = 25,
-          -- Whether the query persists across vim sessions
-          persist_queries = false
-        }
-      }
-      -- Use when the treesitter buffer gets messed up
-      U.noremap(
-        "n",
-        "<space>e",
-        "<cmd>write<bar>edit<bar>TSBufEnable highlight<bar>set fdm=indent<cr>"
-      )
-    ]],
+    config = "require'plugins.treesitter'",
     requires = {
       {
         "https://github.com/nvim-treesitter/playground",
@@ -126,6 +122,16 @@ local plugins = {
         config = [[
           U.noremap("n", "ga", "<cmd>TSHighlightCapturesUnderCursor<cr>")
         ]]
+      },
+      {
+        "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+        disable = true,
+        after = "nvim-treesitter",
+        config = "require 'plugins.treesitter-textobjects'"
+      },
+      {
+        "https://github.com/RRethy/nvim-treesitter-textsubjects",
+        disable = true
       }
     }
   },
@@ -154,30 +160,7 @@ local plugins = {
   -- Searching
   {
     "https://github.com/mhinz/vim-grepper",
-    config = [[
-      vim.g.grepper = {
-        switch = 0,
-        dir = "repo,file,pwd",
-        side_cmd = "tabnew",
-        tools = {"rg", "rgall"},
-        operator = {prompt = 1},
-        rg = {grepprg = vim.o.grepprg},
-        rgall = {grepprg = vim.o.grepprg .. " --no-ignore-vcs"}
-      }
-      U.map("n", "gs", "<Plug>(GrepperOperator)")
-      U.noremap(
-        "n",
-        "gss",
-        "'<cmd>Grepper ' . (&ft ==# 'dirvish' ? '-dir file' : '') . '<cr>'",
-        {silent = true, expr = true}
-      )
-      U.noremap(
-        "n",
-        "gsl",
-        "'<cmd>Grepper -noquickfix ' . (&ft ==# 'dirvish' ? '-dir file' : '') . '<cr>'",
-        {silent = true, expr = true}
-      )
-    ]]
+    config = "require 'plugins.grepper'"
   },
   -- Fuzzy Picker
   {
@@ -191,19 +174,6 @@ local plugins = {
     config = "require 'plugins.fzf'",
     requires = {
       {"https://github.com/junegunn/fzf"},
-      {
-        "https://github.com/antoinemadec/coc-fzf",
-        branch = "release",
-        config = [[
-          vim.g.coc_fzf_opts = {"--layout=reverse"}
-          U.noremap("n", "<space>a", "<cmd>CocFzfList actions<cr>", {silent = true})
-          U.noremap("n", "<space>c", "<cmd>CocFzfList commands<cr>", {silent = true})
-          U.noremap("n", "<space>d", "<cmd>CocFzfList diagnostics<cr>", {silent = true})
-          U.noremap("n", "<space>o", "<cmd>CocFzfList outline<cr>", {silent = true})
-          U.noremap("n", "<space>s", "<cmd>CocFzfList snippets<cr>", {silent = true})
-          U.noremap("n", "<space>w", "<cmd>CocFzfList symbols<cr>", {silent = true})
-        ]]
-      },
       {
         "https://github.com/stsewd/fzf-checkout.vim",
         config = [[
@@ -234,46 +204,24 @@ local plugins = {
   -- Colors
   {
     "https://github.com/norcalli/nvim-colorizer.lua",
-    event = "VimEnter *",
     config = "require 'colorizer'.setup(nil, {hsl_fn = true})"
   },
   -- Window Management
   {
     "https://github.com/szw/vim-maximizer",
-    disable = true,
     config = [[
       vim.g.maximizer_set_default_mapping = 0
       U.noremap("n", "<c-w>m", "<cmd>MaximizerToggle!<cr>", {silent = true})
       U.noremap("n", "<c-w><c-m>", "<cmd>MaximizerToggle!<cr>", {silent = true})
     ]]
   },
-  {
-    "https://github.com/t9md/vim-choosewin",
-    disable = true,
-    config = [[
-      U.map("n", "<space>w", "<plug>(choosewin)", {silent = true})
-    ]]
-  },
   -- Other
-  {"https://github.com/tweekmonster/startuptime.vim"},
+  {"https://github.com/tweekmonster/startuptime.vim", cmd = "StartupTime"},
   {"https://github.com/tpope/vim-scriptease"},
-  {
-    "https://github.com/tpope/vim-characterize",
-    config = [[
-      U.map("n", "gz", "<plug>(characterize)")
-    ]]
-  },
-  {
-    "https://github.com/zhimsel/vim-stay",
-    disable = true,
-    config = [[
-      set viewoptions=cursor,folds,slash,unix
-    ]]
-  },
-  {"https://github.com/kopischke/vim-fetch"},
-  {"https://github.com/AndrewRadev/linediff.vim"},
+  {"https://github.com/AndrewRadev/linediff.vim", cmd = "Linediff"},
   {
     "https://github.com/tpope/vim-unimpaired",
+    event = "VimEnter", -- So config actually run after the plugin
     config = function()
       local unmaps = {"[l", "[L", "]l", "]L", "=p", "=P", "=o", "=O", "=op"}
       for _, m in ipairs(unmaps) do
@@ -299,26 +247,16 @@ local plugins = {
     "https://github.com/justinmk/vim-dirvish",
     config = "require 'plugins.dirvish'"
   },
-  {"https://github.com/diepm/vim-rest-console"},
   {
-    "iamcco/markdown-preview.nvim",
-    disable = true,
-    run = "cd app && yarn install"
+    "https://github.com/kyazdani42/nvim-web-devicons",
+    config = "require'nvim-web-devicons'.setup()"
   },
-  {
-    "https://github.com/kyazdani42/nvim-tree.lua",
-    disable = true,
-    config = [[
-      vim.g.nvim_tree_ignore = {".git", "node_modules"}
-      vim.g.nvim_tree_show_icons = {git = 0, folders = 0, files = 0}
-      vim.g.nvim_tree_auto_close = 1 -- Close if last window
-      U.noremap("n", "<space>t", "<cmd>NvimTreeToggle<cr>", {silent = true})
-    ]]
-  },
-  {"https://github.com/preservim/nerdtree", disable = true},
-  {"https://github.com/mattn/emmet-vim", disable = true},
-  {"https://github.com/kyazdani42/nvim-web-devicons"},
-  {"https://github.com/Famiu/feline.nvim", config = "require 'plugins.feline'"}
+  {"https://github.com/L3MON4D3/LuaSnip", disable = true},
+  {"https://github.com/pwntester/octo.nvim", disable = true},
+  {"https://github.com/windwp/nvim-ts-autotag", disable = true},
+  {"https://github.com/kevinhwang91/nvim-bqf", disable = true},
+  {"https://github.com/NTBBloodbath/rest.nvim", disable = true},
+  {'https://github.com/folke/which-key.nvim', disable = true}
 }
 
 local package_path = U.os.data .. "/site/pack"

@@ -14,6 +14,7 @@ return function(on_attach)
       "normal"
     },
     handlers = {},
+    filetypes = {"javascript", "javascriptreact", "typescript", "typescriptreact"},
     on_attach = function(client, bufnr)
       -- Disable formatting. Using prettier via the efm server for this.
       client.resolved_capabilities.document_formatting = false

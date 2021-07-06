@@ -50,7 +50,7 @@ let
   };
 
   fonts = {
-    mono = { name = "SF Mono"; attrs = []; size = 9; };
+    mono = { name = "SF Mono"; attrs = []; size = 8; };
     # mono = { name = "iMWritingMonoS Nerd Font"; attrs = []; size = 9; };
     # mono = { name = "Inconsolata Nerd Font"; attrs = []; size = 9; };
     # mono = { name = "FiraCode Nerd Font"; attrs = []; size = 8.5; };

@@ -232,12 +232,9 @@ kitty = with theme; {
 };
 
 tmux = with theme; rec {
-  # "window-style" = { bg = neutral1; };
-  # "pane-border-style" = { fg = border.fg; bg = window-style.bg; };
-  "pane-border-style" = { fg = border.fg; };
-  # "window-active-style" = { bg = neutral0; };
-  # "pane-active-border-style" = { fg = border.fg; bg = window-style.bg; };
-  "pane-active-border-style" = { fg = border.fg; };
+  "status-style" = { bg = neutral3; fg = neutral6; };
+  "window-style" = { bg = neutral1; };
+  "window-status-current-style" = { bg = neutral6; fg = neutral1; };
 };
 
 fish = with theme; with attrs; {

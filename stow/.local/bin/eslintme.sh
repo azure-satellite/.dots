@@ -32,7 +32,7 @@ function find_binary() {
 }
 
 # Start server if not running
-if [ ! -f ~/.eslint_d ]; then
+if ! pgrep eslint_d; then
 	bin="$(find_binary)"
 	"$bin" start
 	sleep 0.1
