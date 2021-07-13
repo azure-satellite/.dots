@@ -1,7 +1,3 @@
-[submodule "fzf.vim"]
-	path = gitmodules/fzf.vim
-	url = https://github.com/stellarhoof/fzf.vim
-	branch = local-gfiles
 [submodule "pass"]
 	path = gitmodules/pass
 	url = https://github.com/stellarhoof/pass

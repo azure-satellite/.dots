@@ -80,13 +80,15 @@ vim.g.lsp_log_dir = vim.fn.fnamemodify(lsp.get_log_path(), ":h") .. "/lsp_server
 -- textDocument/linkedEditingRange
 -- textDocument/moniker
 
+local severity_limit = "Warning"
+
 lsp.handlers["textDocument/publishDiagnostics"] =
   lsp.with(
   lsp.diagnostic.on_publish_diagnostics,
   {
     underline = false,
     virtual_text = false,
-    signs = true,
+    signs = {severity_limit = severity_limit},
     update_in_insert = false
   }
 )
@@ -141,7 +143,7 @@ local function on_attach(client)
 
   local function map_capability(mapping, name, capability_name)
     if client.resolved_capabilities[capability_name or name] then
-      U.buf_noremap("n", mapping, "<cmd>lua lsp.buf." .. name .. "()<cr>")
+      U.buf_noremap("n", mapping, "<cmd>lua vim.lsp.buf." .. name .. "()<cr>")
     end
   end
 
@@ -184,7 +186,8 @@ local function on_attach(client)
 
   -- See `:h lsp.util.open_floating_preview()` for `popup_opts` values
   local opts = {
-    wrap = false
+    wrap = false,
+    severity_limit = severity_limit
     -- border = {"╔", "═", "╗", "║", "╝", "═", "╚", "║"}
   }
 

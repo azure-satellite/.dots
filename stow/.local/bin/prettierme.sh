@@ -32,7 +32,7 @@ function find_binary() {
 }
 
 # Start server if not running
-if ! pgrep prettier_d_slim; then
+if ! pgrep prettier_d_slim > /dev/null; then
   bin="$(find_binary)"
   "$bin" start
   sleep 0.1
@@ -43,4 +43,10 @@ PORT="$(echo $DATA | cut -d ' ' -f 1)"
 TOKEN="$(echo $DATA | cut -d ' ' -f 2)"
 
 # Uses netcat to lint the file
-echo "$TOKEN $PWD ${@:2} --stdin --stdin-filepath $1" | cat - $1 | nc 127.0.0.1 $PORT
+RESULT=$(echo "$TOKEN $PWD ${@:2} --stdin --stdin-filepath $1" | cat - $1 | nc 127.0.0.1 $PORT)
+
+echo "$RESULT"
+
+if [[ "$RESULT" =~ \#\ exit\ 1$ ]]; then
+  exit 1
+fi

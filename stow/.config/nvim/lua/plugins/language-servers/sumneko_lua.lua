@@ -12,7 +12,15 @@ return function(on_attach)
     settings = {
       -- https://github.com/sumneko/vscode-lua/blob/master/setting/schema.json
       Lua = {
-        diagnostics = {globals = {"vim", "U"}},
+        diagnostics = {
+          globals = totable(
+            chain(
+              {"vim", "U"},
+              vim.tbl_keys(require "fun"),
+              vim.tbl_keys(require "fun_extensions")
+            )
+          )
+        },
         -- Neovim uses LuaJIT
         runtime = {version = "LuaJIT", path = vim.split(package.path, ";")},
         -- Make the server aware of Neovim runtime files

@@ -1,6 +1,32 @@
+vim.g.loaded_gzip = 1
+vim.g.loaded_tar = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_zip = 1
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_getscript = 1
+vim.g.loaded_getscriptPlugin = 1
+vim.g.loaded_vimball = 1
+vim.g.loaded_vimballPlugin = 1
+vim.g.loaded_matchit = 1
+vim.g.loaded_matchparen = 1
+vim.g.loaded_2html_plugin = 1
+vim.g.loaded_logiPat = 1
+vim.g.loaded_rrhelper = 1
+-- Needed for vim-rhubarb
+-- vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrwSettings = 1
+vim.g.loaded_netrwFileHandlers = 1
+vim.g.loaded_spellfile_plugin = 1
+vim.g.loaded_tutor_mode_plugin = 1
+
+-- https://github.com/wbthomason/packer.nvim/issues/180
+vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+
 local plugins = {
-  -- Let packer manage itself
-  {"https://github.com/wbthomason/packer.nvim"},
+  -- Utils required by other plugins
+  {"https://github.com/nvim-lua/popup.nvim"},
+  {"https://github.com/nvim-lua/plenary.nvim"},
   -- Aliases
   {
     "https://github.com/konfekt/vim-alias",
@@ -8,7 +34,7 @@ local plugins = {
       vim.cmd("packadd vim-alias")
       vim.cmd("Alias! ve e\\ $MYVIMRC")
       vim.cmd(
-        "Alias! pe exec\\ 'e\\ '.fnamemodify($MYVIMRC,':h').'/lua/plugins/init.lua'"
+        "Alias! pe exec\\ 'e\\ '.fnamemodify($MYVIMRC,':h').'/lua/plugins.lua'"
       )
       vim.cmd("Alias! w up")
       vim.cmd("Alias! man Man")
@@ -18,7 +44,7 @@ local plugins = {
   {"https://github.com/vim-utils/vim-vertical-move"},
   {
     "https://github.com/ggandor/lightspeed.nvim",
-    event = "VimEnter", -- So config actually run after the plugin
+    event = "VimEnter", -- So config actually runs after the plugin
     config = [[
       vim.cmd("silent! unmap f")
       vim.cmd("silent! unmap F")
@@ -77,12 +103,11 @@ local plugins = {
   -- * https://github.com/jose-elias-alvarez/null-ls.nvim
   -- * https://github.com/denoland/deno_lint
   -- * https://github.com/rslint/rslint
+  {"https://github.com/kabouzeid/nvim-lspinstall"},
   {
     "https://github.com/neovim/nvim-lspconfig",
     config = "require 'plugins.lspconfig'",
-    requires = {
-      {"https://github.com/kabouzeid/nvim-lspinstall"}
-    }
+    after = "nvim-lspinstall"
   },
   {
     "https://github.com/neoclide/coc.nvim",
@@ -94,19 +119,6 @@ local plugins = {
         "https://github.com/mhartington/formatter.nvim",
         ft = {"lua"},
         config = "require 'plugins.formatter'"
-      },
-      {
-        "https://github.com/antoinemadec/coc-fzf",
-        branch = "release",
-        config = [[
-          vim.g.coc_fzf_opts = {"--layout=reverse"}
-          U.noremap("n", "<space>a", "<cmd>CocFzfList actions<cr>", {silent = true})
-          U.noremap("n", "<space>c", "<cmd>CocFzfList commands<cr>", {silent = true})
-          U.noremap("n", "<space>d", "<cmd>CocFzfList diagnostics<cr>", {silent = true})
-          U.noremap("n", "<space>o", "<cmd>CocFzfList outline<cr>", {silent = true})
-          U.noremap("n", "<space>s", "<cmd>CocFzfList snippets<cr>", {silent = true})
-          U.noremap("n", "<space>w", "<cmd>CocFzfList symbols<cr>", {silent = true})
-        ]]
       }
     }
   },
@@ -155,36 +167,23 @@ local plugins = {
       vim.cmd("Alias gw Gwrite")
       vim.cmd("Alias gco Git\\ checkout")
     ]],
-    requires = {{"https://github.com/tpope/vim-rhubarb"}}
+    requires = {
+      {"https://github.com/tpope/vim-rhubarb"}
+    }
   },
   -- Searching
   {
-    "https://github.com/mhinz/vim-grepper",
+    -- Temporary until https://github.com/mhinz/vim-grepper/issues/244 gets
+    -- resolved
+    "https://github.com/trsdln/vim-grepper",
+    -- "https://github.com/mhinz/vim-grepper",
     config = "require 'plugins.grepper'"
   },
   -- Fuzzy Picker
   {
     "https://github.com/nvim-telescope/telescope.nvim",
-    requires = {{"nvim-lua/popup.nvim"}, {"nvim-lua/plenary.nvim"}},
+    after = {"popup.nvim", "plenary.nvim", "which-key.nvim", "nvim-web-devicons"},
     config = "require 'plugins.telescope'"
-  },
-  {
-    "~/.furnisher/gitmodules/fzf.vim",
-    branch = "local-gfiles",
-    config = "require 'plugins.fzf'",
-    requires = {
-      {"https://github.com/junegunn/fzf"},
-      {
-        "https://github.com/stsewd/fzf-checkout.vim",
-        config = [[
-          vim.g.fzf_checkout_git_bin = "hub"
-          vim.g.fzf_checkout_merge_settings = true
-          vim.g.fzf_branch_actions = { track = { keymap = "ctrl-o" } }
-          U.noremap("n", "<space>j", "<cmd>GBranches --locals<cr>", {silent = true})
-          U.noremap("n", "<space>k", "<cmd>GBranches --remotes<cr>", {silent = true})
-        ]]
-      }
-    }
   },
   -- CLI Tools
   {"https://github.com/editorconfig/editorconfig-vim"},
@@ -221,7 +220,7 @@ local plugins = {
   {"https://github.com/AndrewRadev/linediff.vim", cmd = "Linediff"},
   {
     "https://github.com/tpope/vim-unimpaired",
-    event = "VimEnter", -- So config actually run after the plugin
+    event = "VimEnter", -- So config actually runs after the plugin
     config = function()
       local unmaps = {"[l", "[L", "]l", "]L", "=p", "=P", "=o", "=O", "=op"}
       for _, m in ipairs(unmaps) do
@@ -256,43 +255,42 @@ local plugins = {
   {"https://github.com/windwp/nvim-ts-autotag", disable = true},
   {"https://github.com/kevinhwang91/nvim-bqf", disable = true},
   {"https://github.com/NTBBloodbath/rest.nvim", disable = true},
-  {'https://github.com/folke/which-key.nvim', disable = true}
+  {"https://github.com/folke/which-key.nvim"}
 }
 
-local package_path = U.os.data .. "/site/pack"
-local compile_path = U.os.data .. "/site/plugin/packer_compiled.lua"
-local install_path = package_path .. "/packer/start/packer.nvim"
-
--- Ensure packer is installed and load it
--- https://github.com/wbthomason/packer.nvim#bootstrapping
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.fn.system(
-    {"git", "clone", "https://github.com/wbthomason/packer.nvim", install_path}
-  )
-  vim.cmd [[packadd packer.nvim]]
+-- Recursively set `after` on the plugin to load after packer because all my
+-- mappings, options, etc... get set on packer's config field, which is,
+-- admittedly, a weird place to setup my editor instead of the more standard
+-- init.{vim,lua}. The reason being that I'd like to use luarocks packages as
+-- early as possible, however they are only available after packer_compiled.lua
+-- gets sourced, which happens _after_ init.{vim,lua} has been sourced. This
+-- hack ensures the loading order I want in `packer_compiled.lua`:
+--  * `package.path` gets set, making luarocks packages available.
+--  * `packer.nvim` config code runs before every other plugin, since they all
+--    specify `after = "packer.nvim"`.
+--  * The rest of the plugins and their configuration gets run next. At this
+--    point, both lua packages and whatever utils I've made available in the
+--    global scope can be used.
+local function set_load_after_packer(plugins)
+  for _, plug in pairs(plugins) do
+    if not plug.after then
+      plug.after = "packer.nvim"
+    end
+    if plug.requires then
+      set_load_after_packer(plug.requires)
+    end
+  end
 end
 
--- Configure packer with list of plugins
-require "packer".startup(
+set_load_after_packer(plugins)
+
+table.insert(
+  plugins,
   {
-    plugins,
-    config = {
-      compile_path = compile_path,
-      package_path = package_path,
-      display = {open_cmd = "tabnew [packer]"}
-    }
+    "https://github.com/wbthomason/packer.nvim",
+    rocks = {"fun"},
+    config = "do_user_configuration()"
   }
 )
 
--- Recompile plugins when this file is updated.
-U.au(
-  {
-    event = "BufWritePost",
-    pattern = "*/lua/plugins/init.lua",
-    cmd = function()
-      package.loaded.plugins = nil
-      require "plugins"
-      require "packer".compile()
-    end
-  }
-)
+return plugins
